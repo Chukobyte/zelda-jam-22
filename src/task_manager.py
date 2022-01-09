@@ -5,10 +5,14 @@ class Task:
     def __init__(self, name: str, func: Callable):
         self.name = name
         self.func = func
+        self.coroutine = None
+        self.reset_state()
+
+    def reset_state(self) -> None:
+        self.coroutine = self.func()
 
     def resume(self) -> bool:
-        coroutine = self.func()
-        return next(coroutine, False)
+        return next(self.coroutine, False)
 
     def stop(self) -> None:
         pass

@@ -37,9 +37,9 @@ class Player(AnimatedSprite):
 
         # coroutine = self.move_state.state_func()
         # next(coroutine, False)
-        next(self.move_func)
+        # next(self.move_func)
 
-        # self.player_fsm.process()
+        self.player_fsm.process()
 
     # Task
     def move(self):
