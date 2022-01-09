@@ -58,11 +58,12 @@ class RoomBuilder:
         wall_colliders.left_up_up.collider_rect = Rect2(64, 0, 124, 32)
         wall_colliders.left_up_left.collider_rect = Rect2(0, 0, 64, 100)
         wall_colliders.left_down_left.collider_rect = Rect2(0, 124, 64, 100)
-        wall_colliders.left_down_down.collider_rect = Rect2(64, 188, 124, 32)
+        wall_colliders.left_down_down.collider_rect = Rect2(64, 192, 124, 32)
+
         wall_colliders.right_up_up.collider_rect = Rect2(212, 0, 128, 32)
         wall_colliders.right_up_right.collider_rect = Rect2(340, 0, 64, 100)
         wall_colliders.right_down_right.collider_rect = Rect2(340, 124, 64, 100)
-        wall_colliders.right_down_down.collider_rect = Rect2(212, 188, 128, 32)
+        wall_colliders.right_down_down.collider_rect = Rect2(212, 192, 128, 32)
 
         for wall_collider in wall_colliders.walls:
             wall_collider.tags = ["wall"]
