@@ -4,8 +4,9 @@ from seika.math import Vector2
 from seika.physics import Collision
 from seika.utils import SimpleTimer
 
+from src.world import World
 from src.player_stats import PlayerStats
-from src.task import Task, Awaitable, co_return, co_suspend
+from src.task import Task, co_return, co_suspend
 from src.fsm import FSM, State, StateExitLink
 
 
@@ -66,8 +67,6 @@ class Player(AnimatedSprite):
         )
 
     def _physics_process(self, delta: float) -> None:
-        self.stats.move_params.cached_delta = delta
-
         self.player_fsm.process()
 
     @Task.task_func(debug=True)
@@ -77,8 +76,9 @@ class Player(AnimatedSprite):
 
     @Task.task_func(debug=True)
     def move(self):
+        world = World()
         while True:
-            delta = self.stats.move_params.cached_delta
+            delta = world.cached_delta
             new_velocity = None
             accel = self.stats.move_params.accel * delta
 
@@ -123,8 +123,9 @@ class Player(AnimatedSprite):
 
     @Task.task_func(debug=True)
     def attack(self):
+        world = World()
         attack_timer = SimpleTimer(wait_time=0.5, start_on_init=True)
         while True:
-            if attack_timer.tick(self.stats.move_params.cached_delta):
+            if attack_timer.tick(world.cached_delta):
                 yield co_return()
             yield co_suspend()

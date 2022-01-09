@@ -5,6 +5,7 @@ class Awaitable:
     def __init__(self, finished: bool):
         self.finished = finished
 
+
 # Static functions to control coroutine state
 def co_suspend():
     return Awaitable(finished=False)
@@ -12,6 +13,7 @@ def co_suspend():
 
 def co_return():
     return Awaitable(finished=True)
+
 
 class Task:
     """
@@ -69,6 +71,10 @@ class TaskManager:
         del self.tasks[name]
 
     def run_tasks(self) -> None:
+        tasks_to_remove = []
         for task in self.running_tasks:
-            task.resume()
-
+            awaitable = task.resume()
+            if awaitable.finished:
+                tasks_to_remove.append(task)
+        for finished_task in tasks_to_remove:
+            self.remove_task(name=finished_task.name)
