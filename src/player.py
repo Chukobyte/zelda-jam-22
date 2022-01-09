@@ -5,7 +5,7 @@ from seika.physics import Collision
 from seika.utils import SimpleTimer
 
 from src.player_stats import PlayerStats
-from src.task import Awaitable
+from src.task import Task, Awaitable
 from src.fsm import FSM, State, StateExitLink
 
 
@@ -34,9 +34,9 @@ class Player(AnimatedSprite):
             state_to_transition=move_state,
             transition_predicate=(
                 lambda: Input.is_action_just_pressed(action_name="move_left")
-                        or Input.is_action_pressed(action_name="move_right")
-                        or Input.is_action_pressed(action_name="move_up")
-                        or Input.is_action_pressed(action_name="move_down")
+                or Input.is_action_pressed(action_name="move_right")
+                or Input.is_action_pressed(action_name="move_up")
+                or Input.is_action_pressed(action_name="move_down")
             ),
         )
         idle_attack_exit = StateExitLink(
@@ -70,14 +70,13 @@ class Player(AnimatedSprite):
 
         self.player_fsm.process()
 
-    # Tasks
+    @Task.task_func(debug=True)
     def idle(self):
-        print("In idle")
         while True:
             yield Awaitable.co_suspend()
 
+    @Task.task_func(debug=True)
     def move(self):
-        print("In move")
         while True:
             delta = self.stats.move_params.cached_delta
             new_velocity = None
@@ -122,8 +121,8 @@ class Player(AnimatedSprite):
 
             yield Awaitable.co_suspend()
 
+    @Task.task_func(debug=True)
     def attack(self):
-        print("In attack")
         attack_timer = SimpleTimer(wait_time=0.5)
         attack_timer.start()
         while True:

@@ -39,6 +39,22 @@ class Task:
     def stop(self) -> None:
         pass
 
+    @staticmethod
+    def task_func(debug=False):
+        """
+        Just a fancy way of denoting task functions...
+        """
+
+        def setup_task_func(func: Callable):
+            def func_result(*args, **kwargs):
+                if debug:
+                    print(f"Running task func {func}")
+                return func(*args, **kwargs)
+
+            return func_result
+
+        return setup_task_func
+
 
 class TaskManager:
     def __init__(self):
