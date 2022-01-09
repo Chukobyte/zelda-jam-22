@@ -6,7 +6,6 @@ from seika.audio import AudioStream
 
 class Main(Node2D):
     def _start(self) -> None:
-        print("In main!")
         music_audio_stream = AudioStream.get(stream_uid="test-music")
         music_audio_stream.play()
 

@@ -2,21 +2,7 @@ from seika.node import AnimatedSprite
 from seika.input import Input
 from seika.math import Vector2
 
-
-class Dir:
-    LEFT = "l"
-    RIGHT = "r"
-    UP = "u"
-    DOWN = "d"
-
-
-class PlayerStats:
-    class MoveParams:
-        def __init__(self):
-            self.accel = 100
-
-    def __init__(self):
-        self.move_params = PlayerStats.MoveParams()
+from src.player_stats import PlayerStats
 
 
 class Player(AnimatedSprite):
