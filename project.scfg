@@ -19,6 +19,14 @@
     },
     "assets": [
         {
+            "type": "texture",
+            "file_path": "assets/images/dungeon_level.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
             "type": "audio_stream",
             "file_path": "assets/audio/music/testing_zelda_water.wav",
             "uid": "test-music",
