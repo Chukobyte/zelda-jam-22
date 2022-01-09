@@ -1,6 +1,7 @@
 from seika.node import AnimatedSprite
 from seika.input import Input
 from seika.math import Vector2
+from seika.physics import Collision
 
 from src.player_stats import PlayerStats
 
@@ -46,4 +47,6 @@ class Player(AnimatedSprite):
 
         # Integrate new velocity
         if new_velocity:
-            self.position += new_velocity
+            collided_walls = Collision.get_collided_nodes_by_tag(node=self.collider, tag="wall", offset=new_velocity)
+            if not collided_walls:
+                self.position += new_velocity
