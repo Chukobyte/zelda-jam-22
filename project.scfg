@@ -44,8 +44,8 @@
         },
         {
             "type": "audio_stream",
-            "file_path": "assets/audio/music/testing_zelda_water.wav",
-            "uid": "test-music",
+            "file_path": "assets/audio/music/no_color_theme.wav",
+            "uid": "no-color-theme",
             "pitch": 1.0,
             "gain": 1.0,
             "loops": true

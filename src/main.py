@@ -30,5 +30,5 @@ class Main(Node2D):
         countdown_timer = SimpleTimer(wait_time=0.25, start_on_init=True)
         while not countdown_timer.tick(self.world.cached_delta):
             yield co_suspend()
-        music_audio_stream = AudioStream.get(stream_uid="test-music")
+        music_audio_stream = AudioStream.get(stream_uid="no-color-theme")
         music_audio_stream.play()
