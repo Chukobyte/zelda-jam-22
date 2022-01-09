@@ -6,6 +6,7 @@ from seika.utils import SimpleTimer
 
 from src.world import World
 from src.player_stats import PlayerStats
+from src.attack import PlayerAttack
 from src.task import Task, co_return, co_suspend
 from src.fsm import FSM, State, StateExitLink
 
@@ -124,6 +125,12 @@ class Player(AnimatedSprite):
     @Task.task_func(debug=True)
     def attack(self):
         world = World()
+        player_attack = PlayerAttack.new()
+        player_attack.position = (
+            self.position + Vector2(4, 4) + (self.direction * Vector2(8, 12))
+        )
+        self.get_parent().add_child(player_attack)
         attack_timer = SimpleTimer(wait_time=0.5, start_on_init=True)
         while not attack_timer.tick(world.cached_delta):
             yield co_suspend()
+        player_attack.queue_deletion()
