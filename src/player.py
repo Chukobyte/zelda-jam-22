@@ -5,6 +5,7 @@ from seika.physics import Collision
 from seika.utils import SimpleTimer
 
 from src.player_stats import PlayerStats
+from src.task import Awaitable
 from src.fsm import FSM, State, StateExitLink
 
 
@@ -14,9 +15,11 @@ class Player(AnimatedSprite):
         self.collider = self.get_node(name="PlayerCollider")
         self.velocity = Vector2()
         self.direction = Vector2.DOWN()
-
-        # State Management
         self.player_fsm = FSM()
+        self._configure_fsm()
+
+    def _configure_fsm(self) -> None:
+        # State Management
         idle_state = State(name="idle", state_func=self.idle)
         move_state = State(name="move", state_func=self.move)
         attack_state = State(name="attack", state_func=self.attack)
@@ -31,9 +34,9 @@ class Player(AnimatedSprite):
             state_to_transition=move_state,
             transition_predicate=(
                 lambda: Input.is_action_just_pressed(action_name="move_left")
-                or Input.is_action_pressed(action_name="move_right")
-                or Input.is_action_pressed(action_name="move_up")
-                or Input.is_action_pressed(action_name="move_down")
+                        or Input.is_action_pressed(action_name="move_right")
+                        or Input.is_action_pressed(action_name="move_up")
+                        or Input.is_action_pressed(action_name="move_down")
             ),
         )
         idle_attack_exit = StateExitLink(
@@ -47,9 +50,11 @@ class Player(AnimatedSprite):
             idle_state, state_exit_link=idle_attack_exit
         )
         # Move
-        move_exit_predicate = lambda: Input.is_action_just_pressed(action_name="attack")
         move_exit = StateExitLink(
-            state_to_transition=attack_state, transition_predicate=move_exit_predicate
+            state_to_transition=attack_state,
+            transition_predicate=lambda: Input.is_action_just_pressed(
+                action_name="attack"
+            ),
         )
         self.player_fsm.add_state_exit_link(state=move_state, state_exit_link=move_exit)
         self.player_fsm.add_state_finished_link(
@@ -69,7 +74,7 @@ class Player(AnimatedSprite):
     def idle(self):
         print("In idle")
         while True:
-            yield True
+            yield Awaitable.co_suspend()
 
     def move(self):
         print("In move")
@@ -115,7 +120,7 @@ class Player(AnimatedSprite):
             else:
                 break
 
-            yield True
+            yield Awaitable.co_suspend()
 
     def attack(self):
         print("In attack")
@@ -123,5 +128,5 @@ class Player(AnimatedSprite):
         attack_timer.start()
         while True:
             if attack_timer.tick(self.stats.move_params.cached_delta):
-                break
-            yield True
+                yield Awaitable.co_return()
+            yield Awaitable.co_suspend()

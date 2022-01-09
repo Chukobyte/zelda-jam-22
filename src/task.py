@@ -1,6 +1,19 @@
 from typing import Callable
 
 
+class Awaitable:
+    def __init__(self, finished: bool):
+        self.finished = finished
+
+    @staticmethod
+    def co_suspend():
+        return Awaitable(finished=False)
+
+    @staticmethod
+    def co_return():
+        return Awaitable(finished=True)
+
+
 class Task:
     """
     A class to represent coroutines.
@@ -15,13 +28,13 @@ class Task:
     def reset_state(self) -> None:
         self.coroutine = self.func()
 
-    def resume(self) -> bool:
+    def resume(self) -> Awaitable:
         """
         Will resume the coroutine.
         :return: has_finished: bool
             Coroutines should return 'True' if continuing and 'False' if not
         """
-        return next(self.coroutine, False)
+        return next(self.coroutine, Awaitable.co_return())
 
     def stop(self) -> None:
         pass
