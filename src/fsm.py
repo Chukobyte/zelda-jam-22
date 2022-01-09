@@ -1,5 +1,5 @@
 from typing import Callable
-from src.task_manager import TaskManager, Task
+from src.task import TaskManager, Task
 
 
 class State:
@@ -40,7 +40,6 @@ class FSM:
         if self.current_task:
             task_running = self.current_task.resume()
             if not task_running:
-                print(f"task '{self.current_task.name}' finished!")
                 if self.current_task.name in self.finished_links:
                     self._set_state(state=self.finished_links[self.current_task.name])
                 else:
