@@ -38,20 +38,23 @@ class FSM:
 
     def process(self) -> None:
         if self.current_task:
-            task_running = self.current_task.resume()
-            if not task_running:
-                if self.current_task.name in self.finished_links:
-                    self._set_state(state=self.finished_links[self.current_task.name])
-                else:
-                    self.current_task.stop()
-                    self.current_task = None
-            else:
-                # Exit check
-                state_exit_links = self.exit_links[self.current_state.name]
-                for exit_link in state_exit_links:
-                    if exit_link.transition_predicate():
-                        self._set_state(exit_link.state_to_transition)
-                        break
+            # Exit check
+            state_exit_links = self.exit_links[self.current_state.name]
+            has_exited = False
+            for exit_link in state_exit_links:
+                if exit_link.transition_predicate():
+                    self._set_state(exit_link.state_to_transition)
+                    has_exited = True
+                    break
+
+            # Main process
+            if not has_exited:
+                task_running = self.current_task.resume()
+                if not task_running:
+                    if self.current_state.name in self.finished_links:
+                        self._set_state(
+                            state=self.finished_links[self.current_state.name]
+                        )
 
     def _set_state(self, state: State) -> None:
         if self.current_task:

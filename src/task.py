@@ -2,6 +2,10 @@ from typing import Callable
 
 
 class Task:
+    """
+    A class to represent coroutines.
+    """
+
     def __init__(self, name: str, func: Callable):
         self.name = name
         self.func = func
@@ -12,6 +16,11 @@ class Task:
         self.coroutine = self.func()
 
     def resume(self) -> bool:
+        """
+        Will resume the coroutine.
+        :return: has_finished: bool
+            Coroutines should return 'True' if continuing and 'False' if not
+        """
         return next(self.coroutine, False)
 
     def stop(self) -> None:

@@ -14,20 +14,50 @@ class Player(AnimatedSprite):
         self.collider = self.get_node(name="PlayerCollider")
         self.velocity = Vector2()
         self.direction = Vector2.DOWN()
+
         # State Management
         self.player_fsm = FSM()
+        idle_state = State(name="idle", state_func=self.idle)
         move_state = State(name="move", state_func=self.move)
         attack_state = State(name="attack", state_func=self.attack)
 
-        self.player_fsm.add_state(state=move_state, set_current=True)
+        self.player_fsm.add_state(state=idle_state, set_current=True)
+        self.player_fsm.add_state(state=move_state)
         self.player_fsm.add_state(state=attack_state)
 
         # Links
+        # Idle
+        idle_exit_move_predicate = (
+            lambda: Input.is_action_just_pressed(action_name="move_left")
+            or Input.is_action_pressed(action_name="move_right")
+            or Input.is_action_pressed(action_name="move_up")
+            or Input.is_action_pressed(action_name="move_down")
+        )
+        idle_move_exit = StateExitLink(
+            state_to_transition=move_state,
+            transition_predicate=idle_exit_move_predicate,
+        )
+        idle_attack_exit_predicate = lambda: Input.is_action_just_pressed(
+            action_name="attack"
+        )
+        idle_attack_exit = StateExitLink(
+            state_to_transition=move_state,
+            transition_predicate=idle_attack_exit_predicate,
+        )
+        self.player_fsm.add_state_exit_link(idle_state, state_exit_link=idle_move_exit)
+        self.player_fsm.add_state_exit_link(
+            idle_state, state_exit_link=idle_attack_exit
+        )
+        # Move
         move_exit_predicate = lambda: Input.is_action_just_pressed(action_name="attack")
         move_exit = StateExitLink(
             state_to_transition=attack_state, transition_predicate=move_exit_predicate
         )
         self.player_fsm.add_state_exit_link(state=move_state, state_exit_link=move_exit)
+        self.player_fsm.add_state_finished_link(
+            state=move_state, state_to_transition=idle_state
+        )
+        # Attack
         self.player_fsm.add_state_finished_link(
             state=attack_state, state_to_transition=move_state
         )
@@ -37,8 +67,14 @@ class Player(AnimatedSprite):
 
         self.player_fsm.process()
 
-    # Task
+    # Tasks
+    def idle(self):
+        print("In idle")
+        while True:
+            yield True
+
     def move(self):
+        print("In move")
         while True:
             delta = self.stats.move_params.cached_delta
             new_velocity = None
@@ -78,16 +114,16 @@ class Player(AnimatedSprite):
                 )
                 if not collided_walls:
                     self.position += new_velocity
-            # TODO: Break of out of move state if not moving...
-            # else:
-            #     break
+            else:
+                break
 
             yield True
 
     def attack(self):
+        print("In attack")
         attack_timer = SimpleTimer(wait_time=0.5)
         attack_timer.start()
         while True:
             if attack_timer.tick(self.stats.move_params.cached_delta):
-                yield False
+                break
             yield True
