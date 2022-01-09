@@ -1,0 +1,94 @@
+{
+    "game_title": "zelda-jam-22",
+    "initial_scene": "scenes/init.sscn",
+    "base_resolution": {
+        "width": 400,
+        "height": 225
+    },
+    "window_size": {
+        "width": 800,
+        "height": 450
+    },
+    "colliders_visible": false,
+    "pixel_snap": true,
+    "target_fps": 66,
+    "background_color": {
+        "red": 0.20000000298023224,
+        "green": 0.20000000298023224,
+        "blue": 0.20000000298023224
+    },
+    "assets": [
+        {
+            "type": "texture",
+            "file_path": "assets/images/dungeon_level.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "texture",
+            "file_path": "assets/images/player_spritesheet.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "audio_stream",
+            "file_path": "assets/audio/music/testing_zelda_water.wav",
+            "uid": "test-music",
+            "pitch": 1.0,
+            "gain": 1.0,
+            "loops": true
+        }
+    ],
+    "input_actions": [
+        {
+            "name": "attack",
+            "values": [
+                "space",
+                "joystick_button_a"
+            ]
+        },
+        {
+            "name": "debug_quit",
+            "values": [
+                "esc",
+                "joystick_button_back"
+            ]
+        },
+        {
+            "name": "move_down",
+            "values": [
+                "s",
+                "down",
+                "joystick_left_analog_down"
+            ]
+        },
+        {
+            "name": "move_left",
+            "values": [
+                "a",
+                "left",
+                "joystick_left_analog_left"
+            ]
+        },
+        {
+            "name": "move_right",
+            "values": [
+                "d",
+                "right",
+                "joystick_left_analog_right"
+            ]
+        },
+        {
+            "name": "move_up",
+            "values": [
+                "w",
+                "up",
+                "joystick_left_analog_up"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,229 @@
+{
+    "name": "Main",
+    "type": "Node2D",
+    "tags": [],
+    "external_scene_source": "",
+    "components": [
+        {
+            "transform2D": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "rotation": 0.0,
+                "z_index": 0,
+                "z_index_relative_to_parent": true,
+                "ignore_camera": false
+            }
+        },
+        {
+            "scriptable_class": {
+                "class_path": "src.main",
+                "class_name": "Main"
+            }
+        }
+    ],
+    "children": [
+        {
+            "name": "DungeonBG",
+            "type": "Sprite",
+            "tags": [],
+            "external_scene_source": "",
+            "components": [
+                {
+                    "transform2D": {
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "rotation": 0.0,
+                        "z_index": 0,
+                        "z_index_relative_to_parent": true,
+                        "ignore_camera": false
+                    }
+                },
+                {
+                    "sprite": {
+                        "texture_path": "assets/images/dungeon_level.png",
+                        "draw_source": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "width": 400.0,
+                            "height": 225.0
+                        },
+                        "flip_x": false,
+                        "flip_y": false,
+                        "modulate": {
+                            "red": 1.0,
+                            "green": 1.0,
+                            "blue": 1.0,
+                            "alpha": 1.0
+                        }
+                    }
+                }
+            ],
+            "children": []
+        },
+        {
+            "name": "Player",
+            "type": "AnimatedSprite",
+            "tags": [],
+            "external_scene_source": "",
+            "components": [
+                {
+                    "transform2D": {
+                        "position": {
+                            "x": 200.0,
+                            "y": 112.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "rotation": 0.0,
+                        "z_index": 0,
+                        "z_index_relative_to_parent": true,
+                        "ignore_camera": false
+                    }
+                },
+                {
+                    "animated_sprite": {
+                        "current_animation": "idle",
+                        "is_playing": false,
+                        "flip_x": false,
+                        "flip_y": false,
+                        "modulate": {
+                            "red": 1.0,
+                            "green": 1.0,
+                            "blue": 1.0,
+                            "alpha": 1.0
+                        },
+                        "animations": [
+                            {
+                                "name": "idle",
+                                "speed": 1000,
+                                "frames": [
+                                    {
+                                        "frame": 0,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 0.0,
+                                            "y": 0.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "move_down",
+                                "speed": 1000,
+                                "frames": [
+                                    {
+                                        "frame": 0,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 0.0,
+                                            "y": 0.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "move_hort",
+                                "speed": 1000,
+                                "frames": [
+                                    {
+                                        "frame": 0,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 0.0,
+                                            "y": 0.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "move_up",
+                                "speed": 1000,
+                                "frames": [
+                                    {
+                                        "frame": 0,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 0.0,
+                                            "y": 0.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "scriptable_class": {
+                        "class_path": "src.player",
+                        "class_name": "Player"
+                    }
+                }
+            ],
+            "children": [
+                {
+                    "name": "PlayerCollider",
+                    "type": "CollisionShape2D",
+                    "tags": [],
+                    "external_scene_source": "",
+                    "components": [
+                        {
+                            "transform2D": {
+                                "position": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "rotation": 0.0,
+                                "z_index": 0,
+                                "z_index_relative_to_parent": true,
+                                "ignore_camera": false
+                            }
+                        },
+                        {
+                            "collider": {
+                                "rectangle": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "width": 16.0,
+                                    "height": 16.0
+                                },
+                                "color": {
+                                    "red": 0.37254902720451355,
+                                    "green": 0.8039215803146362,
+                                    "blue": 0.8941176533699036,
+                                    "alpha": 0.75
+                                }
+                            }
+                        }
+                    ],
+                    "children": []
+                }
+            ]
+        }
+    ]
+}
