@@ -73,6 +73,18 @@ class Player(AnimatedSprite):
     @Task.task_func(debug=True)
     def idle(self):
         while True:
+            if self.direction == Vector2.UP():
+                self.play(animation_name="idle_up")
+                self.flip_h = False
+            elif self.direction == Vector2.DOWN():
+                self.play(animation_name="idle_down")
+                self.flip_h = False
+            elif self.direction == Vector2.RIGHT():
+                self.play(animation_name="idle_hort")
+                self.flip_h = False
+            elif self.direction == Vector2.LEFT():
+                self.play(animation_name="idle_hort")
+                self.flip_h = True
             yield co_suspend()
 
     @Task.task_func(debug=True)
