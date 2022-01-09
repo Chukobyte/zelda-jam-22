@@ -19,6 +19,7 @@ class FSM:
         self.task_manager = TaskManager()
         self.states = {}
         self.exit_links = {}
+        self.finished_links = {}
         self.current_state = None
         self.current_task = None
 
@@ -32,12 +33,19 @@ class FSM:
         assert state.name in self.exit_links
         self.exit_links[state.name].append(state_exit_link)
 
+    def add_state_finished_link(self, state: State, state_to_transition: State) -> None:
+        self.finished_links[state.name] = state_to_transition
+
     def process(self) -> None:
         if self.current_task:
             task_running = self.current_task.resume()
             if not task_running:
-                self.current_task.stop()
-                self.current_task = None
+                print(f"task '{self.current_task.name}' finished!")
+                if self.current_task.name in self.finished_links:
+                    self._set_state(state=self.finished_links[self.current_task.name])
+                else:
+                    self.current_task.stop()
+                    self.current_task = None
             else:
                 # Exit check
                 state_exit_links = self.exit_links[self.current_state.name]
@@ -47,8 +55,8 @@ class FSM:
                         break
 
     def _set_state(self, state: State) -> None:
-        if self.current_state:
-            self.task_manager.remove_task(name=self.current_state.name)
+        if self.current_task:
+            self.current_task.stop()
         self.current_state = state
         self.current_task = Task(
             name=self.current_state.name, func=self.current_state.state_func

@@ -22,20 +22,28 @@ class Player(AnimatedSprite):
         self.player_fsm.add_state(state=move_state, set_current=True)
         self.player_fsm.add_state(state=attack_state)
 
+        self.move_func = move_state.state_func()
+
         # Links
-        move_exit_predicate = lambda: Input.is_action_just_pressed(action_name="attack")
-        move_exit = StateExitLink(
-            state_to_transition=attack_state, transition_predicate=move_exit_predicate
-        )
-        self.player_fsm.add_state_exit_link(state=move_state, state_exit_link=move_exit)
+        # move_exit_predicate = lambda: Input.is_action_just_pressed(action_name="attack")
+        # move_exit = StateExitLink(
+        #     state_to_transition=attack_state, transition_predicate=move_exit_predicate
+        # )
+        # self.player_fsm.add_state_exit_link(state=move_state, state_exit_link=move_exit)
+        # self.player_fsm.add_state_finished_link(state=attack_state, state_to_transition=move_state)
 
     def _physics_process(self, delta: float) -> None:
         self.stats.move_params.cached_delta = delta
 
-        self.player_fsm.process()
+        # coroutine = self.move_state.state_func()
+        # next(coroutine, False)
+        next(self.move_func)
+
+        # self.player_fsm.process()
 
     # Task
     def move(self):
+        print("move init")
         while True:
             delta = self.stats.move_params.cached_delta
             new_velocity = None
@@ -82,7 +90,12 @@ class Player(AnimatedSprite):
 
     def attack(self):
         attack_timer = SimpleTimer(wait_time=0.5)
+        attack_timer.start()
+        print("Hey")
         while True:
+            attack_timer.time_left -= self.stats.move_params.cached_delta
+            print(f"attack timer = {attack_timer.time_left}")
+            print(f"self.stats.move_params.cached_delta = {self.stats.move_params.cached_delta}")
             if attack_timer.tick(self.stats.move_params.cached_delta):
-                break
+                yield False
             yield True
