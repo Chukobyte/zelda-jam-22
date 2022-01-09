@@ -108,22 +108,6 @@
                         },
                         "animations": [
                             {
-                                "name": "idle_down",
-                                "speed": 1000,
-                                "frames": [
-                                    {
-                                        "frame": 0,
-                                        "texture_path": "assets/images/player_spritesheet.png",
-                                        "draw_source": {
-                                            "x": 0.0,
-                                            "y": 0.0,
-                                            "width": 16.0,
-                                            "height": 16.0
-                                        }
-                                    }
-                                ]
-                            },
-                            {
                                 "name": "idle_hort",
                                 "speed": 1000,
                                 "frames": [
