@@ -27,22 +27,20 @@ class Player(AnimatedSprite):
 
         # Links
         # Idle
-        idle_exit_move_predicate = (
-            lambda: Input.is_action_just_pressed(action_name="move_left")
-            or Input.is_action_pressed(action_name="move_right")
-            or Input.is_action_pressed(action_name="move_up")
-            or Input.is_action_pressed(action_name="move_down")
-        )
         idle_move_exit = StateExitLink(
             state_to_transition=move_state,
-            transition_predicate=idle_exit_move_predicate,
-        )
-        idle_attack_exit_predicate = lambda: Input.is_action_just_pressed(
-            action_name="attack"
+            transition_predicate=(
+                lambda: Input.is_action_just_pressed(action_name="move_left")
+                or Input.is_action_pressed(action_name="move_right")
+                or Input.is_action_pressed(action_name="move_up")
+                or Input.is_action_pressed(action_name="move_down")
+            ),
         )
         idle_attack_exit = StateExitLink(
-            state_to_transition=move_state,
-            transition_predicate=idle_attack_exit_predicate,
+            state_to_transition=attack_state,
+            transition_predicate=lambda: Input.is_action_just_pressed(
+                action_name="attack"
+            ),
         )
         self.player_fsm.add_state_exit_link(idle_state, state_exit_link=idle_move_exit)
         self.player_fsm.add_state_exit_link(
