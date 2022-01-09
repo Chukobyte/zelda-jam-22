@@ -45,6 +45,13 @@
     ],
     "input_actions": [
         {
+            "name": "attack",
+            "values": [
+                "space",
+                "joystick_button_a"
+            ]
+        },
+        {
             "name": "debug_quit",
             "values": [
                 "esc",

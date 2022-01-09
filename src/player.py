@@ -2,17 +2,32 @@ from seika.node import AnimatedSprite
 from seika.input import Input
 from seika.math import Vector2
 from seika.physics import Collision
+from seika.utils import SimpleTimer
 
-from src.player_stats import PlayerStats
+from src.player_stats import PlayerStats, State
 
 
 class Player(AnimatedSprite):
     def _start(self) -> None:
         self.stats = PlayerStats()
         self.collider = self.get_node(name="PlayerCollider")
+        self.velocity = Vector2()
+
+        def attack_timeout_func():
+            self.stats.state = State.IDLE
+
+        self.attack_timer = SimpleTimer(wait_time=0.5, timeout_func=attack_timeout_func)
 
     def _physics_process(self, delta: float) -> None:
-        self._move(delta=delta)
+        if Input.is_action_just_pressed(action_name="attack"):
+            if self.stats.state != State.ATTACK:
+                self.stats.state = State.ATTACK
+                self.attack_timer.start()
+
+        if self.stats.state == State.ATTACK:
+            self.attack_timer.tick(delta=delta)
+        else:
+            self._move(delta=delta)
 
     def _move(self, delta: float) -> None:
         new_velocity = None
@@ -47,6 +62,11 @@ class Player(AnimatedSprite):
 
         # Integrate new velocity
         if new_velocity:
-            collided_walls = Collision.get_collided_nodes_by_tag(node=self.collider, tag="wall", offset=new_velocity)
+            collided_walls = Collision.get_collided_nodes_by_tag(
+                node=self.collider, tag="wall", offset=new_velocity
+            )
             if not collided_walls:
+                self.stats.state = State.MOVE
                 self.position += new_velocity
+        else:
+            self.stats.state = State.IDLE

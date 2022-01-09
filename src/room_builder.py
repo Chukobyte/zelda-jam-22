@@ -6,7 +6,7 @@ from src.project_properties import ProjectProperties
 
 class RoomBuilder:
     @staticmethod
-    def create_walls(node: Node) -> None:
+    def create_wall_colliders(node: Node) -> None:
         room_dimensions = ProjectProperties.BASE_RESOLUTION
         vertical_rect = Rect2(0, 0, 64, room_dimensions.y)
         horizontal_rect = Rect2(0, 0, room_dimensions.x, 32)
