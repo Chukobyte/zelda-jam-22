@@ -5,6 +5,13 @@ class Awaitable:
     def __init__(self, finished: bool):
         self.finished = finished
 
+# Static functions to control coroutine state
+def co_suspend():
+    return Awaitable(finished=False)
+
+
+def co_return():
+    return Awaitable(finished=True)
 
 class Task:
     """
@@ -26,7 +33,7 @@ class Task:
         :return: has_finished: bool
             Coroutines should return 'True' if continuing and 'False' if not
         """
-        return next(self.coroutine, Awaitable.co_return())
+        return next(self.coroutine, co_return())
 
     def stop(self) -> None:
         pass
@@ -65,11 +72,3 @@ class TaskManager:
         for task in self.running_tasks:
             task.resume()
 
-
-# Static functions to control coroutine state
-def co_suspend():
-    return Awaitable(finished=False)
-
-
-def co_return():
-    return Awaitable(finished=True)

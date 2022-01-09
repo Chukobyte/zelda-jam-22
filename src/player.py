@@ -123,8 +123,7 @@ class Player(AnimatedSprite):
 
     @Task.task_func(debug=True)
     def attack(self):
-        attack_timer = SimpleTimer(wait_time=0.5)
-        attack_timer.start()
+        attack_timer = SimpleTimer(wait_time=0.5, start_on_init=True)
         while True:
             if attack_timer.tick(self.stats.move_params.cached_delta):
                 yield co_return()
