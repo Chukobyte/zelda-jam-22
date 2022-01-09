@@ -117,7 +117,7 @@ class Player(AnimatedSprite):
                 if not collided_walls:
                     self.position += new_velocity
             else:
-                break
+                yield co_return()
 
             yield co_suspend()
 
