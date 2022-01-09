@@ -12,14 +12,10 @@ from src.task import Task, TaskManager, co_return, co_suspend
 class Main(Node2D):
     def _start(self) -> None:
         self.world = World()
-        self.task_manager = TaskManager()
-        self.task_manager.add_task(
-            task=Task(name="count_3", func=self.three_second_countdown)
+        self.task_manager = TaskManager(
+            initial_tasks=[Task(name="start_music", func=self.start_music)]
         )
         # Setup Initial Room
-        music_audio_stream = AudioStream.get(stream_uid="test-music")
-        music_audio_stream.play()
-
         RoomBuilder.create_wall_colliders(node=self)
 
     def _physics_process(self, delta: float) -> None:
@@ -30,12 +26,9 @@ class Main(Node2D):
 
     # Countdown test
     @Task.task_func(debug=True)
-    def three_second_countdown(self):
-        count = 0
-        countdown_timer = SimpleTimer(wait_time=1.0, start_on_init=True, loops=True)
-        while True:
-            if countdown_timer.tick(self.world.cached_delta):
-                count += 1
-                if count >= 3:
-                    yield co_return()
+    def start_music(self):
+        countdown_timer = SimpleTimer(wait_time=0.25, start_on_init=True)
+        while not countdown_timer.tick(self.world.cached_delta):
             yield co_suspend()
+        music_audio_stream = AudioStream.get(stream_uid="test-music")
+        music_audio_stream.play()

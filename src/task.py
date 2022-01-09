@@ -58,9 +58,12 @@ class Task:
 
 
 class TaskManager:
-    def __init__(self):
+    def __init__(self, initial_tasks=None):
         self.tasks = {}
         self.running_tasks = []
+        if initial_tasks:
+            for task in initial_tasks:
+                self.add_task(task)
 
     def add_task(self, task: Task) -> None:
         self.tasks[task.name] = task
