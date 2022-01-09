@@ -125,7 +125,5 @@ class Player(AnimatedSprite):
     def attack(self):
         world = World()
         attack_timer = SimpleTimer(wait_time=0.5, start_on_init=True)
-        while True:
-            if attack_timer.tick(world.cached_delta):
-                yield co_return()
+        while not attack_timer.tick(world.cached_delta):
             yield co_suspend()
