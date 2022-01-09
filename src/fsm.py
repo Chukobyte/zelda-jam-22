@@ -1,5 +1,5 @@
 from typing import Callable
-from src.task_manager import TaskManager
+from src.task_manager import TaskManager, Task
 
 
 class State:
@@ -20,6 +20,7 @@ class FSM:
         self.states = {}
         self.exit_links = {}
         self.current_state = None
+        self.current_task = None
 
     def add_state(self, state: State, set_current=False) -> None:
         self.states[state.name] = state
@@ -32,19 +33,23 @@ class FSM:
         self.exit_links[state.name].append(state_exit_link)
 
     def process(self) -> None:
-        if self.current_state:
-            # Process state
-            self.task_manager.run_tasks()
-
-            # Exit check
-            state_exit_links = self.exit_links[self.current_state.name]
-            for exit_link in state_exit_links:
-                if exit_link.transition_predicate():
-                    self._set_state(exit_link.state_to_transition)
-                    break
+        if self.current_task:
+            task_running = self.current_task.resume()
+            if not task_running:
+                self.current_task.stop()
+                self.current_task = None
+            else:
+                # Exit check
+                state_exit_links = self.exit_links[self.current_state.name]
+                for exit_link in state_exit_links:
+                    if exit_link.transition_predicate():
+                        self._set_state(exit_link.state_to_transition)
+                        break
 
     def _set_state(self, state: State) -> None:
         if self.current_state:
-            self.task_manager.remove_task(name=state.name)
+            self.task_manager.remove_task(name=self.current_state.name)
         self.current_state = state
-        self.task_manager.add_task(name=state.name, func=state.state_func)
+        self.current_task = Task(
+            name=self.current_state.name, func=self.current_state.state_func
+        )
