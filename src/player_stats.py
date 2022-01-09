@@ -1,12 +1,7 @@
 class MoveParams:
     def __init__(self):
         self.accel = 100
-
-
-class State:
-    IDLE = "idle"
-    MOVE = "move"
-    ATTACK = "attack"
+        self.cached_delta = 0.0
 
 
 class PlayerStats:
@@ -16,5 +11,4 @@ class PlayerStats:
         if not cls._instance:
             cls._instance = object.__new__(cls)
             cls.move_params = MoveParams()
-            cls.state = State.IDLE
         return cls._instance
