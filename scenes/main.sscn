@@ -108,8 +108,54 @@
                         },
                         "animations": [
                             {
+                                "name": "idle_down",
+                                "speed": 200,
+                                "frames": [
+                                    {
+                                        "frame": 0,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 0.0,
+                                            "y": 0.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 1,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 16.0,
+                                            "y": 0.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 2,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 32.0,
+                                            "y": 0.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 3,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 48.0,
+                                            "y": 0.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    }
+                                ]
+                            },
+                            {
                                 "name": "idle_hort",
-                                "speed": 1000,
+                                "speed": 200,
                                 "frames": [
                                     {
                                         "frame": 0,
@@ -120,12 +166,42 @@
                                             "width": 16.0,
                                             "height": 16.0
                                         }
+                                    },
+                                    {
+                                        "frame": 1,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 16.0,
+                                            "y": 32.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 2,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 32.0,
+                                            "y": 32.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 3,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 48.0,
+                                            "y": 32.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
                                     }
                                 ]
                             },
                             {
                                 "name": "idle_up",
-                                "speed": 1000,
+                                "speed": 200,
                                 "frames": [
                                     {
                                         "frame": 0,
@@ -136,12 +212,42 @@
                                             "width": 16.0,
                                             "height": 16.0
                                         }
+                                    },
+                                    {
+                                        "frame": 1,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 16.0,
+                                            "y": 16.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 2,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 32.0,
+                                            "y": 16.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 3,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 48.0,
+                                            "y": 16.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
                                     }
                                 ]
                             },
                             {
                                 "name": "move_down",
-                                "speed": 1000,
+                                "speed": 200,
                                 "frames": [
                                     {
                                         "frame": 0,
@@ -152,12 +258,42 @@
                                             "width": 16.0,
                                             "height": 16.0
                                         }
+                                    },
+                                    {
+                                        "frame": 1,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 16.0,
+                                            "y": 48.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 2,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 32.0,
+                                            "y": 48.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 3,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 48.0,
+                                            "y": 48.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
                                     }
                                 ]
                             },
                             {
                                 "name": "move_hort",
-                                "speed": 1000,
+                                "speed": 200,
                                 "frames": [
                                     {
                                         "frame": 0,
@@ -168,18 +304,78 @@
                                             "width": 16.0,
                                             "height": 16.0
                                         }
+                                    },
+                                    {
+                                        "frame": 1,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 16.0,
+                                            "y": 80.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 2,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 32.0,
+                                            "y": 80.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 3,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 48.0,
+                                            "y": 80.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
                                     }
                                 ]
                             },
                             {
                                 "name": "move_up",
-                                "speed": 1000,
+                                "speed": 200,
                                 "frames": [
                                     {
                                         "frame": 0,
                                         "texture_path": "assets/images/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 0.0,
+                                            "y": 64.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 1,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 16.0,
+                                            "y": 64.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 2,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 32.0,
+                                            "y": 64.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 3,
+                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 48.0,
                                             "y": 64.0,
                                             "width": 16.0,
                                             "height": 16.0
