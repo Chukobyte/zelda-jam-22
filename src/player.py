@@ -5,7 +5,7 @@ from seika.physics import Collision
 from seika.utils import SimpleTimer
 
 from src.player_stats import PlayerStats
-from src.task import Task, Awaitable
+from src.task import Task, Awaitable, co_return, co_suspend
 from src.fsm import FSM, State, StateExitLink
 
 
@@ -73,7 +73,7 @@ class Player(AnimatedSprite):
     @Task.task_func(debug=True)
     def idle(self):
         while True:
-            yield Awaitable.co_suspend()
+            yield co_suspend()
 
     @Task.task_func(debug=True)
     def move(self):
@@ -119,7 +119,7 @@ class Player(AnimatedSprite):
             else:
                 break
 
-            yield Awaitable.co_suspend()
+            yield co_suspend()
 
     @Task.task_func(debug=True)
     def attack(self):
@@ -127,5 +127,5 @@ class Player(AnimatedSprite):
         attack_timer.start()
         while True:
             if attack_timer.tick(self.stats.move_params.cached_delta):
-                yield Awaitable.co_return()
-            yield Awaitable.co_suspend()
+                yield co_return()
+            yield co_suspend()

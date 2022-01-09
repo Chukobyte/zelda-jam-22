@@ -5,14 +5,6 @@ class Awaitable:
     def __init__(self, finished: bool):
         self.finished = finished
 
-    @staticmethod
-    def co_suspend():
-        return Awaitable(finished=False)
-
-    @staticmethod
-    def co_return():
-        return Awaitable(finished=True)
-
 
 class Task:
     """
@@ -72,3 +64,12 @@ class TaskManager:
     def run_tasks(self) -> None:
         for task in self.running_tasks:
             task.resume()
+
+
+# Static functions to control coroutine state
+def co_suspend():
+    return Awaitable(finished=False)
+
+
+def co_return():
+    return Awaitable(finished=True)
