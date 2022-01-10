@@ -68,9 +68,6 @@ class RoomBuilder:
             )
             current_doors.container.add_child(child_node=left_door)
             sprite = Sprite.new()
-            sprite.draw_source = Rect2(
-                0, 0, left_door_texture.width, left_door_texture.height
-            )
             sprite.texture = left_door_texture
             left_door.add_child(child_node=sprite)
         for right_door in [current_doors.right]:
@@ -81,9 +78,6 @@ class RoomBuilder:
             )
             current_doors.container.add_child(child_node=right_door)
             sprite = Sprite.new()
-            sprite.draw_source = Rect2(
-                0, 0, right_door_texture.width, right_door_texture.height
-            )
             sprite.texture = right_door_texture
             right_door.add_child(child_node=sprite)
         for up_door in [current_doors.up]:
@@ -94,9 +88,6 @@ class RoomBuilder:
             )
             current_doors.container.add_child(child_node=up_door)
             sprite = Sprite.new()
-            sprite.draw_source = Rect2(
-                0, 0, up_door_texture.width, up_door_texture.height
-            )
             sprite.texture = up_door_texture
             up_door.add_child(child_node=sprite)
         for down_door in [current_doors.down]:
@@ -107,9 +98,6 @@ class RoomBuilder:
             )
             current_doors.container.add_child(child_node=down_door)
             sprite = Sprite.new()
-            sprite.draw_source = Rect2(
-                0, 0, down_door_texture.width, down_door_texture.height
-            )
             sprite.texture = down_door_texture
             down_door.add_child(child_node=sprite)
 
@@ -129,8 +117,5 @@ class RoomBuilder:
             room_manager.add_room(room)
             room_bg_sprite = Sprite.new()
             room_bg_sprite.texture = room_bg_texture
-            room_bg_sprite.draw_source = Rect2(
-                0, 0, room_bg_texture.width, room_bg_texture.height
-            )
             room_bg_sprite.position = room_manager.get_world_position(room.position)
             node.add_child(child_node=room_bg_sprite)
