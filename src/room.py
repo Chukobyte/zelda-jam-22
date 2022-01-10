@@ -1,3 +1,5 @@
+import math
+
 from seika.math import Vector2
 from seika.node import Node2D, CollisionShape2D
 
@@ -94,3 +96,15 @@ class RoomManager:
 
     def get_room(self, position: Vector2) -> Room:
         return self.rooms[f"{position.x}-{position.y}"]
+
+    def get_grid_position(self, position: Vector2) -> Vector2:
+        return Vector2(
+            math.floor(position.x / ProjectProperties.BASE_RESOLUTION.x),
+            math.floor(position.y / ProjectProperties.BASE_RESOLUTION.y),
+        )
+
+    def get_world_position(self, grid_position: Vector2) -> Vector2:
+        return Vector2(
+            math.floor(grid_position.x * ProjectProperties.BASE_RESOLUTION.x),
+            math.floor(grid_position.y * ProjectProperties.BASE_RESOLUTION.y),
+        )

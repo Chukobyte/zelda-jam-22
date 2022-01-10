@@ -136,15 +136,8 @@ class Player(AnimatedSprite):
                 if not collided_walls:
                     self.position += new_velocity
                     current_grid_position = room_manager.current_room.position
-                    current_grid_position.x = math.floor(current_grid_position.x)
-                    current_grid_position.y = math.floor(current_grid_position.y)
-                    new_grid_position = Vector2(
-                        math.floor(
-                            self.position.x / ProjectProperties.BASE_RESOLUTION.x
-                        ),
-                        math.floor(
-                            self.position.y / ProjectProperties.BASE_RESOLUTION.y
-                        ),
+                    new_grid_position = room_manager.get_grid_position(
+                        position=self.position
                     )
                     if current_grid_position != new_grid_position:
                         print(
@@ -152,10 +145,10 @@ class Player(AnimatedSprite):
                         )
                         room_manager.set_current_room(position=new_grid_position)
                         room_manager.current_room.position = new_grid_position
-                        Camera2D.set_viewport_position(
-                            position=new_grid_position
-                            * ProjectProperties.BASE_RESOLUTION
+                        new_room_world_position = room_manager.get_world_position(
+                            new_grid_position
                         )
+                        Camera2D.set_viewport_position(new_room_world_position)
 
             else:
                 yield co_return()

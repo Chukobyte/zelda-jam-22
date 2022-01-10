@@ -2,7 +2,7 @@ from seika.node import Node, Node2D, CollisionShape2D, Sprite
 from seika.math import Vector2, Rect2
 from seika.assets import Texture
 
-from src.room import WallColliders, DungeonDoors, RoomManager
+from src.room import WallColliders, DungeonDoors, Room, RoomManager
 
 
 class RoomBuilder:
@@ -45,6 +45,7 @@ class RoomBuilder:
             down=CollisionShape2D.new(),
             container=Node2D.new(),
         )
+        # TODO: Use for when transitioning to the next room
         # transition_doors = DungeonDoors(
         #     left=CollisionShape2D.new(),
         #     right=CollisionShape2D.new(),
@@ -114,3 +115,22 @@ class RoomBuilder:
 
         room_manager = RoomManager()
         room_manager.room_doors = current_doors
+
+    @staticmethod
+    def create_rooms(node: Node) -> None:
+        room_manager = RoomManager()
+        # (0, 0) Room is setup in editor
+        initial_room = Room(position=Vector2.ZERO())
+        room_manager.add_room(initial_room)
+        room_manager.current_room = initial_room
+        # Other rooms are created procedurally
+        room_bg_texture = Texture.get(file_path="assets/images/dungeon_level.png")
+        for room in [Room(position=Vector2.UP())]:
+            room_manager.add_room(room)
+            room_bg_sprite = Sprite.new()
+            room_bg_sprite.texture = room_bg_texture
+            room_bg_sprite.draw_source = Rect2(
+                0, 0, room_bg_texture.width, room_bg_texture.height
+            )
+            room_bg_sprite.position = room_manager.get_world_position(room.position)
+            node.add_child(child_node=room_bg_sprite)
