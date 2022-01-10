@@ -2,70 +2,12 @@ from seika.node import Node, Node2D, CollisionShape2D, Sprite
 from seika.math import Vector2, Rect2
 from seika.assets import Texture
 
-from src.project_properties import ProjectProperties
-
-
-class WallColliders:
-    def __init__(
-        self,
-        left_up_up: CollisionShape2D,
-        left_up_left: CollisionShape2D,
-        left_down_left: CollisionShape2D,
-        left_down_down: CollisionShape2D,
-        right_up_up: CollisionShape2D,
-        right_up_right: CollisionShape2D,
-        right_down_down: CollisionShape2D,
-        right_down_right: CollisionShape2D,
-    ):
-        self.left_up_up = left_up_up
-        self.left_up_left = left_up_left
-        self.left_down_left = left_down_left
-        self.left_down_down = left_down_down
-        self.right_up_up = right_up_up
-        self.right_up_right = right_up_right
-        self.right_down_down = right_down_down
-        self.right_down_right = right_down_right
-        self.walls = [
-            left_up_up,
-            left_up_left,
-            left_down_left,
-            left_down_down,
-            right_up_up,
-            right_down_down,
-            right_down_right,
-            right_up_right,
-        ]
-
-    def update_wall_positions(self, position: Vector2) -> None:
-        for wall_collider in self.walls:
-            wall_collider.position = position
-
-
-class DungeonDoors:
-    def __init__(
-        self,
-        left: CollisionShape2D,
-        right: CollisionShape2D,
-        up: CollisionShape2D,
-        down: CollisionShape2D,
-        container: Node2D,
-    ):
-        self.left = left
-        self.right = right
-        self.up = up
-        self.down = down
-        self.container = container
-        self.doors = [left, right, up, down]
-
-    def move(self, position: Vector2) -> None:
-        self.container.position = position
+from src.room import WallColliders, DungeonDoors, RoomManager
 
 
 class RoomBuilder:
     @staticmethod
     def create_wall_colliders(node: Node) -> None:
-        room_dimensions = ProjectProperties.BASE_RESOLUTION
-
         wall_colliders = WallColliders(
             left_up_up=CollisionShape2D.new(),
             left_up_left=CollisionShape2D.new(),
@@ -90,6 +32,9 @@ class RoomBuilder:
         for wall_collider in wall_colliders.walls:
             wall_collider.tags = ["wall"]
             node.add_child(child_node=wall_collider)
+
+        room_manager = RoomManager()
+        room_manager.wall_colliders = wall_colliders
 
     @staticmethod
     def create_doors(node: Node) -> None:
@@ -166,3 +111,6 @@ class RoomBuilder:
             )
             sprite.texture = down_door_texture
             down_door.add_child(child_node=sprite)
+
+        room_manager = RoomManager()
+        room_manager.room_doors = current_doors
