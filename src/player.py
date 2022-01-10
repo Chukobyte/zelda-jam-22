@@ -1,14 +1,18 @@
+import math
+
 from seika.node import AnimatedSprite
 from seika.input import Input
 from seika.math import Vector2
 from seika.physics import Collision
 from seika.utils import SimpleTimer
+from seika.camera import Camera2D
 
 from src.world import World
 from src.player_stats import PlayerStats
 from src.attack import PlayerAttack
 from src.task import Task, co_return, co_suspend
 from src.fsm import FSM, State, StateExitLink
+from src.project_properties import ProjectProperties
 
 
 class Player(AnimatedSprite):
@@ -129,6 +133,34 @@ class Player(AnimatedSprite):
                 )
                 if not collided_walls:
                     self.position += new_velocity
+                    current_grid_position = (
+                        self.stats.dungeon_params.current_room.position
+                    )
+                    current_grid_position.x = math.floor(current_grid_position.x)
+                    current_grid_position.y = math.floor(current_grid_position.y)
+                    new_grid_position = Vector2(
+                        math.floor(
+                            self.position.x / ProjectProperties.BASE_RESOLUTION.x
+                        ),
+                        math.floor(
+                            self.position.y / ProjectProperties.BASE_RESOLUTION.y
+                        ),
+                    )
+                    if current_grid_position != new_grid_position:
+                        print(
+                            f"current_grid = {current_grid_position}, new_grid = {new_grid_position}"
+                        )
+                        self.stats.dungeon_params.set_current_room(
+                            position=new_grid_position
+                        )
+                        self.stats.dungeon_params.current_room.position = (
+                            new_grid_position
+                        )
+                        Camera2D.set_viewport_position(
+                            position=new_grid_position
+                            * ProjectProperties.BASE_RESOLUTION
+                        )
+
             else:
                 yield co_return()
 
