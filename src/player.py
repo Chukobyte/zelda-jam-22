@@ -135,6 +135,7 @@ class Player(AnimatedSprite):
                 )
                 if not collided_walls:
                     self.position += new_velocity
+                    # TODO: Temp for update room position based on player, will move logic elsewhere
                     current_grid_position = room_manager.current_room.position
                     new_grid_position = room_manager.get_grid_position(
                         position=self.position
