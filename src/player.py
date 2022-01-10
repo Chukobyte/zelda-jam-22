@@ -8,6 +8,7 @@ from seika.utils import SimpleTimer
 from seika.camera import Camera2D
 
 from src.world import World
+from src.room import RoomManager
 from src.player_stats import PlayerStats
 from src.attack import PlayerAttack
 from src.task import Task, co_return, co_suspend
@@ -94,6 +95,7 @@ class Player(AnimatedSprite):
     @Task.task_func(debug=True)
     def move(self):
         world = World()
+        room_manager = RoomManager()
         while True:
             delta = world.cached_delta
             new_velocity = None
@@ -133,9 +135,7 @@ class Player(AnimatedSprite):
                 )
                 if not collided_walls:
                     self.position += new_velocity
-                    current_grid_position = (
-                        self.stats.dungeon_params.current_room.position
-                    )
+                    current_grid_position = room_manager.current_room.position
                     current_grid_position.x = math.floor(current_grid_position.x)
                     current_grid_position.y = math.floor(current_grid_position.y)
                     new_grid_position = Vector2(
@@ -150,12 +150,8 @@ class Player(AnimatedSprite):
                         print(
                             f"current_grid = {current_grid_position}, new_grid = {new_grid_position}"
                         )
-                        self.stats.dungeon_params.set_current_room(
-                            position=new_grid_position
-                        )
-                        self.stats.dungeon_params.current_room.position = (
-                            new_grid_position
-                        )
+                        room_manager.set_current_room(position=new_grid_position)
+                        room_manager.current_room.position = new_grid_position
                         Camera2D.set_viewport_position(
                             position=new_grid_position
                             * ProjectProperties.BASE_RESOLUTION

@@ -5,11 +5,10 @@ from seika.engine import Engine
 from seika.audio import AudioStream
 from seika.utils import SimpleTimer
 
-from src.room import Room
+from src.room import Room, RoomManager
 from src.world import World
 from src.room_builder import RoomBuilder
 from src.task import Task, TaskManager, co_return, co_suspend
-from src.player_stats import PlayerStats
 
 
 class Main(Node2D):
@@ -21,12 +20,10 @@ class Main(Node2D):
         # Setup Initial Room
         RoomBuilder.create_wall_colliders(node=self)
         RoomBuilder.create_doors(node=self)
-        player_stats = PlayerStats()
-        player_stats.dungeon_params.add_room(Room(position=Vector2.ZERO()))
-        player_stats.dungeon_params.add_room(Room(position=Vector2.UP()))
-        player_stats.dungeon_params.current_room = player_stats.dungeon_params.get_room(
-            Vector2.ZERO()
-        )
+        room_manager = RoomManager()
+        room_manager.add_room(Room(position=Vector2.ZERO()))
+        room_manager.add_room(Room(position=Vector2.UP()))
+        room_manager.current_room = room_manager.get_room(Vector2.ZERO())
 
     def _physics_process(self, delta: float) -> None:
         self.world.cached_delta = delta
