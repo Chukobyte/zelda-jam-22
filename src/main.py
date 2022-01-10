@@ -17,6 +17,7 @@ class Main(Node2D):
         )
         # Setup Initial Room
         RoomBuilder.create_wall_colliders(node=self)
+        RoomBuilder.create_doors(node=self)
 
     def _physics_process(self, delta: float) -> None:
         self.world.cached_delta = delta
