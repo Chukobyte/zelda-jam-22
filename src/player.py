@@ -1,14 +1,19 @@
+import math
+
 from seika.node import AnimatedSprite
 from seika.input import Input
 from seika.math import Vector2
 from seika.physics import Collision
 from seika.utils import SimpleTimer
+from seika.camera import Camera2D
 
 from src.world import World
+from src.room import RoomManager
 from src.player_stats import PlayerStats
 from src.attack import PlayerAttack
 from src.task import Task, co_return, co_suspend
 from src.fsm import FSM, State, StateExitLink
+from src.project_properties import ProjectProperties
 
 
 class Player(AnimatedSprite):
@@ -90,6 +95,7 @@ class Player(AnimatedSprite):
     @Task.task_func(debug=True)
     def move(self):
         world = World()
+        room_manager = RoomManager()
         while True:
             delta = world.cached_delta
             new_velocity = None
@@ -129,6 +135,22 @@ class Player(AnimatedSprite):
                 )
                 if not collided_walls:
                     self.position += new_velocity
+                    # TODO: Temp for update room position based on player, will move logic elsewhere
+                    current_grid_position = room_manager.current_room.position
+                    new_grid_position = room_manager.get_grid_position(
+                        position=self.position
+                    )
+                    if current_grid_position != new_grid_position:
+                        print(
+                            f"current_grid = {current_grid_position}, new_grid = {new_grid_position}"
+                        )
+                        room_manager.set_current_room(position=new_grid_position)
+                        room_manager.current_room.position = new_grid_position
+                        new_room_world_position = room_manager.get_world_position(
+                            new_grid_position
+                        )
+                        Camera2D.set_viewport_position(new_room_world_position)
+
             else:
                 yield co_return()
 

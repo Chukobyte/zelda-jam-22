@@ -6,7 +6,7 @@ from seika.utils import SimpleTimer
 
 from src.world import World
 from src.room_builder import RoomBuilder
-from src.task import Task, TaskManager, co_return, co_suspend
+from src.task import Task, TaskManager, co_suspend
 
 
 class Main(Node2D):
@@ -18,6 +18,7 @@ class Main(Node2D):
         # Setup Initial Room
         RoomBuilder.create_wall_colliders(node=self)
         RoomBuilder.create_doors(node=self)
+        RoomBuilder.create_rooms(node=self)
 
     def _physics_process(self, delta: float) -> None:
         self.world.cached_delta = delta

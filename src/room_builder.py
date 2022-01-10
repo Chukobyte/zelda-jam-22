@@ -1,66 +1,13 @@
-from seika.node import Node, CollisionShape2D, Sprite
+from seika.node import Node, Node2D, CollisionShape2D, Sprite
 from seika.math import Vector2, Rect2
 from seika.assets import Texture
 
-from src.project_properties import ProjectProperties
-
-
-class WallColliders:
-    def __init__(
-        self,
-        left_up_up: CollisionShape2D,
-        left_up_left: CollisionShape2D,
-        left_down_left: CollisionShape2D,
-        left_down_down: CollisionShape2D,
-        right_up_up: CollisionShape2D,
-        right_up_right: CollisionShape2D,
-        right_down_down: CollisionShape2D,
-        right_down_right: CollisionShape2D,
-    ):
-        self.left_up_up = left_up_up
-        self.left_up_left = left_up_left
-        self.left_down_left = left_down_left
-        self.left_down_down = left_down_down
-        self.right_up_up = right_up_up
-        self.right_up_right = right_up_right
-        self.right_down_down = right_down_down
-        self.right_down_right = right_down_right
-        self.walls = [
-            left_up_up,
-            left_up_left,
-            left_down_left,
-            left_down_down,
-            right_up_up,
-            right_down_down,
-            right_down_right,
-            right_up_right,
-        ]
-
-    def update_wall_positions(self, position: Vector2) -> None:
-        for wall_collider in self.walls:
-            wall_collider.position = position
-
-
-class DungeonDoors:
-    def __init__(
-        self,
-        left: CollisionShape2D,
-        right: CollisionShape2D,
-        up: CollisionShape2D,
-        down: CollisionShape2D,
-    ):
-        self.left = left
-        self.right = right
-        self.up = up
-        self.down = down
-        self.doors = [left, right, up, down]
+from src.room import WallColliders, DungeonDoors, Room, RoomManager
 
 
 class RoomBuilder:
     @staticmethod
     def create_wall_colliders(node: Node) -> None:
-        room_dimensions = ProjectProperties.BASE_RESOLUTION
-
         wall_colliders = WallColliders(
             left_up_up=CollisionShape2D.new(),
             left_up_left=CollisionShape2D.new(),
@@ -86,6 +33,9 @@ class RoomBuilder:
             wall_collider.tags = ["wall"]
             node.add_child(child_node=wall_collider)
 
+        room_manager = RoomManager()
+        room_manager.wall_colliders = wall_colliders
+
     @staticmethod
     def create_doors(node: Node) -> None:
         current_doors = DungeonDoors(
@@ -93,13 +43,17 @@ class RoomBuilder:
             right=CollisionShape2D.new(),
             up=CollisionShape2D.new(),
             down=CollisionShape2D.new(),
+            container=Node2D.new(),
         )
+        # TODO: Use for when transitioning to the next room
         # transition_doors = DungeonDoors(
         #     left=CollisionShape2D.new(),
         #     right=CollisionShape2D.new(),
         #     up=CollisionShape2D.new(),
         #     down=CollisionShape2D.new(),
         # )
+
+        node.add_child(child_node=current_doors.container)
 
         left_door_texture = Texture.get("assets/images/dungeon/door_left_open.png")
         right_door_texture = Texture.get("assets/images/dungeon/door_right_open.png")
@@ -112,11 +66,8 @@ class RoomBuilder:
             left_door.collider_rect = Rect2(
                 0, 0, left_door_texture.width, left_door_texture.height
             )
-            node.add_child(child_node=left_door)
+            current_doors.container.add_child(child_node=left_door)
             sprite = Sprite.new()
-            sprite.draw_source = Rect2(
-                0, 0, left_door_texture.width, left_door_texture.height
-            )
             sprite.texture = left_door_texture
             left_door.add_child(child_node=sprite)
         for right_door in [current_doors.right]:
@@ -125,11 +76,8 @@ class RoomBuilder:
             right_door.collider_rect = Rect2(
                 0, 0, right_door_texture.width, right_door_texture.height
             )
-            node.add_child(child_node=right_door)
+            current_doors.container.add_child(child_node=right_door)
             sprite = Sprite.new()
-            sprite.draw_source = Rect2(
-                0, 0, right_door_texture.width, right_door_texture.height
-            )
             sprite.texture = right_door_texture
             right_door.add_child(child_node=sprite)
         for up_door in [current_doors.up]:
@@ -138,11 +86,8 @@ class RoomBuilder:
             up_door.collider_rect = Rect2(
                 0, 0, up_door_texture.width, up_door_texture.height
             )
-            node.add_child(child_node=up_door)
+            current_doors.container.add_child(child_node=up_door)
             sprite = Sprite.new()
-            sprite.draw_source = Rect2(
-                0, 0, up_door_texture.width, up_door_texture.height
-            )
             sprite.texture = up_door_texture
             up_door.add_child(child_node=sprite)
         for down_door in [current_doors.down]:
@@ -151,10 +96,26 @@ class RoomBuilder:
             down_door.collider_rect = Rect2(
                 0, 0, down_door_texture.width, down_door_texture.height
             )
-            node.add_child(child_node=down_door)
+            current_doors.container.add_child(child_node=down_door)
             sprite = Sprite.new()
-            sprite.draw_source = Rect2(
-                0, 0, down_door_texture.width, down_door_texture.height
-            )
             sprite.texture = down_door_texture
             down_door.add_child(child_node=sprite)
+
+        room_manager = RoomManager()
+        room_manager.room_doors = current_doors
+
+    @staticmethod
+    def create_rooms(node: Node) -> None:
+        room_manager = RoomManager()
+        # (0, 0) Room is setup in editor
+        initial_room = Room(position=Vector2.ZERO())
+        room_manager.add_room(initial_room)
+        room_manager.current_room = initial_room
+        # Other rooms are created procedurally
+        room_bg_texture = Texture.get(file_path="assets/images/dungeon_level.png")
+        for room in [Room(position=Vector2.UP())]:
+            room_manager.add_room(room)
+            room_bg_sprite = Sprite.new()
+            room_bg_sprite.texture = room_bg_texture
+            room_bg_sprite.position = room_manager.get_world_position(room.position)
+            node.add_child(child_node=room_bg_sprite)

@@ -1,3 +1,8 @@
+from seika.math import Vector2
+
+from src.room import Room
+
+
 class MoveParams:
     def __init__(self):
         self.accel = 100

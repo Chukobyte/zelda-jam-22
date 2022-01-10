@@ -12,7 +12,6 @@ class PlayerAttack(CollisionShape2D):
         self.sprite = Sprite.new()
         texture = Texture.get(file_path="assets/images/player_attack.png")
         self.sprite.texture = texture
-        self.sprite.draw_source = Rect2(0, 0, texture.width, texture.height)
         self.add_child(self.sprite)
 
         self.collider_rect = Rect2(0, 0, texture.width, texture.height)
