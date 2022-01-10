@@ -1,9 +1,8 @@
 from seika.node import AnimatedSprite
 from seika.input import Input
-from seika.math import Vector2, Rect2
+from seika.math import Vector2
 from seika.physics import Collision
 from seika.utils import SimpleTimer
-from seika.assets import Animation, AnimationFrame, Texture
 
 from src.world import World
 from src.player_stats import PlayerStats
@@ -18,24 +17,8 @@ class Player(AnimatedSprite):
         self.collider = self.get_node(name="PlayerCollider")
         self.velocity = Vector2()
         self.direction = Vector2.DOWN()
-
-        self.animations_test()
-
         self.player_fsm = FSM()
         self._configure_fsm()
-
-    def animations_test(self) -> None:
-        texture = Texture.get(file_path="assets/images/player_spritesheet.png")
-        animations = [
-            Animation(name="idle_down", speed=200, frames=[
-                AnimationFrame(texture=texture, draw_source=Rect2(0, 0, 16, 16), index=0),
-                AnimationFrame(texture=texture, draw_source=Rect2(16, 0, 16, 16), index=1),
-                AnimationFrame(texture=texture, draw_source=Rect2(32, 0, 16, 16), index=2),
-                AnimationFrame(texture=texture, draw_source=Rect2(48, 0, 16, 16), index=3),
-            ])
-        ]
-
-        self.animations = animations
 
     def _configure_fsm(self) -> None:
         # State Management
