@@ -7,11 +7,11 @@ class Awaitable:
 
 
 # Static functions to control coroutine state
-def co_suspend():
+def co_suspend() -> Awaitable:
     return Awaitable(finished=False)
 
 
-def co_return():
+def co_return() -> Awaitable:
     return Awaitable(finished=True)
 
 
