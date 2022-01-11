@@ -9,7 +9,7 @@ from src.game_context import GameContext, PlayState
 from src.world import World
 from src.room_manager import RoomManager
 from src.player_stats import PlayerStats
-from src.attack import PlayerAttack
+from src.attack.attack import PlayerAttack
 from src.task import Task, co_return, co_suspend
 from src.fsm import FSM, State, StateExitLink
 
@@ -20,7 +20,7 @@ class Player(AnimatedSprite):
         self.collider = self.get_node(name="PlayerCollider")
         self.velocity = Vector2()
         self.direction = Vector2.DOWN()
-        self.player_fsm = FSM()
+        self.task_fsm = FSM()
         self._configure_fsm()
         # Temp
         self.last_collided_door = None
@@ -34,10 +34,10 @@ class Player(AnimatedSprite):
             name="transitioning_to_room", state_func=self.transitioning_to_room
         )
 
-        self.player_fsm.add_state(state=idle_state, set_current=True)
-        self.player_fsm.add_state(state=move_state)
-        self.player_fsm.add_state(state=attack_state)
-        self.player_fsm.add_state(state=transitioning_to_room_state)
+        self.task_fsm.add_state(state=idle_state, set_current=True)
+        self.task_fsm.add_state(state=move_state)
+        self.task_fsm.add_state(state=attack_state)
+        self.task_fsm.add_state(state=transitioning_to_room_state)
 
         # Links
         # Idle
@@ -56,10 +56,8 @@ class Player(AnimatedSprite):
                 action_name="attack"
             ),
         )
-        self.player_fsm.add_state_exit_link(idle_state, state_exit_link=idle_move_exit)
-        self.player_fsm.add_state_exit_link(
-            idle_state, state_exit_link=idle_attack_exit
-        )
+        self.task_fsm.add_state_exit_link(idle_state, state_exit_link=idle_move_exit)
+        self.task_fsm.add_state_exit_link(idle_state, state_exit_link=idle_attack_exit)
         # Move
         move_exit = StateExitLink(
             state_to_transition=attack_state,
@@ -72,24 +70,24 @@ class Player(AnimatedSprite):
             transition_predicate=lambda: GameContext.get_play_state()
             == PlayState.ROOM_TRANSITION,
         )
-        self.player_fsm.add_state_exit_link(state=move_state, state_exit_link=move_exit)
-        self.player_fsm.add_state_exit_link(
+        self.task_fsm.add_state_exit_link(state=move_state, state_exit_link=move_exit)
+        self.task_fsm.add_state_exit_link(
             state=move_state, state_exit_link=move_exit_to_room_transition
         )
-        self.player_fsm.add_state_finished_link(
+        self.task_fsm.add_state_finished_link(
             state=move_state, state_to_transition=idle_state
         )
         # Attack
-        self.player_fsm.add_state_finished_link(
+        self.task_fsm.add_state_finished_link(
             state=attack_state, state_to_transition=move_state
         )
         # Transitioning To Room
-        self.player_fsm.add_state_finished_link(
+        self.task_fsm.add_state_finished_link(
             state=transitioning_to_room_state, state_to_transition=idle_state
         )
 
     def _physics_process(self, delta: float) -> None:
-        self.player_fsm.process()
+        self.task_fsm.process()
 
     @Task.task_func(debug=True)
     def idle(self):
