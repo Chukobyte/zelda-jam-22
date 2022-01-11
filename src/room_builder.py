@@ -54,6 +54,7 @@ class RoomBuilder:
             down=Door.new_door(Vector2.DOWN()),
             container=Node2D.new(),
         )
+        transition_doors.container.position = Vector2(1000, 1000)
 
         node.add_child(child_node=current_doors.container)
         node.add_child(child_node=transition_doors.container)
@@ -107,7 +108,7 @@ class RoomBuilder:
             # Transition
             [
                 transition_doors.left,
-                Vector2(-1000, 0),
+                Door.ROOM_LEFT_POSITION,
                 left_door_collider_rect,
                 [],
                 transition_doors.container,
@@ -115,7 +116,7 @@ class RoomBuilder:
             ],
             [
                 transition_doors.right,
-                Vector2(1000, 0),
+                Door.ROOM_RIGHT_POSITION,
                 right_door_collider_rect,
                 [],
                 transition_doors.container,
@@ -123,7 +124,7 @@ class RoomBuilder:
             ],
             [
                 transition_doors.up,
-                Vector2(0, -1000),
+                Door.ROOM_UP_POSITION,
                 up_door_collider_rect,
                 [],
                 transition_doors.container,
@@ -131,7 +132,7 @@ class RoomBuilder:
             ],
             [
                 transition_doors.down,
-                Vector2(0, 1000),
+                Door.ROOM_DOWN_POSITION,
                 down_door_collider_rect,
                 [],
                 transition_doors.container,
@@ -152,6 +153,7 @@ class RoomBuilder:
 
         room_manager = RoomManager()
         room_manager.room_doors = current_doors
+        room_manager.transition_doors = transition_doors
 
     @staticmethod
     def create_rooms(node: Node) -> None:

@@ -18,6 +18,7 @@ class RoomManager:
             cls.rooms = {}
             cls.wall_colliders = None
             cls.room_doors = None
+            cls.transition_doors = None
         return cls._instance
 
     def add_room(self, room: Room) -> None:
@@ -47,4 +48,6 @@ class RoomManager:
         new_room_position = self.current_room.position + collided_door.direction
         self.set_current_room(position=new_room_position)
         self.current_room.position = new_room_position
+        new_world_position = self.get_world_position(new_room_position)
+        self.transition_doors.move(new_world_position)
         GameContext.set_play_state(PlayState.ROOM_TRANSITION)
