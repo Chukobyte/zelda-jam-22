@@ -4,6 +4,7 @@ from seika.math import Vector2
 from seika.physics import Collision
 from seika.utils import SimpleTimer
 
+from src.game_context import GameContext, PlayState
 from src.world import World
 from src.room_manager import RoomManager
 from src.player_stats import PlayerStats
@@ -26,10 +27,14 @@ class Player(AnimatedSprite):
         idle_state = State(name="idle", state_func=self.idle)
         move_state = State(name="move", state_func=self.move)
         attack_state = State(name="attack", state_func=self.attack)
+        transitioning_to_room_state = State(
+            name="transitioning_to_room", state_func=self.transitioning_to_room
+        )
 
         self.player_fsm.add_state(state=idle_state, set_current=True)
         self.player_fsm.add_state(state=move_state)
         self.player_fsm.add_state(state=attack_state)
+        self.player_fsm.add_state(state=transitioning_to_room_state)
 
         # Links
         # Idle
@@ -59,13 +64,25 @@ class Player(AnimatedSprite):
                 action_name="attack"
             ),
         )
+        move_exit_to_room_transition = StateExitLink(
+            state_to_transition=transitioning_to_room_state,
+            transition_predicate=lambda: GameContext.get_play_state()
+            == PlayState.ROOM_TRANSITION,
+        )
         self.player_fsm.add_state_exit_link(state=move_state, state_exit_link=move_exit)
+        self.player_fsm.add_state_exit_link(
+            state=move_state, state_exit_link=move_exit_to_room_transition
+        )
         self.player_fsm.add_state_finished_link(
             state=move_state, state_to_transition=idle_state
         )
         # Attack
         self.player_fsm.add_state_finished_link(
             state=attack_state, state_to_transition=move_state
+        )
+        # Transitioning To Room
+        self.player_fsm.add_state_finished_link(
+            state=transitioning_to_room_state, state_to_transition=idle_state
         )
 
     def _physics_process(self, delta: float) -> None:
@@ -151,3 +168,11 @@ class Player(AnimatedSprite):
         while not attack_timer.tick(world.cached_delta):
             yield co_suspend()
         player_attack.queue_deletion()
+
+    @Task.task_func(debug=True)
+    def transitioning_to_room(self):
+        game_context = GameContext()
+        while True:
+            if game_context.play_state != PlayState.ROOM_TRANSITION:
+                break
+            yield co_suspend()

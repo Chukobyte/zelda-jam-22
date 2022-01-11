@@ -24,10 +24,16 @@ class GameContext:
 
     @staticmethod
     def set_game_state(state: str) -> None:
-        game = GameContext()
-        game.game_state = state
+        GameContext().game_state = state
+
+    @staticmethod
+    def get_game_state() -> str:
+        return GameContext().game_state
 
     @staticmethod
     def set_play_state(state: str) -> None:
-        game = GameContext()
-        game.play_state = state
+        GameContext().play_state = state
+
+    @staticmethod
+    def get_play_state() -> str:
+        return GameContext().play_state
