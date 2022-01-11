@@ -144,9 +144,16 @@ class Player(AnimatedSprite):
             # Integrate new velocity
             if new_velocity:
                 collided_walls = Collision.get_collided_nodes_by_tag(
-                    node=self.collider, tag="wall", offset=new_velocity
+                    node=self.collider, tag="solid", offset=new_velocity
                 )
-                if not collided_walls:
+                open_doors = Collision.get_collided_nodes_by_tag(
+                    node=self.collider, tag="open-door", offset=new_velocity
+                )
+                if collided_walls:
+                    pass
+                elif open_doors:
+                    print("door")
+                else:
                     self.position += new_velocity
                     entered_new_room = room_manager.process_room_bounds(
                         player_position=self.position

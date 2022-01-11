@@ -2,7 +2,7 @@ from seika.node import Node, Node2D, CollisionShape2D, Sprite
 from seika.math import Vector2, Rect2
 from seika.assets import Texture
 
-from src.room import WallColliders, DungeonDoors, Room
+from src.room import WallColliders, DungeonDoors, Room, Door
 from src.room_manager import RoomManager
 
 
@@ -31,7 +31,7 @@ class RoomBuilder:
         wall_colliders.right_down_down.collider_rect = Rect2(212, 192, 128, 32)
 
         for wall_collider in wall_colliders.walls:
-            wall_collider.tags = ["wall"]
+            wall_collider.tags = ["solid"]
             node.add_child(child_node=wall_collider)
 
         room_manager = RoomManager()
@@ -40,10 +40,10 @@ class RoomBuilder:
     @staticmethod
     def create_doors(node: Node) -> None:
         current_doors = DungeonDoors(
-            left=CollisionShape2D.new(),
-            right=CollisionShape2D.new(),
-            up=CollisionShape2D.new(),
-            down=CollisionShape2D.new(),
+            left=Door.new_door(Vector2.LEFT()),
+            right=Door.new_door(Vector2.RIGHT()),
+            up=Door.new_door(Vector2.UP()),
+            down=Door.new_door(Vector2.DOWN()),
             container=Node2D.new(),
         )
         # TODO: Use for when transitioning to the next room
@@ -64,9 +64,8 @@ class RoomBuilder:
         for left_door in [current_doors.left]:
             left_door.position = Vector2(22, 74)
             left_door.z_index = 1
-            left_door.collider_rect = Rect2(
-                0, 0, left_door_texture.width, left_door_texture.height
-            )
+            left_door.collider_rect = Rect2(10, 0, 20, left_door_texture.height)
+            left_door.tags = ["open-door"]
             current_doors.container.add_child(child_node=left_door)
             sprite = Sprite.new()
             sprite.texture = left_door_texture
@@ -74,9 +73,8 @@ class RoomBuilder:
         for right_door in [current_doors.right]:
             right_door.position = Vector2(334, 74)
             right_door.z_index = 1
-            right_door.collider_rect = Rect2(
-                0, 0, right_door_texture.width, right_door_texture.height
-            )
+            right_door.collider_rect = Rect2(15, 0, 20, right_door_texture.height)
+            right_door.tags = ["open-door"]
             current_doors.container.add_child(child_node=right_door)
             sprite = Sprite.new()
             sprite.texture = right_door_texture
@@ -84,9 +82,8 @@ class RoomBuilder:
         for up_door in [current_doors.up]:
             up_door.position = Vector2(168, 8)
             up_door.z_index = 1
-            up_door.collider_rect = Rect2(
-                0, 0, up_door_texture.width, up_door_texture.height
-            )
+            up_door.collider_rect = Rect2(0, 6, up_door_texture.width, 10)
+            up_door.tags = ["open-door"]
             current_doors.container.add_child(child_node=up_door)
             sprite = Sprite.new()
             sprite.texture = up_door_texture
@@ -94,9 +91,8 @@ class RoomBuilder:
         for down_door in [current_doors.down]:
             down_door.position = Vector2(168, 190)
             down_door.z_index = 1
-            down_door.collider_rect = Rect2(
-                0, 0, down_door_texture.width, down_door_texture.height
-            )
+            down_door.collider_rect = Rect2(0, 10, down_door_texture.width, 10)
+            down_door.tags = ["open-door"]
             current_doors.container.add_child(child_node=down_door)
             sprite = Sprite.new()
             sprite.texture = down_door_texture

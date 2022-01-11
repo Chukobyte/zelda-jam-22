@@ -43,6 +43,9 @@ class RoomManager:
             math.floor(grid_position.y * ProjectProperties.BASE_RESOLUTION.y),
         )
 
+    def start_room_transition(self, move_position: Vector2) -> None:
+        pass
+
     def process_room_bounds(self, player_position: Vector2) -> bool:
         current_grid_position = self.current_room.position
         current_grid_position.x = math.floor(current_grid_position.x)

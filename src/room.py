@@ -40,13 +40,25 @@ class WallColliders:
             wall_collider.position = position
 
 
+class Door(CollisionShape2D):
+    def __init__(self, entity_id: int):
+        super().__init__(entity_id)
+        self.direction = Vector2()
+
+    @staticmethod
+    def new_door(dir: Vector2):
+        door = Door.new()
+        door.direction = dir
+        return door
+
+
 class DungeonDoors:
     def __init__(
         self,
-        left: CollisionShape2D,
-        right: CollisionShape2D,
-        up: CollisionShape2D,
-        down: CollisionShape2D,
+        left: Door,
+        right: Door,
+        up: Door,
+        down: Door,
         container: Node2D,
     ):
         self.left = left
