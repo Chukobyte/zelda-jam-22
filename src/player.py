@@ -192,6 +192,13 @@ class Player(AnimatedSprite):
             room_manager.current_room.position
         )
         camera_pos = Camera2D.get_viewport_position()
+        # Delay
+        self.stop()
+        delay_timer = SimpleTimer(wait_time=0.5, start_on_init=True)
+        while not delay_timer.tick(delta=world.cached_delta):
+            yield co_suspend()
+        # Transition Start
+        self.play()
         transition_timer = SimpleTimer(wait_time=1.25, start_on_init=True)
         while not transition_timer.tick(delta=world.cached_delta):
             accel = self.stats.move_params.accel * world.cached_delta * 0.6
