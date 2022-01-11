@@ -3,7 +3,8 @@ from seika.assets import Texture
 from seika.math import Rect2
 from seika.physics import Collision
 
-from src.enemy.enemy import Enemy
+from src.enemy.enemy import Enemy, EnemyCast
+
 
 # Will probably have multiple attacks broken out into separate files...
 
@@ -35,6 +36,5 @@ class PlayerAttack(Attack):
             node=self, tag=Enemy.TAG
         )
         if enemies_colliders:
-            first_enemy = enemies_colliders[0].get_parent()
-            first_enemy.queue_deletion()
-            # first_enemy.take_damage(attack=self)
+            first_enemy = EnemyCast.cast(enemies_colliders[0].get_parent())
+            first_enemy.take_damage(attack=self)
