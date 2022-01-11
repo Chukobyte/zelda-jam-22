@@ -1,6 +1,6 @@
 from seika.math import Vector2
 
-from src.room import Room
+from src.room.room import Room
 
 
 class MoveParams:

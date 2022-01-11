@@ -9,7 +9,7 @@ from seika.utils import SimpleTimer
 from src.enemy.boss import Boss
 from src.game_context import GameContext, PlayState
 from src.world import World
-from src.room_manager import RoomManager
+from src.room.room_manager import RoomManager
 from src.player_stats import PlayerStats
 from src.attack.attack import PlayerAttack
 from src.task import Task, co_return, co_suspend

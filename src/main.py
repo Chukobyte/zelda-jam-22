@@ -6,7 +6,7 @@ from seika.utils import SimpleTimer
 
 from src.world import World
 from src.game_context import GameContext
-from src.room_builder import RoomBuilder
+from src.room.room_builder import RoomBuilder
 from src.task import Task, TaskManager, co_suspend
 
 

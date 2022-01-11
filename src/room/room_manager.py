@@ -3,7 +3,7 @@ import math
 from seika.math import Vector2
 
 from src.game_context import PlayState, GameContext
-from src.room import Room, Door
+from src.room.room import Room, Door
 from src.project_properties import ProjectProperties
 
 
