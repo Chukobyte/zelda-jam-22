@@ -2,7 +2,8 @@ from seika.node import Node, Node2D, CollisionShape2D, Sprite
 from seika.math import Vector2, Rect2
 from seika.assets import Texture
 
-from src.room import WallColliders, DungeonDoors, Room, RoomManager
+from src.room import WallColliders, DungeonDoors, Room
+from src.room_manager import RoomManager
 
 
 class RoomBuilder:
