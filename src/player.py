@@ -184,7 +184,6 @@ class Player(AnimatedSprite):
     @Task.task_func(debug=True)
     def transitioning_to_room(self):
         world = World()
-        # game_context = GameContext()
         room_manager = RoomManager()
         move_dir = self.last_collided_door.direction
         new_world_position = room_manager.get_world_position(
@@ -203,11 +202,12 @@ class Player(AnimatedSprite):
         while not transition_timer.tick(delta=world.cached_delta):
             accel = self.stats.move_params.accel * world.cached_delta * 0.6
             self.position += Vector2(move_dir.x * accel, move_dir.y * accel)
+            # TODO: Set proper thing to stop camera
             camera_accel = accel * 3.0
             camera_pos += Vector2(move_dir.x * camera_accel, move_dir.y * camera_accel)
-            # TODO: Set proper thing to stop camera
             Camera2D.set_viewport_position(camera_pos)
             yield co_suspend()
+        # Transition End
         Camera2D.set_viewport_position(new_world_position)
         room_manager.wall_colliders.update_wall_positions(new_world_position)
         GameContext.set_play_state(PlayState.MAIN)

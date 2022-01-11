@@ -41,6 +41,13 @@ class WallColliders:
 
 
 class Door(CollisionShape2D):
+    Z_INDEX = 1
+    ROOM_LEFT_POSITION = Vector2(22, 74)
+    ROOM_RIGHT_POSITION = Vector2(334, 74)
+    ROOM_UP_POSITION = Vector2(168, 8)
+    ROOM_DOWN_POSITION = Vector2(168, 190)
+    OPEN_DOOR_TAG = ["open-door"]
+
     def __init__(self, entity_id: int):
         super().__init__(entity_id)
         self.direction = Vector2()
@@ -73,6 +80,8 @@ class DungeonDoors:
 
 
 class Room:
+    SOLID_TAG = ["solid"]
+
     def __init__(self, position: Vector2):
         self.position = position
         self.size = ProjectProperties.BASE_RESOLUTION

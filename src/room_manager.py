@@ -47,5 +47,4 @@ class RoomManager:
         new_room_position = self.current_room.position + collided_door.direction
         self.set_current_room(position=new_room_position)
         self.current_room.position = new_room_position
-        new_world_position = self.get_world_position(new_room_position)
         GameContext.set_play_state(PlayState.ROOM_TRANSITION)
