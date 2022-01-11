@@ -50,4 +50,9 @@ class RoomManager:
         self.current_room.position = new_room_position
         new_world_position = self.get_world_position(new_room_position)
         self.transition_doors.move(new_world_position)
+        # Swap doors
+        new_transition_doors = self.transition_doors
+        self.transition_doors = self.room_doors
+        self.room_doors = new_transition_doors
+
         GameContext.set_play_state(PlayState.ROOM_TRANSITION)
