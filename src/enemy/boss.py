@@ -8,6 +8,7 @@ from src.game_context import GameContext
 class Boss(Enemy):
     def _start(self) -> None:
         super()._start()
+        self.stats.set_all_hp(1)
         boss_texture = Texture.get(file_path="assets/images/enemy/enemy_boss.png")
         self.texture = boss_texture
         self.collider.collider_rect = Rect2(

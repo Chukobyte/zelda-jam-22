@@ -9,13 +9,18 @@ from src.enemy.enemy import Enemy
 
 
 class Attack(CollisionShape2D):
-    pass
+    def __init__(self, entity_id: int):
+        super().__init__(entity_id=entity_id)
+        self.life_time = 0.0
+        self.damage = 0
 
 
 class PlayerAttack(Attack):
     def __init__(self, entity_id: int):
         super().__init__(entity_id)
         self.sprite = None
+        self.life_time = 0.5
+        self.damage = 1
 
     def _start(self) -> None:
         self.sprite = Sprite.new()
@@ -32,3 +37,4 @@ class PlayerAttack(Attack):
         if enemies_colliders:
             first_enemy = enemies_colliders[0].get_parent()
             first_enemy.queue_deletion()
+            # first_enemy.take_damage(attack=self)

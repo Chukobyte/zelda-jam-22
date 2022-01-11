@@ -180,7 +180,9 @@ class Player(AnimatedSprite):
             self.position + Vector2(4, 4) + (self.direction * Vector2(8, 12))
         )
         self.get_parent().add_child(player_attack)
-        attack_timer = SimpleTimer(wait_time=0.5, start_on_init=True)
+        attack_timer = SimpleTimer(
+            wait_time=player_attack.life_time, start_on_init=True
+        )
         while not attack_timer.tick(world.cached_delta):
             yield co_suspend()
         player_attack.queue_deletion()
