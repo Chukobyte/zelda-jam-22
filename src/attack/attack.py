@@ -36,5 +36,5 @@ class PlayerAttack(Attack):
             node=self, tag=Enemy.TAG
         )
         if enemies_colliders:
-            first_enemy = EnemyCast.cast(enemies_colliders[0].get_parent())
+            first_enemy = enemies_colliders[0].get_parent()
             first_enemy.take_damage(attack=self)
