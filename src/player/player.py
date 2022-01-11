@@ -12,8 +12,8 @@ from src.world import World
 from src.room.room_manager import RoomManager
 from src.player.player_stats import PlayerStats
 from src.attack.attack import PlayerAttack
-from src.task import Task, co_return, co_suspend
-from src.fsm import FSM, State, StateExitLink
+from src.task.task import Task, co_return, co_suspend
+from src.task.fsm import FSM, State, StateExitLink
 
 
 class Player(AnimatedSprite):
