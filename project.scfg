@@ -20,6 +20,38 @@
     "assets": [
         {
             "type": "texture",
+            "file_path": "assets/images/dungeon/door_down_open.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "texture",
+            "file_path": "assets/images/dungeon/door_left_open.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "texture",
+            "file_path": "assets/images/dungeon/door_right_open.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "texture",
+            "file_path": "assets/images/dungeon/door_up_open.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "texture",
             "file_path": "assets/images/dungeon_level.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
@@ -44,35 +76,23 @@
         },
         {
             "type": "texture",
-            "file_path": "assets/images/dungeon/door_up_open.png",
+            "file_path": "assets/images/enemy/enemy_boss.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
             "filter_min": "nearest",
             "filter_max": "nearest"
         },
         {
-            "type": "texture",
-            "file_path": "assets/images/dungeon/door_down_open.png",
-            "wrap_s": "clamp_to_border",
-            "wrap_t": "clamp_to_border",
-            "filter_min": "nearest",
-            "filter_max": "nearest"
+            "type": "font",
+            "uid": "nes-20",
+            "file_path": "assets/fonts/nes.ttf",
+            "size": 20
         },
         {
-            "type": "texture",
-            "file_path": "assets/images/dungeon/door_right_open.png",
-            "wrap_s": "clamp_to_border",
-            "wrap_t": "clamp_to_border",
-            "filter_min": "nearest",
-            "filter_max": "nearest"
-        },
-        {
-            "type": "texture",
-            "file_path": "assets/images/dungeon/door_left_open.png",
-            "wrap_s": "clamp_to_border",
-            "wrap_t": "clamp_to_border",
-            "filter_min": "nearest",
-            "filter_max": "nearest"
+            "type": "font",
+            "uid": "nes-8",
+            "file_path": "assets/fonts/nes.ttf",
+            "size": 8
         },
         {
             "type": "audio_stream",
@@ -89,6 +109,12 @@
             "values": [
                 "space",
                 "joystick_button_a"
+            ]
+        },
+        {
+            "name": "credits",
+            "values": [
+                "c"
             ]
         },
         {

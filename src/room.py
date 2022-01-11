@@ -1,5 +1,3 @@
-import math
-
 from seika.math import Vector2
 from seika.node import Node2D, CollisionShape2D
 
@@ -42,13 +40,32 @@ class WallColliders:
             wall_collider.position = position
 
 
+class Door(CollisionShape2D):
+    Z_INDEX = 1
+    ROOM_LEFT_POSITION = Vector2(22, 74)
+    ROOM_RIGHT_POSITION = Vector2(334, 74)
+    ROOM_UP_POSITION = Vector2(168, 8)
+    ROOM_DOWN_POSITION = Vector2(168, 190)
+    OPEN_DOOR_TAG = ["open-door"]
+
+    def __init__(self, entity_id: int):
+        super().__init__(entity_id)
+        self.direction = Vector2()
+
+    @staticmethod
+    def new_door(dir: Vector2):
+        door = Door.new()
+        door.direction = dir
+        return door
+
+
 class DungeonDoors:
     def __init__(
         self,
-        left: CollisionShape2D,
-        right: CollisionShape2D,
-        up: CollisionShape2D,
-        down: CollisionShape2D,
+        left: Door,
+        right: Door,
+        up: Door,
+        down: Door,
         container: Node2D,
     ):
         self.left = left
@@ -63,6 +80,8 @@ class DungeonDoors:
 
 
 class Room:
+    SOLID_TAG = ["solid"]
+
     def __init__(self, position: Vector2):
         self.position = position
         self.size = ProjectProperties.BASE_RESOLUTION
@@ -72,39 +91,3 @@ class Room:
 
     def __repr__(self):
         return f"(position = {self.position}, size = {self.size})"
-
-
-class RoomManager:
-    _instance = None
-
-    def __new__(cls, *args, **kwargs):
-        if not cls._instance:
-            cls._instance = object.__new__(cls)
-            cls.current_room = None
-            cls.rooms = {}
-            cls.wall_colliders = None
-            cls.room_doors = None
-        return cls._instance
-
-    def add_room(self, room: Room) -> None:
-        self.rooms[f"{room.position.x}-{room.position.y}"] = room
-
-    def set_current_room(self, position: Vector2) -> None:
-        pos_key = f"{position.x}-{position.y}"
-        if pos_key in self.rooms:
-            self.current_room = self.rooms[pos_key]
-
-    def get_room(self, position: Vector2) -> Room:
-        return self.rooms[f"{position.x}-{position.y}"]
-
-    def get_grid_position(self, position: Vector2) -> Vector2:
-        return Vector2(
-            math.floor(position.x / ProjectProperties.BASE_RESOLUTION.x),
-            math.floor(position.y / ProjectProperties.BASE_RESOLUTION.y),
-        )
-
-    def get_world_position(self, grid_position: Vector2) -> Vector2:
-        return Vector2(
-            math.floor(grid_position.x * ProjectProperties.BASE_RESOLUTION.x),
-            math.floor(grid_position.y * ProjectProperties.BASE_RESOLUTION.y),
-        )

@@ -1,19 +1,17 @@
-import math
-
+from seika.camera import Camera2D
 from seika.node import AnimatedSprite
 from seika.input import Input
 from seika.math import Vector2
 from seika.physics import Collision
 from seika.utils import SimpleTimer
-from seika.camera import Camera2D
 
+from src.game_context import GameContext, PlayState
 from src.world import World
-from src.room import RoomManager
+from src.room_manager import RoomManager
 from src.player_stats import PlayerStats
-from src.attack import PlayerAttack
+from src.attack.attack import PlayerAttack
 from src.task import Task, co_return, co_suspend
 from src.fsm import FSM, State, StateExitLink
-from src.project_properties import ProjectProperties
 
 
 class Player(AnimatedSprite):
@@ -22,18 +20,24 @@ class Player(AnimatedSprite):
         self.collider = self.get_node(name="PlayerCollider")
         self.velocity = Vector2()
         self.direction = Vector2.DOWN()
-        self.player_fsm = FSM()
+        self.task_fsm = FSM()
         self._configure_fsm()
+        # Temp
+        self.last_collided_door = None
 
     def _configure_fsm(self) -> None:
         # State Management
         idle_state = State(name="idle", state_func=self.idle)
         move_state = State(name="move", state_func=self.move)
         attack_state = State(name="attack", state_func=self.attack)
+        transitioning_to_room_state = State(
+            name="transitioning_to_room", state_func=self.transitioning_to_room
+        )
 
-        self.player_fsm.add_state(state=idle_state, set_current=True)
-        self.player_fsm.add_state(state=move_state)
-        self.player_fsm.add_state(state=attack_state)
+        self.task_fsm.add_state(state=idle_state, set_current=True)
+        self.task_fsm.add_state(state=move_state)
+        self.task_fsm.add_state(state=attack_state)
+        self.task_fsm.add_state(state=transitioning_to_room_state)
 
         # Links
         # Idle
@@ -52,10 +56,8 @@ class Player(AnimatedSprite):
                 action_name="attack"
             ),
         )
-        self.player_fsm.add_state_exit_link(idle_state, state_exit_link=idle_move_exit)
-        self.player_fsm.add_state_exit_link(
-            idle_state, state_exit_link=idle_attack_exit
-        )
+        self.task_fsm.add_state_exit_link(idle_state, state_exit_link=idle_move_exit)
+        self.task_fsm.add_state_exit_link(idle_state, state_exit_link=idle_attack_exit)
         # Move
         move_exit = StateExitLink(
             state_to_transition=attack_state,
@@ -63,17 +65,29 @@ class Player(AnimatedSprite):
                 action_name="attack"
             ),
         )
-        self.player_fsm.add_state_exit_link(state=move_state, state_exit_link=move_exit)
-        self.player_fsm.add_state_finished_link(
+        move_exit_to_room_transition = StateExitLink(
+            state_to_transition=transitioning_to_room_state,
+            transition_predicate=lambda: GameContext.get_play_state()
+            == PlayState.ROOM_TRANSITION,
+        )
+        self.task_fsm.add_state_exit_link(state=move_state, state_exit_link=move_exit)
+        self.task_fsm.add_state_exit_link(
+            state=move_state, state_exit_link=move_exit_to_room_transition
+        )
+        self.task_fsm.add_state_finished_link(
             state=move_state, state_to_transition=idle_state
         )
         # Attack
-        self.player_fsm.add_state_finished_link(
+        self.task_fsm.add_state_finished_link(
             state=attack_state, state_to_transition=move_state
+        )
+        # Transitioning To Room
+        self.task_fsm.add_state_finished_link(
+            state=transitioning_to_room_state, state_to_transition=idle_state
         )
 
     def _physics_process(self, delta: float) -> None:
-        self.player_fsm.process()
+        self.task_fsm.process()
 
     @Task.task_func(debug=True)
     def idle(self):
@@ -131,26 +145,22 @@ class Player(AnimatedSprite):
             # Integrate new velocity
             if new_velocity:
                 collided_walls = Collision.get_collided_nodes_by_tag(
-                    node=self.collider, tag="wall", offset=new_velocity
+                    node=self.collider, tag="solid", offset=new_velocity
                 )
-                if not collided_walls:
+                open_doors = Collision.get_collided_nodes_by_tag(
+                    node=self.collider, tag="open-door", offset=new_velocity
+                )
+                if collided_walls:
+                    pass
+                elif open_doors:
+                    collided_door = open_doors[0]
+                    self.last_collided_door = collided_door
+                    room_manager.start_room_transition(collided_door)
+                else:
                     self.position += new_velocity
-                    # TODO: Temp for update room position based on player, will move logic elsewhere
-                    current_grid_position = room_manager.current_room.position
-                    new_grid_position = room_manager.get_grid_position(
-                        position=self.position
-                    )
-                    if current_grid_position != new_grid_position:
-                        print(
-                            f"current_grid = {current_grid_position}, new_grid = {new_grid_position}"
-                        )
-                        room_manager.set_current_room(position=new_grid_position)
-                        room_manager.current_room.position = new_grid_position
-                        new_room_world_position = room_manager.get_world_position(
-                            new_grid_position
-                        )
-                        Camera2D.set_viewport_position(new_room_world_position)
-
+                    # entered_new_room = room_manager.process_room_bounds(
+                    #     player_position=self.position
+                    # )
             else:
                 yield co_return()
 
@@ -168,3 +178,34 @@ class Player(AnimatedSprite):
         while not attack_timer.tick(world.cached_delta):
             yield co_suspend()
         player_attack.queue_deletion()
+
+    @Task.task_func(debug=True)
+    def transitioning_to_room(self):
+        world = World()
+        room_manager = RoomManager()
+        move_dir = self.last_collided_door.direction
+        new_world_position = room_manager.get_world_position(
+            room_manager.current_room.position
+        )
+        camera_pos = Camera2D.get_viewport_position()
+        # Delay
+        self.stop()
+        delay_timer = SimpleTimer(wait_time=0.5, start_on_init=True)
+        while not delay_timer.tick(delta=world.cached_delta):
+            yield co_suspend()
+        # Transition Start
+        # TODO: Move some of the transition logic from player to something else...
+        self.play()
+        transition_timer = SimpleTimer(wait_time=1.25, start_on_init=True)
+        while not transition_timer.tick(delta=world.cached_delta):
+            accel = self.stats.move_params.accel * world.cached_delta * 0.6
+            self.position += Vector2(move_dir.x * accel, move_dir.y * accel)
+            # TODO: Set proper thing to stop camera
+            camera_accel = accel * 3.0
+            camera_pos += Vector2(move_dir.x * camera_accel, move_dir.y * camera_accel)
+            Camera2D.set_viewport_position(camera_pos)
+            yield co_suspend()
+        # Transition End
+        Camera2D.set_viewport_position(new_world_position)
+        room_manager.wall_colliders.update_wall_positions(new_world_position)
+        GameContext.set_play_state(PlayState.MAIN)
