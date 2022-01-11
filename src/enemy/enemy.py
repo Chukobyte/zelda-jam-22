@@ -7,6 +7,8 @@ class Enemy(Sprite):
     All enemies are procedurally generated for now.
     """
 
+    TAG = "enemy"
+
     def __init__(self, entity_id: int) -> None:
         super().__init__(entity_id)
         self.collider = None
@@ -14,3 +16,5 @@ class Enemy(Sprite):
 
     def _start(self) -> None:
         self.collider = CollisionShape2D.new()
+        self.collider.tags = [Enemy.TAG]
+        self.add_child(self.collider)

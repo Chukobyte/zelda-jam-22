@@ -3,6 +3,8 @@ from seika.assets import Texture
 from seika.math import Rect2
 from seika.physics import Collision
 
+from src.enemy.enemy import Enemy
+
 # Will probably have multiple attacks broken out into separate files...
 
 
@@ -24,7 +26,9 @@ class PlayerAttack(Attack):
         self.collider_rect = Rect2(0, 0, texture.width, texture.height)
 
     def _physics_process(self, delta: float) -> None:
-        enemies_collided = Collision.get_collided_nodes_by_tag(node=self, tag="enemy")
-        if enemies_collided:
-            first_enemy = enemies_collided[0]
+        enemies_colliders = Collision.get_collided_nodes_by_tag(
+            node=self, tag=Enemy.TAG
+        )
+        if enemies_colliders:
+            first_enemy = enemies_colliders[0].get_parent()
             first_enemy.queue_deletion()

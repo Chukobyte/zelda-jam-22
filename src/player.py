@@ -5,6 +5,7 @@ from seika.math import Vector2
 from seika.physics import Collision
 from seika.utils import SimpleTimer
 
+from src.enemy.boss import Boss
 from src.game_context import GameContext, PlayState
 from src.world import World
 from src.room_manager import RoomManager
@@ -209,3 +210,9 @@ class Player(AnimatedSprite):
         Camera2D.set_viewport_position(new_world_position)
         room_manager.wall_colliders.update_wall_positions(new_world_position)
         GameContext.set_play_state(PlayState.MAIN)
+        # Temp spawn boss
+        boss = Boss.new()
+        boss.position = room_manager.get_world_position(
+            grid_position=room_manager.current_room.position
+        ) + Vector2(150, 100)
+        self.get_parent().add_child(boss)
