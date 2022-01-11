@@ -54,5 +54,8 @@ class RoomManager:
         new_transition_doors = self.transition_doors
         self.transition_doors = self.room_doors
         self.room_doors = new_transition_doors
+        # Update tags
+        self.room_doors.update_tags(Door.OPEN_DOOR_TAG)
+        self.transition_doors.update_tags([])
 
         GameContext.set_play_state(PlayState.ROOM_TRANSITION)
