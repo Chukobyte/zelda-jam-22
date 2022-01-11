@@ -69,42 +69,86 @@ class RoomBuilder:
         up_door_collider_rect = Rect2(0, 6, up_door_texture.width, 10)
         down_door_collider_rect = Rect2(0, 10, down_door_texture.width, 10)
 
-        for left_door in [current_doors.left]:
-            left_door.position = Door.ROOM_LEFT_POSITION
-            left_door.z_index = Door.Z_INDEX
-            left_door.collider_rect = left_door_collider_rect
-            left_door.tags = Door.OPEN_DOOR_TAG
-            current_doors.container.add_child(child_node=left_door)
+        # Setting up data list to iterate setting up doors
+        doors_setup_data = [
+            # Current Doors
+            [
+                current_doors.left,
+                Door.ROOM_LEFT_POSITION,
+                left_door_collider_rect,
+                Door.OPEN_DOOR_TAG,
+                current_doors.container,
+                left_door_texture,
+            ],
+            [
+                current_doors.right,
+                Door.ROOM_RIGHT_POSITION,
+                right_door_collider_rect,
+                Door.OPEN_DOOR_TAG,
+                current_doors.container,
+                right_door_texture,
+            ],
+            [
+                current_doors.up,
+                Door.ROOM_UP_POSITION,
+                up_door_collider_rect,
+                Door.OPEN_DOOR_TAG,
+                current_doors.container,
+                up_door_texture,
+            ],
+            [
+                current_doors.down,
+                Door.ROOM_DOWN_POSITION,
+                down_door_collider_rect,
+                Door.OPEN_DOOR_TAG,
+                current_doors.container,
+                down_door_texture,
+            ],
+            # Transition
+            # [
+            #     transition_doors.left,
+            #     Door.ROOM_LEFT_POSITION,
+            #     left_door_collider_rect,
+            #     [],
+            #     transition_doors.container,
+            #     left_door_texture,
+            # ],
+            # [
+            #     transition_doors.right,
+            #     Door.ROOM_RIGHT_POSITION,
+            #     right_door_collider_rect,
+            #     [],
+            #     transition_doors.container,
+            #     right_door_texture,
+            # ],
+            # [
+            #     transition_doors.up,
+            #     Door.ROOM_UP_POSITION,
+            #     up_door_collider_rect,
+            #     [],
+            #     transition_doors.container,
+            #     up_door_texture,
+            # ],
+            # [
+            #     transition_doors.down,
+            #     Door.ROOM_DOWN_POSITION,
+            #     down_door_collider_rect,
+            #     [],
+            #     transition_doors.container,
+            #     down_door_texture,
+            # ],
+        ]
+
+        for door_data in doors_setup_data:
+            door = door_data[0]
+            door.position = door_data[1]
+            door.collider_rect = door_data[2]
+            door.tags = door_data[3]
+            container = door_data[4]
+            container.add_child(child_node=door)
             sprite = Sprite.new()
-            sprite.texture = left_door_texture
-            left_door.add_child(child_node=sprite)
-        for right_door in [current_doors.right]:
-            right_door.position = Door.ROOM_RIGHT_POSITION
-            right_door.z_index = Door.Z_INDEX
-            right_door.collider_rect = right_door_collider_rect
-            right_door.tags = Door.OPEN_DOOR_TAG
-            current_doors.container.add_child(child_node=right_door)
-            sprite = Sprite.new()
-            sprite.texture = right_door_texture
-            right_door.add_child(child_node=sprite)
-        for up_door in [current_doors.up]:
-            up_door.position = Door.ROOM_UP_POSITION
-            up_door.z_index = Door.Z_INDEX
-            up_door.collider_rect = up_door_collider_rect
-            up_door.tags = Door.OPEN_DOOR_TAG
-            current_doors.container.add_child(child_node=up_door)
-            sprite = Sprite.new()
-            sprite.texture = up_door_texture
-            up_door.add_child(child_node=sprite)
-        for down_door in [current_doors.down]:
-            down_door.position = Door.ROOM_DOWN_POSITION
-            down_door.z_index = Door.Z_INDEX
-            down_door.collider_rect = down_door_collider_rect
-            down_door.tags = Door.OPEN_DOOR_TAG
-            current_doors.container.add_child(child_node=down_door)
-            sprite = Sprite.new()
-            sprite.texture = down_door_texture
-            down_door.add_child(child_node=sprite)
+            sprite.texture = door_data[5]
+            door.add_child(child_node=sprite)
 
         room_manager = RoomManager()
         room_manager.room_doors = current_doors
