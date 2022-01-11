@@ -21,6 +21,8 @@ class Player(AnimatedSprite):
         self.direction = Vector2.DOWN()
         self.player_fsm = FSM()
         self._configure_fsm()
+        # Temp
+        self.last_collided_door = None
 
     def _configure_fsm(self) -> None:
         # State Management
@@ -152,12 +154,14 @@ class Player(AnimatedSprite):
                 if collided_walls:
                     pass
                 elif open_doors:
-                    print("door")
+                    collided_door = open_doors[0]
+                    self.last_collided_door = collided_door
+                    room_manager.start_room_transition(collided_door)
                 else:
                     self.position += new_velocity
-                    entered_new_room = room_manager.process_room_bounds(
-                        player_position=self.position
-                    )
+                    # entered_new_room = room_manager.process_room_bounds(
+                    #     player_position=self.position
+                    # )
             else:
                 yield co_return()
 
@@ -178,8 +182,12 @@ class Player(AnimatedSprite):
 
     @Task.task_func(debug=True)
     def transitioning_to_room(self):
+        world = World()
         game_context = GameContext()
-        while True:
-            if game_context.play_state != PlayState.ROOM_TRANSITION:
-                break
+        move_dir = self.last_collided_door.direction
+        transition_timer = SimpleTimer(wait_time=1.0, start_on_init=True)
+        while not transition_timer.tick(delta=world.cached_delta):
+            accel = self.stats.move_params.accel * world.cached_delta
+            self.position += Vector2(move_dir.x * accel, move_dir.y * accel)
             yield co_suspend()
+        GameContext.set_play_state(PlayState.MAIN)

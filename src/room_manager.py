@@ -4,7 +4,7 @@ from seika.camera import Camera2D
 from seika.math import Vector2
 
 from src.game_context import PlayState, GameContext
-from src.room import Room
+from src.room import Room, Door
 from src.project_properties import ProjectProperties
 
 
@@ -43,23 +43,28 @@ class RoomManager:
             math.floor(grid_position.y * ProjectProperties.BASE_RESOLUTION.y),
         )
 
-    def start_room_transition(self, move_position: Vector2) -> None:
-        pass
+    def start_room_transition(self, collided_door: Door) -> None:
+        new_room_position = self.current_room.position + collided_door.direction
+        self.set_current_room(position=new_room_position)
+        self.current_room.position = new_room_position
+        new_world_position = self.get_world_position(new_room_position)
+        Camera2D.set_viewport_position(new_world_position)
+        GameContext.set_play_state(PlayState.ROOM_TRANSITION)
 
-    def process_room_bounds(self, player_position: Vector2) -> bool:
-        current_grid_position = self.current_room.position
-        current_grid_position.x = math.floor(current_grid_position.x)
-        current_grid_position.y = math.floor(current_grid_position.y)
-        new_grid_position = self.get_grid_position(position=player_position)
-        if current_grid_position != new_grid_position:
-            print(
-                f"current_grid = {current_grid_position}, new_grid = {new_grid_position}"
-            )
-            self.set_current_room(position=new_grid_position)
-            self.current_room.position = new_grid_position
-            new_room_world_position = self.get_world_position(new_grid_position)
-            Camera2D.set_viewport_position(new_room_world_position)
-            # TODO: Transition into proper functions
-            # GameContext.set_play_state(PlayState.ROOM_TRANSITION)
-            return True
-        return False
+    # def process_room_bounds(self, player_position: Vector2) -> bool:
+    #     current_grid_position = self.current_room.position
+    #     current_grid_position.x = math.floor(current_grid_position.x)
+    #     current_grid_position.y = math.floor(current_grid_position.y)
+    #     new_grid_position = self.get_grid_position(position=player_position)
+    #     if current_grid_position != new_grid_position:
+    #         print(
+    #             f"current_grid = {current_grid_position}, new_grid = {new_grid_position}"
+    #         )
+    #         self.set_current_room(position=new_grid_position)
+    #         self.current_room.position = new_grid_position
+    #         new_room_world_position = self.get_world_position(new_grid_position)
+    #         Camera2D.set_viewport_position(new_room_world_position)
+    #         # TODO: Transition into proper functions
+    #         # GameContext.set_play_state(PlayState.ROOM_TRANSITION)
+    #         return True
+    #     return False
