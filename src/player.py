@@ -3,6 +3,7 @@ from seika.node import AnimatedSprite
 from seika.input import Input
 from seika.math import Vector2
 from seika.physics import Collision
+from seika.scene import SceneTree
 from seika.utils import SimpleTimer
 
 from src.enemy.boss import Boss
@@ -151,17 +152,20 @@ class Player(AnimatedSprite):
                 open_doors = Collision.get_collided_nodes_by_tag(
                     node=self.collider, tag="open-door", offset=new_velocity
                 )
+                # Collision checks
                 if collided_walls:
                     pass
                 elif open_doors:
-                    collided_door = open_doors[0]
-                    self.last_collided_door = collided_door
-                    room_manager.start_room_transition(collided_door)
+                    # TODO: temp win state
+                    if GameContext().has_won:
+                        SceneTree.change_scene(scene_path="scenes/end_screen.sscn")
+                        yield co_return()
+                    else:
+                        collided_door = open_doors[0]
+                        self.last_collided_door = collided_door
+                        room_manager.start_room_transition(collided_door)
                 else:
                     self.position += new_velocity
-                    # entered_new_room = room_manager.process_room_bounds(
-                    #     player_position=self.position
-                    # )
             else:
                 yield co_return()
 

@@ -20,6 +20,8 @@ class GameContext:
             cls._instance = object.__new__(cls)
             cls.game_state = GameState.INIT
             cls.play_state = PlayState.MAIN
+            # Temp
+            cls.has_won = False
         return cls._instance
 
     @staticmethod

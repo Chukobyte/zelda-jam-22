@@ -2,6 +2,7 @@ from seika.assets import Texture
 from seika.math import Rect2
 
 from src.enemy.enemy import Enemy
+from src.game_context import GameContext
 
 
 class Boss(Enemy):
@@ -14,4 +15,9 @@ class Boss(Enemy):
         )
 
     def _physics_process(self, delta: float) -> None:
+        pass
+
+    # TODO: temp win state when defeated
+    def _end(self) -> None:
+        # GameContext().has_won = True
         pass
