@@ -167,6 +167,7 @@ class RoomBuilder:
         for room in [Room(position=Vector2.UP())]:
             room_manager.add_room(room)
             room_bg_sprite = Sprite.new()
+            room_bg_sprite.z_index = -1
             room_bg_sprite.texture = room_bg_texture
             room_bg_sprite.position = room_manager.get_world_position(room.position)
             node.add_child(child_node=room_bg_sprite)
