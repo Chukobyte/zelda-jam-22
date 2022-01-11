@@ -12,6 +12,21 @@ class PlayState:
     DIALOGUE = "dialogue"
 
 
+class PlayTimerCounter:
+    def __init__(self) -> None:
+        self._accumulated_delta = 0.0
+
+    def reset(self) -> None:
+        self._accumulated_delta = 0.0
+
+    def update(self, delta: float) -> None:
+        self._accumulated_delta += delta
+
+    @property
+    def time_played_text(self) -> str:
+        return f"{self._accumulated_delta:.2f}"
+
+
 class GameContext:
     _instance = None
 
@@ -20,6 +35,7 @@ class GameContext:
             cls._instance = object.__new__(cls)
             cls.game_state = GameState.INIT
             cls.play_state = PlayState.MAIN
+            cls.play_time_counter = PlayTimerCounter()
             # Temp
             cls.has_won = False
         return cls._instance
