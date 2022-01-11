@@ -1,5 +1,5 @@
 from typing import Callable
-from src.task import TaskManager, Task
+from src.task.task import TaskManager, Task
 
 
 class State:

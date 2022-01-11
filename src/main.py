@@ -5,13 +5,15 @@ from seika.audio import AudioStream
 from seika.utils import SimpleTimer
 
 from src.world import World
-from src.room_builder import RoomBuilder
-from src.task import Task, TaskManager, co_suspend
+from src.game_context import GameContext
+from src.room.room_builder import RoomBuilder
+from src.task.task import Task, TaskManager, co_suspend
 
 
 class Main(Node2D):
     def _start(self) -> None:
         self.world = World()
+        self.game_context = GameContext()
         self.task_manager = TaskManager(
             initial_tasks=[Task(name="start_music", func=self.start_music)]
         )
@@ -22,6 +24,7 @@ class Main(Node2D):
 
     def _physics_process(self, delta: float) -> None:
         self.world.cached_delta = delta
+        self.game_context.play_time_counter.update(delta=delta)
         if Input.is_action_just_pressed(action_name="debug_quit"):
             Engine.exit()
         self.task_manager.run_tasks()

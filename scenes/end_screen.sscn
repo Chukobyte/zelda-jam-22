@@ -1,5 +1,5 @@
 {
-    "name": "CreditsScreen",
+    "name": "EndScreen",
     "type": "Node2D",
     "tags": [],
     "external_scene_source": "",
@@ -22,14 +22,14 @@
         },
         {
             "scriptable_class": {
-                "class_path": "src.screen.credits_screen",
-                "class_name": "CreditsScreen"
+                "class_path": "src.screen.end_screen",
+                "class_name": "EndScreen"
             }
         }
     ],
     "children": [
         {
-            "name": "ChukobyteLabel",
+            "name": "YouWinLabel",
             "type": "TextLabel",
             "tags": [],
             "external_scene_source": "",
@@ -37,7 +37,7 @@
                 {
                     "transform2D": {
                         "position": {
-                            "x": 100.0,
+                            "x": 120.0,
                             "y": 80.0
                         },
                         "scale": {
@@ -52,8 +52,8 @@
                 },
                 {
                     "text_label": {
-                        "text": "Chukobyte - Programming",
-                        "font_uid": "nes-8",
+                        "text": "You Win!",
+                        "font_uid": "nes-20",
                         "color": {
                             "red": 1.0,
                             "green": 1.0,
@@ -66,7 +66,7 @@
             "children": []
         },
         {
-            "name": "PineLabel",
+            "name": "ExitInstructionsLabel",
             "type": "TextLabel",
             "tags": [],
             "external_scene_source": "",
@@ -74,8 +74,8 @@
                 {
                     "transform2D": {
                         "position": {
-                            "x": 100.0,
-                            "y": 120.0
+                            "x": 120.0,
+                            "y": 180.0
                         },
                         "scale": {
                             "x": 1.0,
@@ -89,7 +89,7 @@
                 },
                 {
                     "text_label": {
-                        "text": "Pine - Art",
+                        "text": "Press ESC to Exit",
                         "font_uid": "nes-8",
                         "color": {
                             "red": 1.0,
@@ -103,7 +103,7 @@
             "children": []
         },
         {
-            "name": "DnebeshLabel",
+            "name": "PlayTimeLabel",
             "type": "TextLabel",
             "tags": [],
             "external_scene_source": "",
@@ -111,8 +111,8 @@
                 {
                     "transform2D": {
                         "position": {
-                            "x": 100.0,
-                            "y": 160.0
+                            "x": 120.0,
+                            "y": 140.0
                         },
                         "scale": {
                             "x": 1.0,
@@ -126,7 +126,7 @@
                 },
                 {
                     "text_label": {
-                        "text": "Dnebesh - Audio",
+                        "text": "Play Time: 10.00",
                         "font_uid": "nes-8",
                         "color": {
                             "red": 1.0,

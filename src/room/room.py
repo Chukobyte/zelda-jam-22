@@ -78,6 +78,10 @@ class DungeonDoors:
     def move(self, position: Vector2) -> None:
         self.container.position = position
 
+    def update_tags(self, tags: list) -> None:
+        for door in self.doors:
+            door.tags = tags
+
 
 class Room:
     SOLID_TAG = ["solid"]

@@ -3,15 +3,17 @@ from seika.node import AnimatedSprite
 from seika.input import Input
 from seika.math import Vector2
 from seika.physics import Collision
+from seika.scene import SceneTree
 from seika.utils import SimpleTimer
 
+from src.enemy.boss import Boss
 from src.game_context import GameContext, PlayState
 from src.world import World
-from src.room_manager import RoomManager
-from src.player_stats import PlayerStats
+from src.room.room_manager import RoomManager
+from src.player.player_stats import PlayerStats
 from src.attack.attack import PlayerAttack
-from src.task import Task, co_return, co_suspend
-from src.fsm import FSM, State, StateExitLink
+from src.task.task import Task, co_return, co_suspend
+from src.task.fsm import FSM, State, StateExitLink
 
 
 class Player(AnimatedSprite):
@@ -150,17 +152,21 @@ class Player(AnimatedSprite):
                 open_doors = Collision.get_collided_nodes_by_tag(
                     node=self.collider, tag="open-door", offset=new_velocity
                 )
+                # Collision checks
                 if collided_walls:
                     pass
                 elif open_doors:
-                    collided_door = open_doors[0]
-                    self.last_collided_door = collided_door
-                    room_manager.start_room_transition(collided_door)
+                    # TODO: temp win state
+                    if GameContext().has_won:
+                        room_manager.clean_up()
+                        SceneTree.change_scene(scene_path="scenes/end_screen.sscn")
+                        yield co_return()
+                    else:
+                        collided_door = open_doors[0]
+                        self.last_collided_door = collided_door
+                        room_manager.start_room_transition(collided_door)
                 else:
                     self.position += new_velocity
-                    # entered_new_room = room_manager.process_room_bounds(
-                    #     player_position=self.position
-                    # )
             else:
                 yield co_return()
 
@@ -174,7 +180,9 @@ class Player(AnimatedSprite):
             self.position + Vector2(4, 4) + (self.direction * Vector2(8, 12))
         )
         self.get_parent().add_child(player_attack)
-        attack_timer = SimpleTimer(wait_time=0.5, start_on_init=True)
+        attack_timer = SimpleTimer(
+            wait_time=player_attack.life_time, start_on_init=True
+        )
         while not attack_timer.tick(world.cached_delta):
             yield co_suspend()
         player_attack.queue_deletion()
@@ -209,3 +217,9 @@ class Player(AnimatedSprite):
         Camera2D.set_viewport_position(new_world_position)
         room_manager.wall_colliders.update_wall_positions(new_world_position)
         GameContext.set_play_state(PlayState.MAIN)
+        # Temp spawn boss
+        boss = Boss.new()
+        boss.position = room_manager.get_world_position(
+            grid_position=room_manager.current_room.position
+        ) + Vector2(150, 100)
+        self.get_parent().add_child(boss)

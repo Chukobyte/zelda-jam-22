@@ -3,17 +3,25 @@ from seika.assets import Texture
 from seika.math import Rect2
 from seika.physics import Collision
 
+from src.enemy.enemy import Enemy, EnemyCast
+
+
 # Will probably have multiple attacks broken out into separate files...
 
 
 class Attack(CollisionShape2D):
-    pass
+    def __init__(self, entity_id: int):
+        super().__init__(entity_id=entity_id)
+        self.life_time = 0.0
+        self.damage = 0
 
 
 class PlayerAttack(Attack):
     def __init__(self, entity_id: int):
         super().__init__(entity_id)
         self.sprite = None
+        self.life_time = 0.5
+        self.damage = 1
 
     def _start(self) -> None:
         self.sprite = Sprite.new()
@@ -24,7 +32,9 @@ class PlayerAttack(Attack):
         self.collider_rect = Rect2(0, 0, texture.width, texture.height)
 
     def _physics_process(self, delta: float) -> None:
-        enemies_collided = Collision.get_collided_nodes_by_tag(node=self, tag="enemy")
-        if enemies_collided:
-            first_enemy = enemies_collided[0]
-            first_enemy.queue_deletion()
+        enemies_colliders = Collision.get_collided_nodes_by_tag(
+            node=self, tag=Enemy.TAG
+        )
+        if enemies_colliders:
+            first_enemy = EnemyCast.cast(enemies_colliders[0].get_parent())
+            first_enemy.take_damage(attack=self)

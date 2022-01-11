@@ -1,10 +1,9 @@
 import math
 
-from seika.camera import Camera2D
 from seika.math import Vector2
 
 from src.game_context import PlayState, GameContext
-from src.room import Room, Door
+from src.room.room import Room, Door
 from src.project_properties import ProjectProperties
 
 
@@ -54,5 +53,13 @@ class RoomManager:
         new_transition_doors = self.transition_doors
         self.transition_doors = self.room_doors
         self.room_doors = new_transition_doors
+        # Update tags
+        self.room_doors.update_tags(Door.OPEN_DOOR_TAG)
+        self.transition_doors.update_tags([])
 
         GameContext.set_play_state(PlayState.ROOM_TRANSITION)
+
+    # TODO: figure out why rooms aren't being cleaned up without this...
+    def clean_up(self) -> None:
+        for door in self.room_doors.doors + self.transition_doors.doors:
+            door.queue_deletion()
