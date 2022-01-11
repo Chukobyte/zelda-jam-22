@@ -158,6 +158,7 @@ class Player(AnimatedSprite):
                 elif open_doors:
                     # TODO: temp win state
                     if GameContext().has_won:
+                        room_manager.clean_up()
                         SceneTree.change_scene(scene_path="scenes/end_screen.sscn")
                         yield co_return()
                     else:

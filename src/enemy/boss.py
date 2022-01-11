@@ -19,5 +19,4 @@ class Boss(Enemy):
 
     # TODO: temp win state when defeated
     def _end(self) -> None:
-        # GameContext().has_won = True
-        pass
+        GameContext().has_won = True
