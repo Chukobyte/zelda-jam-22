@@ -1,0 +1,143 @@
+{
+    "name": "TitleScreen",
+    "type": "Node2D",
+    "tags": [],
+    "external_scene_source": "",
+    "components": [
+        {
+            "transform2D": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "rotation": 0.0,
+                "z_index": 0,
+                "z_index_relative_to_parent": true,
+                "ignore_camera": false
+            }
+        },
+        {
+            "scriptable_class": {
+                "class_path": "src.title_screen",
+                "class_name": "TitleScreen"
+            }
+        }
+    ],
+    "children": [
+        {
+            "name": "GameTitleLabel",
+            "type": "TextLabel",
+            "tags": [],
+            "external_scene_source": "",
+            "components": [
+                {
+                    "transform2D": {
+                        "position": {
+                            "x": 68.0,
+                            "y": 33.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "rotation": 0.0,
+                        "z_index": 0,
+                        "z_index_relative_to_parent": true,
+                        "ignore_camera": false
+                    }
+                },
+                {
+                    "text_label": {
+                        "text": "Zelda Jam Game",
+                        "font_uid": "nes-20",
+                        "color": {
+                            "red": 0.23620864748954773,
+                            "green": 0.5830116271972656,
+                            "blue": 0.17557880282402039,
+                            "alpha": 1.0
+                        }
+                    }
+                }
+            ],
+            "children": []
+        },
+        {
+            "name": "PlayInstructionsLabel",
+            "type": "TextLabel",
+            "tags": [],
+            "external_scene_source": "",
+            "components": [
+                {
+                    "transform2D": {
+                        "position": {
+                            "x": 121.0,
+                            "y": 110.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "rotation": 0.0,
+                        "z_index": 0,
+                        "z_index_relative_to_parent": true,
+                        "ignore_camera": false
+                    }
+                },
+                {
+                    "text_label": {
+                        "text": "Press Space To Play",
+                        "font_uid": "nes-8",
+                        "color": {
+                            "red": 1.0,
+                            "green": 1.0,
+                            "blue": 1.0,
+                            "alpha": 1.0
+                        }
+                    }
+                }
+            ],
+            "children": []
+        },
+        {
+            "name": "CreditsInstructionsLabel",
+            "type": "TextLabel",
+            "tags": [],
+            "external_scene_source": "",
+            "components": [
+                {
+                    "transform2D": {
+                        "position": {
+                            "x": 113.0,
+                            "y": 150.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "rotation": 0.0,
+                        "z_index": 0,
+                        "z_index_relative_to_parent": true,
+                        "ignore_camera": false
+                    }
+                },
+                {
+                    "text_label": {
+                        "text": "Press 'c\" For Credits",
+                        "font_uid": "nes-8",
+                        "color": {
+                            "red": 1.0,
+                            "green": 1.0,
+                            "blue": 1.0,
+                            "alpha": 1.0
+                        }
+                    }
+                }
+            ],
+            "children": []
+        }
+    ]
+}

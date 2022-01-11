@@ -137,6 +137,8 @@ class Player(AnimatedSprite):
                     self.position += new_velocity
                     # TODO: Temp for update room position based on player, will move logic elsewhere
                     current_grid_position = room_manager.current_room.position
+                    current_grid_position.x = math.floor(current_grid_position.x)
+                    current_grid_position.y = math.floor(current_grid_position.y)
                     new_grid_position = room_manager.get_grid_position(
                         position=self.position
                     )
