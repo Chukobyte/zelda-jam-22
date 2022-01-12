@@ -5,7 +5,8 @@ from seika.node import Node2D
 
 from src.enemy.boss import Boss
 from src.game_context import PlayState, GameContext
-from src.room.room import Room, Door
+from src.room.room import Room
+from src.room.door import Door
 from src.project_properties import ProjectProperties
 
 
