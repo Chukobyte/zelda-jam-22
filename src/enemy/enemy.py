@@ -59,7 +59,7 @@ class Enemy(Sprite):
     def damaged_flash(self):
         colors = self.damaged_colors.copy()
         while len(colors) > 0:
-            color = colors.pop()
+            color = colors.pop(0)
             self.modulate = color
             yield from co_wait_until_seconds(wait_time=0.1)
         yield co_return()
