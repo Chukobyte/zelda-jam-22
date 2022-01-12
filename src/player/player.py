@@ -167,6 +167,9 @@ class Player(AnimatedSprite):
                 open_doors = Collision.get_collided_nodes_by_tag(
                     node=self.collider, tag="open-door", offset=new_velocity
                 )
+                rainbow_orbs = Collision.get_collided_nodes_by_tag(
+                    node=self.collider, tag="rainbow_orb", offset=new_velocity
+                )
                 # Collision checks
                 if collided_walls:
                     pass
@@ -181,6 +184,9 @@ class Player(AnimatedSprite):
                         collided_door = open_doors[0]
                         self.last_collided_door = collided_door
                         room_manager.start_room_transition(collided_door)
+                elif rainbow_orbs:
+                    GameContext().has_won = True
+                    rainbow_orbs[0].queue_deletion()
                 else:
                     self.position += new_velocity
             else:

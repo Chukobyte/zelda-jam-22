@@ -68,7 +68,7 @@ class RoomModel:
         Vector2(0.0, -2.0): RoomData(
             left_door_status=DoorStatus.CLOSED,
             right_door_status=DoorStatus.CLOSED,
-            up_door_status=DoorStatus.CLOSED,
+            up_door_status=DoorStatus.OPEN,
             down_door_status=DoorStatus.OPEN,
             room_type=RoomType.END,
         ),

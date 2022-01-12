@@ -131,6 +131,14 @@
             "filter_max": "nearest"
         },
         {
+            "type": "texture",
+            "file_path": "assets/images/items/rainbow_orb.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
             "type": "font",
             "uid": "nes-20",
             "file_path": "assets/fonts/nes.ttf",

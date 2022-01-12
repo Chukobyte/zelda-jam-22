@@ -4,6 +4,7 @@ from seika.math import Vector2
 
 from src.enemy.enemy_spawner import EnemySpawner
 from src.game_context import PlayState, GameContext
+from src.item.rainbow_orb import RainbowOrb
 from src.room.room import Room
 from src.room.door import Door, DoorStatus
 from src.project_properties import ProjectProperties
@@ -78,6 +79,12 @@ class RoomManager:
                 grid_position=self.current_room.position
             ) + Vector2(200, 45)
             EnemySpawner.spawn_boss(main_node=main_node, position=boss_position)
+        elif self.current_room.data.room_type == RoomType.END:
+            rainbow_orb = RainbowOrb.new()
+            rainbow_orb.position = self.get_world_position(
+                grid_position=self.current_room.position
+            ) + Vector2(200, 45)
+            main_node.add_child(rainbow_orb)
 
     def set_current_room_to_cleared(self) -> None:
         self.current_room.data.is_cleared = True
