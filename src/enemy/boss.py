@@ -8,7 +8,7 @@ from src.game_context import GameContext
 class Boss(Enemy):
     def _start(self) -> None:
         super()._start()
-        self.stats.set_all_hp(1)
+        self.stats.set_all_hp(3)
         boss_texture = Texture.get(file_path="assets/images/enemy/enemy_boss.png")
         self.texture = boss_texture
         self.collider.collider_rect = Rect2(
@@ -16,7 +16,7 @@ class Boss(Enemy):
         )
 
     def _physics_process(self, delta: float) -> None:
-        pass
+        self.tasks.run_tasks()
 
     # TODO: temp win state when defeated
     def _end(self) -> None:

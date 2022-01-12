@@ -77,7 +77,9 @@ class TaskManager:
             for task in initial_tasks:
                 self.add_task(task)
 
-    def add_task(self, task: Task) -> None:
+    def add_task(self, task: Task, replace_duplicate_task=False) -> None:
+        if not replace_duplicate_task and task.name in self.tasks:
+            return
         self.tasks[task.name] = task
         self.running_tasks.append(task)
 
