@@ -65,7 +65,7 @@ class RoomManager:
         boss = Boss.new()
         boss.position = self.get_world_position(
             grid_position=self.current_room.position
-        ) + Vector2(150, 100)
+        ) + Vector2(200, 45)
         node.add_child(boss)
 
     # TODO: figure out why rooms aren't being cleaned up without this...

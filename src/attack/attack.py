@@ -1,3 +1,4 @@
+from seika.math import Vector2
 from seika.node import CollisionShape2D
 
 
@@ -9,6 +10,8 @@ class Attack(CollisionShape2D):
         self.life_time = 0.0
         self.damage = 0
         self.has_collided = False
+        self.direction = Vector2()
+        self.speed = 100
 
     def _start(self) -> None:
         self.z_index = Attack.Z_INDEX

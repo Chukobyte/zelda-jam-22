@@ -1,5 +1,5 @@
 from seika.assets import Texture
-from seika.math import Rect2
+from seika.math import Rect2, Vector2
 from seika.node import Sprite
 from seika.physics import Collision
 
@@ -23,8 +23,14 @@ class EnemyAttack(Attack):
         self.collider_rect = Rect2(0, 0, texture.width, texture.height)
 
     def _physics_process(self, delta: float) -> None:
-        player_colliders = Collision.get_collided_nodes_by_tag(node=self, tag="player")
-        if player_colliders and not self.has_collided:
-            self.has_collided = True
-            first_enemy = player_colliders[0].get_parent()
-            first_enemy.take_damage(attack=self)
+        self.position += self.direction * Vector2(
+            self.speed * delta, self.speed * delta
+        )
+        if not self.has_collided:
+            player_colliders = Collision.get_collided_nodes_by_tag(
+                node=self, tag="player"
+            )
+            if player_colliders:
+                self.has_collided = True
+                first_enemy = player_colliders[0].get_parent()
+                first_enemy.take_damage(attack=self)
