@@ -11,6 +11,19 @@ class RoomType:
     BOSS = 3
     END = 4
 
+    TYPE_TO_STRING = {
+        NONE: "None",
+        INTRO: "Intro",
+        COMBAT: "Combat",
+        TREASURE: "Treasure",
+        BOSS: "Boss",
+        END: "End",
+    }
+
+    @staticmethod
+    def to_string(room_type: int) -> str:
+        return RoomType.TYPE_TO_STRING.get(room_type, "Invalid")
+
 
 class RoomData:
     def __init__(
@@ -30,10 +43,10 @@ class RoomData:
         self.room_type = room_type
 
     def __str__(self):
-        return f"(is_cleared = {self.is_cleared}, room_type = {self.room_type})"
+        return f"(is_cleared = {self.is_cleared}, room_type = {RoomType.to_string(self.room_type)})"
 
     def __repr__(self):
-        return f"(is_cleared = {self.is_cleared}, room_type = {self.room_type})"
+        return f"(is_cleared = {self.is_cleared}, room_type = {RoomType.to_string(self.room_type)})"
 
 
 class RoomModel:
