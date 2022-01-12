@@ -33,6 +33,6 @@ class Main(Node2D):
     def start_music(self):
         yield from co_wait_until_seconds(wait_time=0.25)
 
-        # music_audio_stream = AudioStream.get(stream_uid="no-color-theme")
-        # music_audio_stream.play()
+        music_audio_stream = AudioStream.get(stream_uid="no-color-theme")
+        music_audio_stream.play()
         yield co_return()
