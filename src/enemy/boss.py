@@ -1,11 +1,10 @@
 import random
 
 from seika.assets import Texture
-from seika.math import Rect2, Vector2
+from seika.math import Rect2
 
 from src.attack.enemy_attack import EnemyAttack
 from src.enemy.enemy import Enemy
-from src.game_context import GameContext
 from src.task.task import Task, co_wait_until_seconds, co_return
 
 
@@ -34,9 +33,10 @@ class Boss(Enemy):
             attack.direction = self.position.direction_to(target=player.position)
             self.get_parent().add_child(attack)
             yield from co_wait_until_seconds(wait_time=attack.life_time)
-            attack.queue_deletion()
         yield co_return()
 
     # TODO: temp win state when defeated
     def _end(self) -> None:
-        GameContext().has_won = True
+        main_node = self.get_node(name="Main")
+        self.connect_signal("room_cleared", main_node, "_on_room_cleared")
+        self.emit_signal(signal_id="room_cleared")

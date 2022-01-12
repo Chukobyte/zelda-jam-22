@@ -12,7 +12,7 @@ class TitleScreen(Node2D):
             Engine.exit()
 
         if Input.is_action_just_pressed(action_name="credits"):
-            GameContext.set_game_state(GameState.CREDITS)
+            GameContext.set_game_state(GameState.CREDITS_SCREEN)
             SceneTree.change_scene(scene_path="scenes/credits_screen.sscn")
 
         if Input.is_action_just_pressed(action_name="attack"):

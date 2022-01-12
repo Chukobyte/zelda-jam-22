@@ -52,6 +52,38 @@
         },
         {
             "type": "texture",
+            "file_path": "assets/images/dungeon/door_down_closed.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "texture",
+            "file_path": "assets/images/dungeon/door_left_closed.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "texture",
+            "file_path": "assets/images/dungeon/door_right_closed.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "texture",
+            "file_path": "assets/images/dungeon/door_up_closed.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "texture",
             "file_path": "assets/images/dungeon_level.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
@@ -93,6 +125,14 @@
         {
             "type": "texture",
             "file_path": "assets/images/ui/player_health_ui_spritesheet.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "texture",
+            "file_path": "assets/images/items/rainbow_orb.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
             "filter_min": "nearest",

@@ -2,8 +2,10 @@ from seika.node import Node, Node2D, CollisionShape2D, Sprite
 from seika.math import Vector2, Rect2
 from seika.assets import Texture
 
-from src.room.room import WallColliders, DungeonDoors, Room, Door
+from src.room.room import Room, WallColliders
+from src.room.door import DungeonDoors, Door, DoorStatus
 from src.room.room_manager import RoomManager
+from src.room.room_model import RoomModel
 
 
 class RoomBuilder:
@@ -77,7 +79,7 @@ class RoomBuilder:
                 current_doors.left,
                 Door.ROOM_LEFT_POSITION,
                 left_door_collider_rect,
-                Door.OPEN_DOOR_TAG,
+                DoorStatus.CLOSED,
                 current_doors.container,
                 left_door_texture,
             ],
@@ -85,7 +87,7 @@ class RoomBuilder:
                 current_doors.right,
                 Door.ROOM_RIGHT_POSITION,
                 right_door_collider_rect,
-                Door.OPEN_DOOR_TAG,
+                DoorStatus.CLOSED,
                 current_doors.container,
                 right_door_texture,
             ],
@@ -93,7 +95,7 @@ class RoomBuilder:
                 current_doors.up,
                 Door.ROOM_UP_POSITION,
                 up_door_collider_rect,
-                Door.OPEN_DOOR_TAG,
+                DoorStatus.OPEN,
                 current_doors.container,
                 up_door_texture,
             ],
@@ -101,7 +103,7 @@ class RoomBuilder:
                 current_doors.down,
                 Door.ROOM_DOWN_POSITION,
                 down_door_collider_rect,
-                Door.OPEN_DOOR_TAG,
+                DoorStatus.CLOSED,
                 current_doors.container,
                 down_door_texture,
             ],
@@ -110,7 +112,7 @@ class RoomBuilder:
                 transition_doors.left,
                 Door.ROOM_LEFT_POSITION,
                 left_door_collider_rect,
-                [],
+                DoorStatus.CLOSED,
                 transition_doors.container,
                 left_door_texture,
             ],
@@ -118,7 +120,7 @@ class RoomBuilder:
                 transition_doors.right,
                 Door.ROOM_RIGHT_POSITION,
                 right_door_collider_rect,
-                [],
+                DoorStatus.CLOSED,
                 transition_doors.container,
                 right_door_texture,
             ],
@@ -126,7 +128,7 @@ class RoomBuilder:
                 transition_doors.up,
                 Door.ROOM_UP_POSITION,
                 up_door_collider_rect,
-                [],
+                DoorStatus.CLOSED,
                 transition_doors.container,
                 up_door_texture,
             ],
@@ -134,7 +136,7 @@ class RoomBuilder:
                 transition_doors.down,
                 Door.ROOM_DOWN_POSITION,
                 down_door_collider_rect,
-                [],
+                DoorStatus.CLOSED,
                 transition_doors.container,
                 down_door_texture,
             ],
@@ -144,11 +146,13 @@ class RoomBuilder:
             door = door_data[0]
             door.position = door_data[1]
             door.collider_rect = door_data[2]
-            door.tags = door_data[3]
             container = door_data[4]
             container.add_child(child_node=door)
+            # TODO: Sprite needs to be assigned before door created for now, clean up
             sprite = Sprite.new()
-            sprite.texture = door_data[5]
+            door.sprite = sprite
+            # sprite.texture = door_data[5]
+            door.set_status(door_data[3])
             door.add_child(child_node=sprite)
 
         room_manager = RoomManager()
@@ -158,16 +162,18 @@ class RoomBuilder:
     @staticmethod
     def create_rooms(node: Node) -> None:
         room_manager = RoomManager()
-        # (0, 0) Room is setup in editor
-        initial_room = Room(position=Vector2.ZERO())
-        room_manager.add_room(initial_room)
-        room_manager.current_room = initial_room
-        # Other rooms are created procedurally
         room_bg_texture = Texture.get(file_path="assets/images/dungeon_level.png")
-        for room in [Room(position=Vector2.UP())]:
+        for pos in RoomModel.INITIAL_DATA:
+            room_data = RoomModel.INITIAL_DATA[pos]
+            room = Room(position=pos)
+            room.set_room_data(room_data)
             room_manager.add_room(room)
+            # Sprite
             room_bg_sprite = Sprite.new()
             room_bg_sprite.z_index = -1
             room_bg_sprite.texture = room_bg_texture
-            room_bg_sprite.position = room_manager.get_world_position(room.position)
+            room_bg_sprite.position = room_manager.get_world_position(pos)
             node.add_child(child_node=room_bg_sprite)
+            # Set Initial room to 0,0
+            if pos == Vector2.ZERO():
+                room_manager.current_room = room

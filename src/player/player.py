@@ -6,7 +6,7 @@ from seika.physics import Collision
 from seika.scene import SceneTree
 from seika.utils import SimpleTimer
 
-from src.game_context import GameContext, PlayState
+from src.game_context import GameContext, PlayState, GameState
 from src.world import World
 from src.room.room_manager import RoomManager
 from src.player.player_stats import PlayerStats
@@ -167,6 +167,9 @@ class Player(AnimatedSprite):
                 open_doors = Collision.get_collided_nodes_by_tag(
                     node=self.collider, tag="open-door", offset=new_velocity
                 )
+                rainbow_orbs = Collision.get_collided_nodes_by_tag(
+                    node=self.collider, tag="rainbow_orb", offset=new_velocity
+                )
                 # Collision checks
                 if collided_walls:
                     pass
@@ -174,12 +177,16 @@ class Player(AnimatedSprite):
                     # TODO: temp win state
                     if GameContext().has_won:
                         room_manager.clean_up()
+                        GameContext.set_game_state(GameState.END_SCREEN)
                         SceneTree.change_scene(scene_path="scenes/end_screen.sscn")
                         yield co_return()
                     else:
                         collided_door = open_doors[0]
                         self.last_collided_door = collided_door
                         room_manager.start_room_transition(collided_door)
+                elif rainbow_orbs:
+                    GameContext().has_won = True
+                    rainbow_orbs[0].queue_deletion()
                 else:
                     self.position += new_velocity
             else:
@@ -197,7 +204,6 @@ class Player(AnimatedSprite):
 
         yield from co_wait_until_seconds(wait_time=player_attack.life_time)
 
-        player_attack.queue_deletion()
         yield co_return()
 
     @Task.task_func()
@@ -229,4 +235,4 @@ class Player(AnimatedSprite):
         room_manager.wall_colliders.update_wall_positions(new_world_position)
         GameContext.set_play_state(PlayState.MAIN)
 
-        room_manager.spawn_boss(node=self.get_parent(), position=Vector2(150, 100))
+        room_manager.finish_room_transition(main_node=self.get_parent())

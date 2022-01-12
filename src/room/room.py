@@ -1,7 +1,8 @@
 from seika.math import Vector2
-from seika.node import Node2D, CollisionShape2D
+from seika.node import CollisionShape2D
 
 from src.project_properties import ProjectProperties
+from src.room.room_model import RoomData, RoomModel
 
 
 class WallColliders:
@@ -40,58 +41,23 @@ class WallColliders:
             wall_collider.position = position
 
 
-class Door(CollisionShape2D):
-    Z_INDEX = 1
-    ROOM_LEFT_POSITION = Vector2(22, 74)
-    ROOM_RIGHT_POSITION = Vector2(334, 74)
-    ROOM_UP_POSITION = Vector2(168, 8)
-    ROOM_DOWN_POSITION = Vector2(168, 190)
-    OPEN_DOOR_TAG = ["open-door"]
-
-    def __init__(self, entity_id: int):
-        super().__init__(entity_id)
-        self.direction = Vector2()
-
-    @staticmethod
-    def new_door(dir: Vector2):
-        door = Door.new()
-        door.direction = dir
-        return door
-
-
-class DungeonDoors:
-    def __init__(
-        self,
-        left: Door,
-        right: Door,
-        up: Door,
-        down: Door,
-        container: Node2D,
-    ):
-        self.left = left
-        self.right = right
-        self.up = up
-        self.down = down
-        self.container = container
-        self.doors = [left, right, up, down]
-
-    def move(self, position: Vector2) -> None:
-        self.container.position = position
-
-    def update_tags(self, tags: list) -> None:
-        for door in self.doors:
-            door.tags = tags
-
-
 class Room:
     SOLID_TAG = ["solid"]
 
     def __init__(self, position: Vector2):
         self.position = position
         self.size = ProjectProperties.BASE_RESOLUTION
+        self.data = RoomData()
+
+    def set_room_data(self, data: RoomData) -> None:
+        self.data.left_door_status = data.left_door_status
+        self.data.right_door_status = data.right_door_status
+        self.data.up_door_status = data.up_door_status
+        self.data.down_door_status = data.down_door_status
+        self.data.room_type = data.room_type
 
     def __str__(self):
-        return f"(position = {self.position}, size = {self.size})"
+        return f"(position = {self.position}, size = {self.size}, data = {self.data})"
 
     def __repr__(self):
-        return f"(position = {self.position}, size = {self.size})"
+        return f"(position = {self.position}, size = {self.size}, data = {self.data})"
