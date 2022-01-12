@@ -6,6 +6,8 @@ from seika.node import CollisionShape2D, Node2D
 class DoorStatus:
     OPEN = 0
     CLOSED = 1
+    BREAKABLE_WALL = 2
+    OPEN_WALL = 3
 
 
 class Door(CollisionShape2D):

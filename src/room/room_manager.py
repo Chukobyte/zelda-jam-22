@@ -24,15 +24,15 @@ class RoomManager:
         return cls._instance
 
     def add_room(self, room: Room) -> None:
-        self.rooms[f"{room.position.x}-{room.position.y}"] = room
+        self.rooms[f"{room.position.x},{room.position.y}"] = room
 
     def set_current_room(self, position: Vector2) -> None:
-        pos_key = f"{position.x}-{position.y}"
+        pos_key = f"{position.x},{position.y}"
         if pos_key in self.rooms:
             self.current_room = self.rooms[pos_key]
 
     def get_room(self, position: Vector2) -> Room:
-        return self.rooms[f"{position.x}-{position.y}"]
+        return self.rooms[f"{position.x},{position.y}"]
 
     def get_grid_position(self, position: Vector2) -> Vector2:
         return Vector2(
@@ -47,6 +47,9 @@ class RoomManager:
         )
 
     def start_room_transition(self, collided_door: Door) -> None:
+        # New
+        # new_room_position = self.current_room.position + collided_door.direction
+        # Old
         new_room_position = self.current_room.position + collided_door.direction
         self.set_current_room(position=new_room_position)
         self.current_room.position = new_room_position
@@ -63,6 +66,9 @@ class RoomManager:
         self.room_doors.up.set_open(True)
 
         GameContext.set_play_state(PlayState.ROOM_TRANSITION)
+
+    def setup_current_room(self) -> None:
+        pass
 
     def spawn_boss(self, node: Node2D, position: Vector2) -> None:
         boss = Boss.new()

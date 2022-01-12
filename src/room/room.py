@@ -2,6 +2,7 @@ from seika.math import Vector2
 from seika.node import CollisionShape2D
 
 from src.project_properties import ProjectProperties
+from src.room.room_model import RoomData
 
 
 class WallColliders:
@@ -46,6 +47,7 @@ class Room:
     def __init__(self, position: Vector2):
         self.position = position
         self.size = ProjectProperties.BASE_RESOLUTION
+        self.data = RoomData()
 
     def __str__(self):
         return f"(position = {self.position}, size = {self.size})"
