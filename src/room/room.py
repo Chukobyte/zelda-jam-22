@@ -40,6 +40,10 @@ class WallColliders:
             wall_collider.position = position
 
 
+class DoorStatus:
+    OPEN = 0
+    CLOSED = 1
+
 class Door(CollisionShape2D):
     Z_INDEX = 1
     ROOM_LEFT_POSITION = Vector2(22, 74)
@@ -51,6 +55,17 @@ class Door(CollisionShape2D):
     def __init__(self, entity_id: int):
         super().__init__(entity_id)
         self.direction = Vector2()
+        self._is_open = False
+
+    def set_open(self, value: bool) -> None:
+        self._is_open = value
+        new_tags = []
+        if self._is_open:
+            new_tags = Door.OPEN_DOOR_TAG
+        self.tags = new_tags
+
+    def is_open(self) -> bool:
+        self._is_open
 
     @staticmethod
     def new_door(dir: Vector2):
