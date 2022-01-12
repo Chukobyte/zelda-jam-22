@@ -2,12 +2,11 @@ from seika.node import Node2D
 from seika.input import Input
 from seika.engine import Engine
 from seika.audio import AudioStream
-from seika.utils import SimpleTimer
 
 from src.world import World
 from src.game_context import GameContext
 from src.room.room_builder import RoomBuilder
-from src.task.task import Task, TaskManager, co_suspend
+from src.task.task import Task, TaskManager, co_return, co_wait_until_seconds
 
 
 class Main(Node2D):
@@ -30,10 +29,10 @@ class Main(Node2D):
         self.task_manager.run_tasks()
 
     # Countdown test
-    @Task.task_func(debug=True)
+    @Task.task_func()
     def start_music(self):
-        countdown_timer = SimpleTimer(wait_time=0.25, start_on_init=True)
-        while not countdown_timer.tick(self.world.cached_delta):
-            yield co_suspend()
+        yield from co_wait_until_seconds(wait_time=0.25)
+
         music_audio_stream = AudioStream.get(stream_uid="no-color-theme")
         music_audio_stream.play()
+        yield co_return()

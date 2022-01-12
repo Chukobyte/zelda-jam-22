@@ -1,7 +1,9 @@
 import math
 
 from seika.math import Vector2
+from seika.node import Node2D
 
+from src.enemy.boss import Boss
 from src.game_context import PlayState, GameContext
 from src.room.room import Room, Door
 from src.project_properties import ProjectProperties
@@ -58,6 +60,13 @@ class RoomManager:
         self.transition_doors.update_tags([])
 
         GameContext.set_play_state(PlayState.ROOM_TRANSITION)
+
+    def spawn_boss(self, node: Node2D, position: Vector2) -> None:
+        boss = Boss.new()
+        boss.position = self.get_world_position(
+            grid_position=self.current_room.position
+        ) + Vector2(200, 45)
+        node.add_child(boss)
 
     # TODO: figure out why rooms aren't being cleaned up without this...
     def clean_up(self) -> None:
