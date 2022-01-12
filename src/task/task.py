@@ -1,9 +1,16 @@
 from typing import Callable
 
+from seika.utils import SimpleTimer
+
 
 class Awaitable:
     def __init__(self, finished: bool):
         self.finished = finished
+
+class AwaitType:
+    PASS = 0
+    SUSPEND = 1
+    RETURN = 2
 
 
 # Static functions to control coroutine state
@@ -14,6 +21,10 @@ def co_suspend() -> Awaitable:
 def co_return() -> Awaitable:
     return Awaitable(finished=True)
 
+def co_wait_until_seconds(wait_time: float):
+    timer = SimpleTimer(wait_time=wait_time, start_on_init=True)
+    while not timer.tick():
+        Awaitable(finished=False)
 
 class Task:
     """
@@ -56,6 +67,13 @@ class Task:
 
         return setup_task_func
 
+    @staticmethod
+    def run(task) -> bool:
+        awaitable = task.resume()
+        if isinstance(awaitable, Awaitable):
+            return awaitable.finished
+        return next(awaitable, True)
+
 
 class TaskManager:
     def __init__(self, initial_tasks=None):
@@ -76,8 +94,7 @@ class TaskManager:
     def run_tasks(self) -> None:
         tasks_to_remove = []
         for task in self.running_tasks:
-            awaitable = task.resume()
-            if awaitable.finished:
+            if Task.run(task):
                 tasks_to_remove.append(task)
         for finished_task in tasks_to_remove:
             self.remove_task(name=finished_task.name)

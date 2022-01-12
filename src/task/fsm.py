@@ -49,8 +49,7 @@ class FSM:
 
             # Main process
             if not has_exited:
-                awaitable = self.current_task.resume()
-                if awaitable.finished:
+                if Task.run(self.current_task):
                     if self.current_state.name in self.finished_links:
                         self._set_state(
                             state=self.finished_links[self.current_state.name]

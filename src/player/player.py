@@ -93,6 +93,15 @@ class Player(AnimatedSprite):
 
     @Task.task_func(debug=True)
     def idle(self):
+        def test():
+            count = 0
+            while True:
+                count += 1
+                print(f"new count = {count}")
+                yield co_suspend()
+
+        t = test()
+        yield from t
         while True:
             if self.direction == Vector2.UP():
                 self.play(animation_name="idle_up")
