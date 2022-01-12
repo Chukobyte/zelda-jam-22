@@ -29,6 +29,12 @@ class RoomData:
         self.is_cleared = is_cleared
         self.room_type = room_type
 
+    def __str__(self):
+        return f"(is_cleared = {self.is_cleared}, room_type = {self.room_type})"
+
+    def __repr__(self):
+        return f"(is_cleared = {self.is_cleared}, room_type = {self.room_type})"
+
 
 class RoomModel:
     INITIAL_DATA = {

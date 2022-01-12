@@ -1,13 +1,13 @@
 import math
 
 from seika.math import Vector2
-from seika.node import Node2D
 
-from src.enemy.boss import Boss
+from src.enemy.enemy_spawner import EnemySpawner
 from src.game_context import PlayState, GameContext
 from src.room.room import Room
 from src.room.door import Door, DoorStatus
 from src.project_properties import ProjectProperties
+from src.room.room_model import RoomType
 
 
 class RoomManager:
@@ -67,17 +67,22 @@ class RoomManager:
 
         GameContext.set_play_state(PlayState.ROOM_TRANSITION)
 
-    def setup_current_room(self) -> None:
-        pass
+    def finish_room_transition(self, main_node) -> None:
+        print(f"current_room = {self.current_room}")
+        if (
+            self.current_room.data.room_type == RoomType.BOSS
+            and not self.current_room.data.is_cleared
+        ):
+            boss_position = self.get_world_position(
+                grid_position=self.current_room.position
+            ) + Vector2(200, 45)
+            EnemySpawner.spawn_boss(main_node=main_node, position=boss_position)
 
-    def spawn_boss(self, node: Node2D, position: Vector2) -> None:
-        boss = Boss.new()
-        boss.position = self.get_world_position(
-            grid_position=self.current_room.position
-        ) + Vector2(200, 45)
-        node.add_child(boss)
+    def set_current_room_to_cleared(self) -> None:
+        self.current_room.data.is_cleared = True
 
-    # TODO: figure out why rooms aren't being cleaned up without this...
+    # TODO: Figure out why rooms aren't being cleaned up without this...
+    # TODO: Something to do with Sprite node clean ups as it happens with Attacks too
     def clean_up(self) -> None:
         for door in self.room_doors.doors + self.transition_doors.doors:
             door.queue_deletion()

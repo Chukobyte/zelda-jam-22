@@ -230,4 +230,4 @@ class Player(AnimatedSprite):
         room_manager.wall_colliders.update_wall_positions(new_world_position)
         GameContext.set_play_state(PlayState.MAIN)
 
-        room_manager.spawn_boss(node=self.get_parent(), position=Vector2(150, 100))
+        room_manager.finish_room_transition(main_node=self.get_parent())

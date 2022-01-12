@@ -57,7 +57,7 @@ class Room:
         self.data.room_type = data.room_type
 
     def __str__(self):
-        return f"(position = {self.position}, size = {self.size})"
+        return f"(position = {self.position}, size = {self.size}, data = {self.data})"
 
     def __repr__(self):
-        return f"(position = {self.position}, size = {self.size})"
+        return f"(position = {self.position}, size = {self.size}, data = {self.data})"
