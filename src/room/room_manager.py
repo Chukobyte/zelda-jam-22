@@ -68,7 +68,6 @@ class RoomManager:
         GameContext.set_play_state(PlayState.ROOM_TRANSITION)
 
     def finish_room_transition(self, main_node) -> None:
-        print(f"current_room = {self.current_room}")
         if (
             self.current_room.data.room_type == RoomType.BOSS
             and not self.current_room.data.is_cleared

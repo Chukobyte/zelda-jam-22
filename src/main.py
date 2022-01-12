@@ -3,6 +3,7 @@ from seika.input import Input
 from seika.engine import Engine
 from seika.audio import AudioStream
 
+from src.room.room_manager import RoomManager
 from src.world import World
 from src.game_context import GameContext
 from src.room.room_builder import RoomBuilder
@@ -36,3 +37,6 @@ class Main(Node2D):
         music_audio_stream = AudioStream.get(stream_uid="no-color-theme")
         music_audio_stream.play()
         yield co_return()
+
+    def _on_room_cleared(self, args: list) -> None:
+        RoomManager().set_current_room_to_cleared()
