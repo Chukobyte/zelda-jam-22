@@ -60,26 +60,10 @@ class RoomManager:
         self.transition_doors = self.room_doors
         self.room_doors = new_transition_doors
         # Update current room doors
-        if self.current_room.data.left_door_status == DoorStatus.OPEN:
-            self.room_doors.left.set_open(True)
-        else:
-            self.room_doors.left.set_open(False)
-        if self.current_room.data.right_door_status == DoorStatus.OPEN:
-            self.room_doors.right.set_open(True)
-        else:
-            self.room_doors.right.set_open(False)
-        if self.current_room.data.up_door_status == DoorStatus.OPEN:
-            self.room_doors.up.set_open(True)
-        else:
-            self.room_doors.up.set_open(False)
-        if self.current_room.data.down_door_status == DoorStatus.OPEN:
-            self.room_doors.down.set_open(True)
-        else:
-            self.room_doors.down.set_open(False)
-        # Update tags
-        # self.transition_doors.set_doors_is_open(False)
-        # Temp thing
-        # self.room_doors.up.set_open(True)
+        self.room_doors.left.set_status(self.current_room.data.left_door_status)
+        self.room_doors.right.set_status(self.current_room.data.right_door_status)
+        self.room_doors.up.set_status(self.current_room.data.up_door_status)
+        self.room_doors.down.set_status(self.current_room.data.down_door_status)
 
         GameContext.set_play_state(PlayState.ROOM_TRANSITION)
 

@@ -21,7 +21,7 @@ class Door(CollisionShape2D):
     def __init__(self, entity_id: int):
         super().__init__(entity_id)
         self.direction = Vector2()
-        self._is_open = False
+        self._status = DoorStatus.CLOSED
         self.sprite = None
 
     def _get_dir_string(self) -> str:
@@ -34,22 +34,26 @@ class Door(CollisionShape2D):
         elif self.direction == Vector2.LEFT():
             return "left"
 
-    def set_open(self, value: bool) -> None:
-        self._is_open = value
+    def set_status(self, status: int) -> None:
+        self._status = status
         dir_string = self._get_dir_string()
-        if self._is_open:
+        is_open_string = ""
+        if self._status == DoorStatus.OPEN:
             is_open_string = "open"
             self.tags = Door.OPEN_DOOR_TAG
-        else:
+        elif self._status == DoorStatus.CLOSED:
             is_open_string = "closed"
             self.tags = ["solid"]
-        texture_file_path = (
-            f"assets/images/dungeon/door_{dir_string}_{is_open_string}.png"
-        )
-        self.sprite.texture = Texture.get(file_path=texture_file_path)
+        if is_open_string:
+            texture_file_path = (
+                f"assets/images/dungeon/door_{dir_string}_{is_open_string}.png"
+            )
+            self.sprite.texture = Texture.get(file_path=texture_file_path)
+        else:
+            print(f"{status} is an invalid status!")
 
-    def is_open(self) -> bool:
-        self._is_open
+    def get_status(self) -> int:
+        return self._status
 
     @staticmethod
     def new_door(dir: Vector2):
