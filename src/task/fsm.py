@@ -50,7 +50,6 @@ class FSM:
             # Main process
             if not has_exited:
                 if Task.run(self.current_task):
-                    print(f"Finished state {self.current_state.name}")
                     if self.current_state.name in self.finished_links:
                         self._set_state(
                             state=self.finished_links[self.current_state.name]
