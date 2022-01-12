@@ -2,29 +2,19 @@ from typing import Callable
 
 from seika.utils import SimpleTimer
 
+from src.world import World
 
-class Awaitable:
-    def __init__(self, finished: bool):
-        self.finished = finished
 
-class AwaitType:
+class AwaitMode:
     PASS = 0
     SUSPEND = 1
     RETURN = 2
 
 
-# Static functions to control coroutine state
-def co_suspend() -> Awaitable:
-    return Awaitable(finished=False)
+class Awaitable:
+    def __init__(self, mode: int):
+        self.mode = mode
 
-
-def co_return() -> Awaitable:
-    return Awaitable(finished=True)
-
-def co_wait_until_seconds(wait_time: float):
-    timer = SimpleTimer(wait_time=wait_time, start_on_init=True)
-    while not timer.tick():
-        Awaitable(finished=False)
 
 class Task:
     """
@@ -71,7 +61,11 @@ class Task:
     def run(task) -> bool:
         awaitable = task.resume()
         if isinstance(awaitable, Awaitable):
-            return awaitable.finished
+            if awaitable.mode == AwaitMode.SUSPEND or awaitable.mode == AwaitMode.PASS:
+                return False
+            return True
+        if isinstance(awaitable, bool):
+            return awaitable
         return next(awaitable, True)
 
 
@@ -98,3 +92,31 @@ class TaskManager:
                 tasks_to_remove.append(task)
         for finished_task in tasks_to_remove:
             self.remove_task(name=finished_task.name)
+
+
+# Static functions to control coroutine state
+def co_suspend() -> Awaitable:
+    return Awaitable(mode=AwaitMode.SUSPEND)
+
+
+def co_return() -> Awaitable:
+    return Awaitable(mode=AwaitMode.RETURN)
+
+
+def wait_until_seconds_generator(wait_time: float):
+    world = World()
+    timer = SimpleTimer(wait_time=wait_time, start_on_init=True)
+    while not timer.tick(delta=world.cached_delta):
+        yield False
+
+
+def wait_until_helper():
+    while True:
+        yield Awaitable(mode=AwaitMode.PASS)
+
+
+def co_wait_until_seconds(wait_time: float):
+    world = World()
+    timer = SimpleTimer(wait_time=wait_time, start_on_init=True)
+    while not timer.tick(delta=world.cached_delta):
+        yield False

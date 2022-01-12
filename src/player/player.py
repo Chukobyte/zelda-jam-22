@@ -12,7 +12,7 @@ from src.world import World
 from src.room.room_manager import RoomManager
 from src.player.player_stats import PlayerStats
 from src.attack.attack import PlayerAttack
-from src.task.task import Task, co_return, co_suspend
+from src.task.task import Task, co_return, co_suspend, co_wait_until_seconds
 from src.task.fsm import FSM, State, StateExitLink
 
 
@@ -93,15 +93,6 @@ class Player(AnimatedSprite):
 
     @Task.task_func(debug=True)
     def idle(self):
-        def test():
-            count = 0
-            while True:
-                count += 1
-                print(f"new count = {count}")
-                yield co_suspend()
-
-        t = test()
-        yield from t
         while True:
             if self.direction == Vector2.UP():
                 self.play(animation_name="idle_up")
@@ -183,18 +174,16 @@ class Player(AnimatedSprite):
 
     @Task.task_func(debug=True)
     def attack(self):
-        world = World()
         player_attack = PlayerAttack.new()
         player_attack.position = (
             self.position + Vector2(4, 4) + (self.direction * Vector2(8, 12))
         )
         self.get_parent().add_child(player_attack)
-        attack_timer = SimpleTimer(
-            wait_time=player_attack.life_time, start_on_init=True
-        )
-        while not attack_timer.tick(world.cached_delta):
-            yield co_suspend()
+
+        yield from co_wait_until_seconds(wait_time=player_attack.life_time)
+
         player_attack.queue_deletion()
+        yield co_return()
 
     @Task.task_func(debug=True)
     def transitioning_to_room(self):
@@ -207,9 +196,7 @@ class Player(AnimatedSprite):
         camera_pos = Camera2D.get_viewport_position()
         # Delay
         self.stop()
-        delay_timer = SimpleTimer(wait_time=0.5, start_on_init=True)
-        while not delay_timer.tick(delta=world.cached_delta):
-            yield co_suspend()
+        yield from co_wait_until_seconds(wait_time=0.5)
         # Transition Start
         # TODO: Move some of the transition logic from player to something else...
         self.play()
