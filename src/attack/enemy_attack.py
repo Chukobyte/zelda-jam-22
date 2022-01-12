@@ -10,7 +10,7 @@ class EnemyAttack(Attack):
     def __init__(self, entity_id: int):
         super().__init__(entity_id)
         self.sprite = None
-        self.life_time = 1.0
+        self.set_life_time(1.0)
         self.damage = 1
 
     def _start(self) -> None:
@@ -23,6 +23,7 @@ class EnemyAttack(Attack):
         self.collider_rect = Rect2(0, 0, texture.width, texture.height)
 
     def _physics_process(self, delta: float) -> None:
+        super()._physics_process(delta)
         self.position += self.direction * Vector2(
             self.speed * delta, self.speed * delta
         )

@@ -204,7 +204,6 @@ class Player(AnimatedSprite):
 
         yield from co_wait_until_seconds(wait_time=player_attack.life_time)
 
-        player_attack.queue_deletion()
         yield co_return()
 
     @Task.task_func()

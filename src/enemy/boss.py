@@ -33,7 +33,6 @@ class Boss(Enemy):
             attack.direction = self.position.direction_to(target=player.position)
             self.get_parent().add_child(attack)
             yield from co_wait_until_seconds(wait_time=attack.life_time)
-            attack.queue_deletion()
         yield co_return()
 
     # TODO: temp win state when defeated
