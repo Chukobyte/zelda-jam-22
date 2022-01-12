@@ -103,18 +103,6 @@ def co_return() -> Awaitable:
     return Awaitable(mode=AwaitMode.RETURN)
 
 
-def wait_until_seconds_generator(wait_time: float):
-    world = World()
-    timer = SimpleTimer(wait_time=wait_time, start_on_init=True)
-    while not timer.tick(delta=world.cached_delta):
-        yield False
-
-
-def wait_until_helper():
-    while True:
-        yield Awaitable(mode=AwaitMode.PASS)
-
-
 def co_wait_until_seconds(wait_time: float):
     world = World()
     timer = SimpleTimer(wait_time=wait_time, start_on_init=True)
