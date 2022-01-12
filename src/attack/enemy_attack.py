@@ -23,10 +23,8 @@ class EnemyAttack(Attack):
         self.collider_rect = Rect2(0, 0, texture.width, texture.height)
 
     def _physics_process(self, delta: float) -> None:
-        pass
-        # TODO: Find out why player instance isn't in python cache!
-        # player_colliders = Collision.get_collided_nodes_by_tag(node=self, tag="player")
-        # if player_colliders and not self.has_collided:
-        #     self.has_collided = True
-        #     first_enemy = player_colliders[0].get_parent()
-        #     first_enemy.take_damage(attack=self)
+        player_colliders = Collision.get_collided_nodes_by_tag(node=self, tag="player")
+        if player_colliders and not self.has_collided:
+            self.has_collided = True
+            first_enemy = player_colliders[0].get_parent()
+            first_enemy.take_damage(attack=self)
