@@ -6,7 +6,7 @@ from seika.physics import Collision
 from seika.scene import SceneTree
 from seika.utils import SimpleTimer
 
-from src.game_context import GameContext, PlayState
+from src.game_context import GameContext, PlayState, GameState
 from src.world import World
 from src.room.room_manager import RoomManager
 from src.player.player_stats import PlayerStats
@@ -174,6 +174,7 @@ class Player(AnimatedSprite):
                     # TODO: temp win state
                     if GameContext().has_won:
                         room_manager.clean_up()
+                        GameContext.set_game_state(GameState.END_SCREEN)
                         SceneTree.change_scene(scene_path="scenes/end_screen.sscn")
                         yield co_return()
                     else:

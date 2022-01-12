@@ -44,6 +44,7 @@ class DoorStatus:
     OPEN = 0
     CLOSED = 1
 
+
 class Door(CollisionShape2D):
     Z_INDEX = 1
     ROOM_LEFT_POSITION = Vector2(22, 74)

@@ -2,7 +2,8 @@ class GameState:
     INIT = "init"
     TITLE_SCREEN = "title_screen"
     PLAYING = "playing"
-    CREDITS = "credits"
+    CREDITS_SCREEN = "credits_screen"
+    END_SCREEN = "end_screen"
 
 
 class PlayState:
