@@ -1,3 +1,4 @@
+from seika.assets import Texture
 from seika.math import Vector2
 from seika.node import Node2D, CollisionShape2D
 
@@ -57,13 +58,31 @@ class Door(CollisionShape2D):
         super().__init__(entity_id)
         self.direction = Vector2()
         self._is_open = False
+        self.sprite = None
+
+    def _get_dir_string(self) -> str:
+        if self.direction == Vector2.UP():
+            return "up"
+        elif self.direction == Vector2.DOWN():
+            return "down"
+        elif self.direction == Vector2.RIGHT():
+            return "right"
+        elif self.direction == Vector2.LEFT():
+            return "left"
 
     def set_open(self, value: bool) -> None:
         self._is_open = value
-        new_tags = []
+        dir_string = self._get_dir_string()
         if self._is_open:
-            new_tags = Door.OPEN_DOOR_TAG
-        self.tags = new_tags
+            is_open_string = "open"
+            self.tags = Door.OPEN_DOOR_TAG
+        else:
+            is_open_string = "closed"
+            self.tags = []
+        texture_file_path = (
+            f"assets/images/dungeon/door_{dir_string}_{is_open_string}.png"
+        )
+        self.sprite.texture = Texture.get(file_path=texture_file_path)
 
     def is_open(self) -> bool:
         self._is_open

@@ -77,7 +77,7 @@ class RoomBuilder:
                 current_doors.left,
                 Door.ROOM_LEFT_POSITION,
                 left_door_collider_rect,
-                True,
+                False,
                 current_doors.container,
                 left_door_texture,
             ],
@@ -85,7 +85,7 @@ class RoomBuilder:
                 current_doors.right,
                 Door.ROOM_RIGHT_POSITION,
                 right_door_collider_rect,
-                True,
+                False,
                 current_doors.container,
                 right_door_texture,
             ],
@@ -101,7 +101,7 @@ class RoomBuilder:
                 current_doors.down,
                 Door.ROOM_DOWN_POSITION,
                 down_door_collider_rect,
-                True,
+                False,
                 current_doors.container,
                 down_door_texture,
             ],
@@ -144,11 +144,13 @@ class RoomBuilder:
             door = door_data[0]
             door.position = door_data[1]
             door.collider_rect = door_data[2]
-            door.set_open(door_data[3])
             container = door_data[4]
             container.add_child(child_node=door)
+            # TODO: Sprite needs to be assigned before door created for now, clean up
             sprite = Sprite.new()
-            sprite.texture = door_data[5]
+            door.sprite = sprite
+            # sprite.texture = door_data[5]
+            door.set_open(door_data[3])
             door.add_child(child_node=sprite)
 
         room_manager = RoomManager()
