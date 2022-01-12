@@ -30,6 +30,8 @@ class RoomManager:
         pos_key = f"{position.x},{position.y}"
         if pos_key in self.rooms:
             self.current_room = self.rooms[pos_key]
+        else:
+            print(f"pos_key {pos_key} not found!")
 
     def get_room(self, position: Vector2) -> Room:
         return self.rooms[f"{position.x},{position.y}"]
