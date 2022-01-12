@@ -5,6 +5,7 @@ from seika.assets import Texture
 from src.room.room import Room, WallColliders
 from src.room.door import DungeonDoors, Door
 from src.room.room_manager import RoomManager
+from src.room.room_model import RoomModel
 
 
 class RoomBuilder:
@@ -161,16 +162,33 @@ class RoomBuilder:
     @staticmethod
     def create_rooms(node: Node) -> None:
         room_manager = RoomManager()
-        # (0, 0) Room is setup in editor
-        initial_room = Room(position=Vector2.ZERO())
-        room_manager.add_room(initial_room)
-        room_manager.current_room = initial_room
-        # Other rooms are created procedurally
         room_bg_texture = Texture.get(file_path="assets/images/dungeon_level.png")
-        for room in [Room(position=Vector2.UP())]:
+        for pos in RoomModel.INITIAL_DATA:
+            room_data = RoomModel.INITIAL_DATA[pos]
+            room = Room(position=pos)
+            room.set_room_data(room_data)
             room_manager.add_room(room)
+            # Sprite
             room_bg_sprite = Sprite.new()
             room_bg_sprite.z_index = -1
             room_bg_sprite.texture = room_bg_texture
-            room_bg_sprite.position = room_manager.get_world_position(room.position)
+            room_bg_sprite.position = room_manager.get_world_position(pos)
             node.add_child(child_node=room_bg_sprite)
+            # Set Initial room to 0,0
+            if pos == Vector2.ZERO():
+                room_manager.current_room = room
+
+        # Old
+        # (0, 0) Room is setup in editor
+        # initial_room = Room(position=Vector2.ZERO())
+        # room_manager.add_room(initial_room)
+        # room_manager.current_room = initial_room
+        # # Other rooms are created procedurally
+        # room_bg_texture = Texture.get(file_path="assets/images/dungeon_level.png")
+        # for room in [Room(position=Vector2.UP())]:
+        #     room_manager.add_room(room)
+        #     room_bg_sprite = Sprite.new()
+        #     room_bg_sprite.z_index = -1
+        #     room_bg_sprite.texture = room_bg_texture
+        #     room_bg_sprite.position = room_manager.get_world_position(room.position)
+        #     node.add_child(child_node=room_bg_sprite)

@@ -6,7 +6,7 @@ from seika.node import Node2D
 from src.enemy.boss import Boss
 from src.game_context import PlayState, GameContext
 from src.room.room import Room
-from src.room.door import Door
+from src.room.door import Door, DoorStatus
 from src.project_properties import ProjectProperties
 
 
@@ -59,11 +59,27 @@ class RoomManager:
         new_transition_doors = self.transition_doors
         self.transition_doors = self.room_doors
         self.room_doors = new_transition_doors
+        # Update current room doors
+        if self.current_room.data.left_door_status == DoorStatus.OPEN:
+            self.room_doors.left.set_open(True)
+        else:
+            self.room_doors.left.set_open(False)
+        if self.current_room.data.right_door_status == DoorStatus.OPEN:
+            self.room_doors.right.set_open(True)
+        else:
+            self.room_doors.right.set_open(False)
+        if self.current_room.data.up_door_status == DoorStatus.OPEN:
+            self.room_doors.up.set_open(True)
+        else:
+            self.room_doors.up.set_open(False)
+        if self.current_room.data.down_door_status == DoorStatus.OPEN:
+            self.room_doors.down.set_open(True)
+        else:
+            self.room_doors.down.set_open(False)
         # Update tags
-        # self.room_doors.update_tags(Door.OPEN_DOOR_TAG)
-        self.transition_doors.update_tags([])
+        # self.transition_doors.set_doors_is_open(False)
         # Temp thing
-        self.room_doors.up.set_open(True)
+        # self.room_doors.up.set_open(True)
 
         GameContext.set_play_state(PlayState.ROOM_TRANSITION)
 

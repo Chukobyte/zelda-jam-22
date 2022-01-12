@@ -83,4 +83,4 @@ class DungeonDoors:
 
     def set_doors_is_open(self, value: bool) -> None:
         for door in self.doors:
-            door.is_open(value)
+            door.set_open(value)
