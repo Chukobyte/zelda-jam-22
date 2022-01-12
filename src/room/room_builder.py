@@ -177,18 +177,3 @@ class RoomBuilder:
             # Set Initial room to 0,0
             if pos == Vector2.ZERO():
                 room_manager.current_room = room
-
-        # Old
-        # (0, 0) Room is setup in editor
-        # initial_room = Room(position=Vector2.ZERO())
-        # room_manager.add_room(initial_room)
-        # room_manager.current_room = initial_room
-        # # Other rooms are created procedurally
-        # room_bg_texture = Texture.get(file_path="assets/images/dungeon_level.png")
-        # for room in [Room(position=Vector2.UP())]:
-        #     room_manager.add_room(room)
-        #     room_bg_sprite = Sprite.new()
-        #     room_bg_sprite.z_index = -1
-        #     room_bg_sprite.texture = room_bg_texture
-        #     room_bg_sprite.position = room_manager.get_world_position(room.position)
-        #     node.add_child(child_node=room_bg_sprite)
