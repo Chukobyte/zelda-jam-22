@@ -31,13 +31,6 @@ class RoomData:
 
 
 class RoomModel:
-    LEFT_DOOR_STATUS = "left_door_status"
-    RIGHT_DOOR_STATUS = "left_door_status"
-    UP_DOOR_STATUS = "left_door_status"
-    DOWN_DOOR_STATUS = "left_door_status"
-    ROOM_TYPE = "room_type"
-
-    # Doors will be determine by whether paths are cleared maybe...
     INITIAL_DATA = {
         Vector2.ZERO(): RoomData(
             left_door_status=DoorStatus.CLOSED,
@@ -53,7 +46,7 @@ class RoomModel:
             down_door_status=DoorStatus.OPEN,
             room_type=RoomType.BOSS,
         ),
-        Vector2.DOWN(): RoomData(
+        Vector2(0, -2): RoomData(
             left_door_status=DoorStatus.CLOSED,
             right_door_status=DoorStatus.CLOSED,
             up_door_status=DoorStatus.CLOSED,
