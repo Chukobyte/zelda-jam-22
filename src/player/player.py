@@ -6,17 +6,18 @@ from seika.physics import Collision
 from seika.scene import SceneTree
 from seika.utils import SimpleTimer
 
-from src.enemy.boss import Boss
 from src.game_context import GameContext, PlayState
 from src.world import World
 from src.room.room_manager import RoomManager
 from src.player.player_stats import PlayerStats
-from src.attack.attack import PlayerAttack
+from src.attack.player_attack import PlayerAttack
 from src.task.task import Task, co_return, co_suspend, co_wait_until_seconds
 from src.task.fsm import FSM, State, StateExitLink
 
 
 class Player(AnimatedSprite):
+    TAG = "player"
+
     def _start(self) -> None:
         self.stats = PlayerStats()
         self.collider = self.get_node(name="PlayerCollider")
@@ -25,6 +26,7 @@ class Player(AnimatedSprite):
         self.task_fsm = FSM()
         self._configure_fsm()
         # Temp
+        self.tags = [Player.TAG]
         self.last_collided_door = None
 
     def _configure_fsm(self) -> None:
@@ -91,7 +93,10 @@ class Player(AnimatedSprite):
     def _physics_process(self, delta: float) -> None:
         self.task_fsm.process()
 
-    @Task.task_func(debug=True)
+    def take_damage(self, attack) -> None:
+        print(f"Player hit by attack: {attack}")
+
+    @Task.task_func()
     def idle(self):
         while True:
             if self.direction == Vector2.UP():
@@ -108,7 +113,7 @@ class Player(AnimatedSprite):
                 self.flip_h = True
             yield co_suspend()
 
-    @Task.task_func(debug=True)
+    @Task.task_func()
     def move(self):
         world = World()
         room_manager = RoomManager()
@@ -172,7 +177,7 @@ class Player(AnimatedSprite):
 
             yield co_suspend()
 
-    @Task.task_func(debug=True)
+    @Task.task_func()
     def attack(self):
         player_attack = PlayerAttack.new()
         player_attack.position = (
@@ -185,7 +190,7 @@ class Player(AnimatedSprite):
         player_attack.queue_deletion()
         yield co_return()
 
-    @Task.task_func(debug=True)
+    @Task.task_func()
     def transitioning_to_room(self):
         world = World()
         room_manager = RoomManager()
@@ -213,9 +218,5 @@ class Player(AnimatedSprite):
         Camera2D.set_viewport_position(new_world_position)
         room_manager.wall_colliders.update_wall_positions(new_world_position)
         GameContext.set_play_state(PlayState.MAIN)
-        # Temp spawn boss
-        boss = Boss.new()
-        boss.position = room_manager.get_world_position(
-            grid_position=room_manager.current_room.position
-        ) + Vector2(150, 100)
-        self.get_parent().add_child(boss)
+
+        room_manager.spawn_boss(node=self.get_parent(), position=Vector2(150, 100))

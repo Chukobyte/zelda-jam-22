@@ -1,7 +1,13 @@
 from seika.color import Color
 from seika.node import Sprite, CollisionShape2D, Node2D
 
-from src.task.task import TaskManager, co_suspend, Task, co_wait_until_seconds, co_return
+from src.task.task import (
+    TaskManager,
+    co_suspend,
+    Task,
+    co_wait_until_seconds,
+    co_return,
+)
 
 
 class EnemyStats:
@@ -50,7 +56,9 @@ class Enemy(Sprite):
         if self.stats.hp <= 0:
             self.queue_deletion()
         else:
-            self.tasks.add_task(task=Task(name="damaged_flash", func=self.damaged_flash))
+            self.tasks.add_task(
+                task=Task(name="damaged_flash", func=self.damaged_flash)
+            )
 
     @Task.task_func(debug=True)
     def damaged_flash(self):

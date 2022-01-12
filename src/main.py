@@ -29,7 +29,7 @@ class Main(Node2D):
         self.task_manager.run_tasks()
 
     # Countdown test
-    @Task.task_func(debug=True)
+    @Task.task_func()
     def start_music(self):
         yield from co_wait_until_seconds(wait_time=0.25)
 

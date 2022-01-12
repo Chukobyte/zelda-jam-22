@@ -1,8 +1,12 @@
-from seika.assets import Texture
-from seika.math import Rect2
+import random
 
+from seika.assets import Texture
+from seika.math import Rect2, Vector2
+
+from src.attack.enemy_attack import EnemyAttack
 from src.enemy.enemy import Enemy
 from src.game_context import GameContext
+from src.task.task import Task, co_wait_until_seconds, co_return
 
 
 class Boss(Enemy):
@@ -14,9 +18,20 @@ class Boss(Enemy):
         self.collider.collider_rect = Rect2(
             0, 0, boss_texture.width, boss_texture.height
         )
+        self.tasks.add_task(task=Task(name="shoot", func=self.shoot_shot))
 
     def _physics_process(self, delta: float) -> None:
         self.tasks.run_tasks()
+
+    @Task.task_func(debug=True)
+    def shoot_shot(self):
+        while True:
+            yield from co_wait_until_seconds(wait_time=random.uniform(2.0, 4.0))
+            attack = EnemyAttack.new()
+            attack.position = self.position + Vector2(30, -20)
+            yield from co_wait_until_seconds(wait_time=attack.life_time)
+            attack.queue_deletion()
+        yield co_return()
 
     # TODO: temp win state when defeated
     def _end(self) -> None:
