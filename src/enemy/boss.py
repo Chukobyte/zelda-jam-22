@@ -29,6 +29,7 @@ class Boss(Enemy):
             yield from co_wait_until_seconds(wait_time=random.uniform(2.0, 4.0))
             attack = EnemyAttack.new()
             attack.position = self.position + Vector2(30, -20)
+            self.get_parent().add_child(attack)
             yield from co_wait_until_seconds(wait_time=attack.life_time)
             attack.queue_deletion()
         yield co_return()

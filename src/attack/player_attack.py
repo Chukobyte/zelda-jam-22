@@ -15,6 +15,7 @@ class PlayerAttack(Attack):
         self.damage = 1
 
     def _start(self) -> None:
+        super()._start()
         self.sprite = Sprite.new()
         texture = Texture.get(file_path="assets/images/player_attack.png")
         self.sprite.texture = texture

@@ -26,7 +26,7 @@ class Player(AnimatedSprite):
         self.task_fsm = FSM()
         self._configure_fsm()
         # Temp
-        self.tags = [Player.TAG]
+        self.collider.tags = [Player.TAG]
         self.last_collided_door = None
 
     def _configure_fsm(self) -> None:
