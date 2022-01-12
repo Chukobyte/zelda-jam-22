@@ -20,7 +20,9 @@ class Player(AnimatedSprite):
 
     def _start(self) -> None:
         self.stats = PlayerStats()
+        self.stats.set_all_hp(value=3)
         self.collider = self.get_node(name="PlayerCollider")
+        self.player_ui_sprite = self.get_node(name="PlayerUISprite")
         self.velocity = Vector2()
         self.direction = Vector2.DOWN()
         self.task_fsm = FSM()
@@ -94,7 +96,15 @@ class Player(AnimatedSprite):
         self.task_fsm.process()
 
     def take_damage(self, attack) -> None:
-        print(f"Player hit by attack: {attack}")
+        self.stats.hp -= attack.damage
+        if self.stats.hp <= 0:
+            self.player_ui_sprite.play("empty")
+            # TODO: Do more stuff...
+        else:
+            if self.stats.hp == 2:
+                self.player_ui_sprite.play("two_hearts")
+            if self.stats.hp == 1:
+                self.player_ui_sprite.play("one_heart")
 
     @Task.task_func()
     def idle(self):

@@ -25,11 +25,13 @@ class Boss(Enemy):
 
     @Task.task_func(debug=True)
     def shoot_shot(self):
+        player = self.get_node(name="Player")
+        assert player
         while True:
             yield from co_wait_until_seconds(wait_time=random.uniform(2.0, 4.0))
             attack = EnemyAttack.new()
             attack.position = self.position
-            attack.direction = Vector2.DOWN()
+            attack.direction = self.position.direction_to(target=player.position)
             self.get_parent().add_child(attack)
             yield from co_wait_until_seconds(wait_time=attack.life_time)
             attack.queue_deletion()

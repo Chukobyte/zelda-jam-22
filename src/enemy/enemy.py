@@ -1,6 +1,7 @@
 from seika.color import Color
 from seika.node import Sprite, CollisionShape2D, Node2D
 
+from src.stats import RoomEntityStats
 from src.task.task import (
     TaskManager,
     co_suspend,
@@ -10,14 +11,8 @@ from src.task.task import (
 )
 
 
-class EnemyStats:
-    def __init__(self):
-        self.base_hp = 0
-        self.hp = 0
-
-    def set_all_hp(self, value: int) -> None:
-        self.base_hp = value
-        self.hp = value
+class EnemyStats(RoomEntityStats):
+    pass
 
 
 class Enemy(Sprite):
