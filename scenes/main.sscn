@@ -629,6 +629,94 @@
                 }
             ],
             "children": []
+        },
+        {
+            "name": "EventTextbox",
+            "type": "Sprite",
+            "tags": [],
+            "external_scene_source": "",
+            "components": [
+                {
+                    "transform2D": {
+                        "position": {
+                            "x": 50.0,
+                            "y": 150.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "rotation": 0.0,
+                        "z_index": 10,
+                        "z_index_relative_to_parent": true,
+                        "ignore_camera": true
+                    }
+                },
+                {
+                    "sprite": {
+                        "texture_path": "assets/images/ui/textbox.png",
+                        "draw_source": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "width": 300.0,
+                            "height": 100.0
+                        },
+                        "flip_x": false,
+                        "flip_y": false,
+                        "modulate": {
+                            "red": 1.0,
+                            "green": 1.0,
+                            "blue": 1.0,
+                            "alpha": 1.0
+                        }
+                    }
+                },
+                {
+                    "scriptable_class": {
+                        "class_path": "src.event.event_textbox",
+                        "class_name": "EventTextbox"
+                    }
+                }
+            ],
+            "children": [
+                {
+                    "name": "EventTextLabel",
+                    "type": "TextLabel",
+                    "tags": [],
+                    "external_scene_source": "",
+                    "components": [
+                        {
+                            "transform2D": {
+                                "position": {
+                                    "x": 4.0,
+                                    "y": 4.0
+                                },
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "rotation": 0.0,
+                                "z_index": 11,
+                                "z_index_relative_to_parent": true,
+                                "ignore_camera": true
+                            }
+                        },
+                        {
+                            "text_label": {
+                                "text": "",
+                                "font_uid": "nes-8",
+                                "color": {
+                                    "red": 1.0,
+                                    "green": 1.0,
+                                    "blue": 1.0,
+                                    "alpha": 1.0
+                                }
+                            }
+                        }
+                    ],
+                    "children": []
+                }
+            ]
         }
     ]
 }

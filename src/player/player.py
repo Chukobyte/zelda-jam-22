@@ -7,6 +7,7 @@ from seika.physics import Collision
 from seika.scene import SceneTree
 from seika.utils import SimpleTimer
 
+from src.event.event_textbox import TextboxManager
 from src.game_context import GameContext, PlayState, GameState
 from src.room.door import DoorStatus
 from src.world import World
@@ -158,6 +159,7 @@ class Player(AnimatedSprite):
             if Input.is_action_just_pressed(action_name="credits"):
                 if GameContext.get_play_state() == PlayState.MAIN:
                     GameContext.set_play_state(PlayState.EVENT)
+                    TextboxManager().hide_textbox()
 
             delta = world.cached_delta
             new_velocity = None
