@@ -7,6 +7,7 @@ from seika.scene import SceneTree
 from seika.utils import SimpleTimer
 
 from src.game_context import GameContext, PlayState, GameState
+from src.room.door import DoorStatus
 from src.world import World
 from src.room.room_manager import RoomManager
 from src.player.player_stats import PlayerStats
@@ -187,6 +188,8 @@ class Player(AnimatedSprite):
                 elif rainbow_orbs:
                     GameContext().has_won = True
                     rainbow_orbs[0].queue_deletion()
+                    # Temp open up door
+                    room_manager.room_doors.up.set_status(DoorStatus.OPEN)
                 else:
                     self.position += new_velocity
             else:
@@ -221,9 +224,15 @@ class Player(AnimatedSprite):
         # Transition Start
         # TODO: Move some of the transition logic from player to something else...
         self.play()
+        # Moving horizontal
+        if move_dir.x != 0:
+            transition_accel = 1.05
+        # Moving vertically
+        else:
+            transition_accel = 0.6
         transition_timer = SimpleTimer(wait_time=1.25, start_on_init=True)
         while not transition_timer.tick(delta=world.cached_delta):
-            accel = self.stats.move_params.accel * world.cached_delta * 0.6
+            accel = self.stats.move_params.accel * world.cached_delta * transition_accel
             self.position += Vector2(move_dir.x * accel, move_dir.y * accel)
             # TODO: Set proper thing to stop camera
             camera_accel = accel * 3.0
