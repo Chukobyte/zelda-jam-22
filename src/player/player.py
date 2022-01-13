@@ -1,4 +1,5 @@
 from seika.camera import Camera2D
+from seika.color import Color
 from seika.node import AnimatedSprite
 from seika.input import Input
 from seika.math import Vector2
@@ -7,6 +8,7 @@ from seika.scene import SceneTree
 from seika.utils import SimpleTimer
 
 from src.game_context import GameContext, PlayState, GameState
+from src.room.door import DoorStatus
 from src.world import World
 from src.room.room_manager import RoomManager
 from src.player.player_stats import PlayerStats
@@ -106,6 +108,12 @@ class Player(AnimatedSprite):
             if self.stats.hp == 1:
                 self.player_ui_sprite.play("one_heart")
 
+    def set_stat_ui_visibility(self, visible: bool) -> None:
+        if visible:
+            self.player_ui_sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
+        else:
+            self.player_ui_sprite.modulate = Color(1.0, 1.0, 1.0, 0.0)
+
     @Task.task_func()
     def idle(self):
         while True:
@@ -187,6 +195,8 @@ class Player(AnimatedSprite):
                 elif rainbow_orbs:
                     GameContext().has_won = True
                     rainbow_orbs[0].queue_deletion()
+                    # Temp open up door
+                    room_manager.room_doors.up.set_status(DoorStatus.OPEN)
                 else:
                     self.position += new_velocity
             else:
@@ -215,15 +225,22 @@ class Player(AnimatedSprite):
             room_manager.current_room.position
         )
         camera_pos = Camera2D.get_viewport_position()
+        self.set_stat_ui_visibility(visible=False)
         # Delay
         self.stop()
         yield from co_wait_until_seconds(wait_time=0.5)
         # Transition Start
         # TODO: Move some of the transition logic from player to something else...
         self.play()
+        # Moving horizontal
+        if move_dir.x != 0:
+            transition_accel = 1.05
+        # Moving vertically
+        else:
+            transition_accel = 0.6
         transition_timer = SimpleTimer(wait_time=1.25, start_on_init=True)
         while not transition_timer.tick(delta=world.cached_delta):
-            accel = self.stats.move_params.accel * world.cached_delta * 0.6
+            accel = self.stats.move_params.accel * world.cached_delta * transition_accel
             self.position += Vector2(move_dir.x * accel, move_dir.y * accel)
             # TODO: Set proper thing to stop camera
             camera_accel = accel * 3.0
@@ -234,5 +251,6 @@ class Player(AnimatedSprite):
         Camera2D.set_viewport_position(new_world_position)
         room_manager.wall_colliders.update_wall_positions(new_world_position)
         GameContext.set_play_state(PlayState.MAIN)
+        self.set_stat_ui_visibility(visible=True)
 
         room_manager.finish_room_transition(main_node=self.get_parent())

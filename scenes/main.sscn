@@ -434,35 +434,145 @@
                         }
                     ],
                     "children": []
+                },
+                {
+                    "name": "PlayerUISprite",
+                    "type": "AnimatedSprite",
+                    "tags": [],
+                    "external_scene_source": "",
+                    "components": [
+                        {
+                            "transform2D": {
+                                "position": {
+                                    "x": -4.0,
+                                    "y": -14.0
+                                },
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "rotation": 0.0,
+                                "z_index": 0,
+                                "z_index_relative_to_parent": true,
+                                "ignore_camera": false
+                            }
+                        },
+                        {
+                            "animated_sprite": {
+                                "current_animation": "full",
+                                "is_playing": false,
+                                "flip_x": false,
+                                "flip_y": false,
+                                "modulate": {
+                                    "red": 1.0,
+                                    "green": 1.0,
+                                    "blue": 1.0,
+                                    "alpha": 1.0
+                                },
+                                "animations": [
+                                    {
+                                        "name": "empty",
+                                        "speed": 1000,
+                                        "frames": [
+                                            {
+                                                "frame": 0,
+                                                "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
+                                                "draw_source": {
+                                                    "x": 0.0,
+                                                    "y": 24.0,
+                                                    "width": 24.0,
+                                                    "height": 8.0
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "full",
+                                        "speed": 1000,
+                                        "frames": [
+                                            {
+                                                "frame": 0,
+                                                "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
+                                                "draw_source": {
+                                                    "x": 0.0,
+                                                    "y": 0.0,
+                                                    "width": 24.0,
+                                                    "height": 8.0
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "one_heart",
+                                        "speed": 1000,
+                                        "frames": [
+                                            {
+                                                "frame": 0,
+                                                "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
+                                                "draw_source": {
+                                                    "x": 0.0,
+                                                    "y": 16.0,
+                                                    "width": 24.0,
+                                                    "height": 8.0
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "two_hearts",
+                                        "speed": 1000,
+                                        "frames": [
+                                            {
+                                                "frame": 0,
+                                                "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
+                                                "draw_source": {
+                                                    "x": 0.0,
+                                                    "y": 8.0,
+                                                    "width": 24.0,
+                                                    "height": 8.0
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "children": []
                 }
             ]
         },
         {
-            "name": "PlayerUISprite",
-            "type": "AnimatedSprite",
+            "name": "HorizontalDoorOverhead",
+            "type": "Sprite",
             "tags": [],
             "external_scene_source": "",
             "components": [
                 {
                     "transform2D": {
                         "position": {
-                            "x": 25.0,
-                            "y": 25.0
+                            "x": 0.0,
+                            "y": -10.0
                         },
                         "scale": {
                             "x": 1.0,
                             "y": 1.0
                         },
                         "rotation": 0.0,
-                        "z_index": 0,
+                        "z_index": 4,
                         "z_index_relative_to_parent": true,
-                        "ignore_camera": true
+                        "ignore_camera": false
                     }
                 },
                 {
-                    "animated_sprite": {
-                        "current_animation": "full",
-                        "is_playing": false,
+                    "sprite": {
+                        "texture_path": "assets/images/dungeon/horizontal_door_overhead.png",
+                        "draw_source": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "width": 400.0,
+                            "height": 18.0
+                        },
                         "flip_x": false,
                         "flip_y": false,
                         "modulate": {
@@ -470,73 +580,51 @@
                             "green": 1.0,
                             "blue": 1.0,
                             "alpha": 1.0
+                        }
+                    }
+                }
+            ],
+            "children": []
+        },
+        {
+            "name": "VerticalDoorOverhead",
+            "type": "Sprite",
+            "tags": [],
+            "external_scene_source": "",
+            "components": [
+                {
+                    "transform2D": {
+                        "position": {
+                            "x": -14.0,
+                            "y": 0.0
                         },
-                        "animations": [
-                            {
-                                "name": "empty",
-                                "speed": 1000,
-                                "frames": [
-                                    {
-                                        "frame": 0,
-                                        "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
-                                        "draw_source": {
-                                            "x": 0.0,
-                                            "y": 24.0,
-                                            "width": 24.0,
-                                            "height": 8.0
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                "name": "full",
-                                "speed": 1000,
-                                "frames": [
-                                    {
-                                        "frame": 0,
-                                        "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
-                                        "draw_source": {
-                                            "x": 0.0,
-                                            "y": 0.0,
-                                            "width": 24.0,
-                                            "height": 8.0
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                "name": "one_heart",
-                                "speed": 1000,
-                                "frames": [
-                                    {
-                                        "frame": 0,
-                                        "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
-                                        "draw_source": {
-                                            "x": 0.0,
-                                            "y": 16.0,
-                                            "width": 24.0,
-                                            "height": 8.0
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                "name": "two_hearts",
-                                "speed": 1000,
-                                "frames": [
-                                    {
-                                        "frame": 0,
-                                        "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
-                                        "draw_source": {
-                                            "x": 0.0,
-                                            "y": 8.0,
-                                            "width": 24.0,
-                                            "height": 8.0
-                                        }
-                                    }
-                                ]
-                            }
-                        ]
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "rotation": 0.0,
+                        "z_index": 4,
+                        "z_index_relative_to_parent": true,
+                        "ignore_camera": false
+                    }
+                },
+                {
+                    "sprite": {
+                        "texture_path": "assets/images/dungeon/vertical_door_overhead.png",
+                        "draw_source": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "width": 36.0,
+                            "height": 225.0
+                        },
+                        "flip_x": false,
+                        "flip_y": false,
+                        "modulate": {
+                            "red": 1.0,
+                            "green": 1.0,
+                            "blue": 1.0,
+                            "alpha": 1.0
+                        }
                     }
                 }
             ],
