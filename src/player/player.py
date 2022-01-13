@@ -41,13 +41,20 @@ class Player(AnimatedSprite):
         transitioning_to_room_state = State(
             name="transitioning_to_room", state_func=self.transitioning_to_room
         )
+        event_state = State(name="event", state_func=self.event)
 
         self.task_fsm.add_state(state=idle_state, set_current=True)
         self.task_fsm.add_state(state=move_state)
         self.task_fsm.add_state(state=attack_state)
         self.task_fsm.add_state(state=transitioning_to_room_state)
+        self.task_fsm.add_state(state=event_state)
 
         # Links
+        event_exit = StateExitLink(
+            state_to_transition=event_state,
+            transition_predicate=lambda: GameContext.get_play_state()
+            == PlayState.EVENT,
+        )
         # Idle
         idle_move_exit = StateExitLink(
             state_to_transition=move_state,
@@ -66,6 +73,7 @@ class Player(AnimatedSprite):
         )
         self.task_fsm.add_state_exit_link(idle_state, state_exit_link=idle_move_exit)
         self.task_fsm.add_state_exit_link(idle_state, state_exit_link=idle_attack_exit)
+        self.task_fsm.add_state_exit_link(idle_state, state_exit_link=event_exit)
         # Move
         move_exit = StateExitLink(
             state_to_transition=attack_state,
@@ -82,6 +90,7 @@ class Player(AnimatedSprite):
         self.task_fsm.add_state_exit_link(
             state=move_state, state_exit_link=move_exit_to_room_transition
         )
+        self.task_fsm.add_state_exit_link(state=move_state, state_exit_link=event_exit)
         self.task_fsm.add_state_finished_link(
             state=move_state, state_to_transition=idle_state
         )
@@ -92,6 +101,15 @@ class Player(AnimatedSprite):
         # Transitioning To Room
         self.task_fsm.add_state_finished_link(
             state=transitioning_to_room_state, state_to_transition=idle_state
+        )
+        # Event
+        to_idle_from_event_exit = StateExitLink(
+            state_to_transition=idle_state,
+            transition_predicate=lambda: GameContext.get_play_state()
+            != PlayState.EVENT,
+        )
+        self.task_fsm.add_state_exit_link(
+            state=event_state, state_exit_link=to_idle_from_event_exit
         )
 
     def _physics_process(self, delta: float) -> None:
@@ -114,7 +132,7 @@ class Player(AnimatedSprite):
         else:
             self.player_ui_sprite.modulate = Color(1.0, 1.0, 1.0, 0.0)
 
-    @Task.task_func()
+    @Task.task_func(debug=True)
     def idle(self):
         while True:
             if self.direction == Vector2.UP():
@@ -136,6 +154,11 @@ class Player(AnimatedSprite):
         world = World()
         room_manager = RoomManager()
         while True:
+            # Temp event toggle
+            if Input.is_action_just_pressed(action_name="credits"):
+                if GameContext.get_play_state() == PlayState.MAIN:
+                    GameContext.set_play_state(PlayState.EVENT)
+
             delta = world.cached_delta
             new_velocity = None
             accel = self.stats.move_params.accel * delta
@@ -254,3 +277,10 @@ class Player(AnimatedSprite):
         self.set_stat_ui_visibility(visible=True)
 
         room_manager.finish_room_transition(main_node=self.get_parent())
+
+    @Task.task_func()
+    def event(self):
+        while True:
+            if Input.is_action_just_pressed(action_name="credits"):
+                GameContext.set_play_state(PlayState.MAIN)
+            yield co_suspend()

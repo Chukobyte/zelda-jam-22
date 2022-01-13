@@ -9,6 +9,7 @@ class GameState:
 class PlayState:
     MAIN = "main"
     ROOM_TRANSITION = "room_transition"
+    EVENT = "event"
     PAUSED = "paused"
     DIALOGUE = "dialogue"
 
