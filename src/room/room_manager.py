@@ -50,9 +50,7 @@ class RoomManager:
         )
 
     def start_room_transition(self, collided_door: Door) -> None:
-        # New
-        # new_room_position = self.current_room.position + collided_door.direction
-        # Old
+        room_transitioning_from = self.current_room
         new_room_position = self.current_room.position + collided_door.direction
         self.set_current_room(position=new_room_position)
         self.current_room.position = new_room_position
@@ -63,6 +61,28 @@ class RoomManager:
         self.transition_doors = self.room_doors
         self.room_doors = new_transition_doors
         self.refresh_current_doors_status()
+        # Setup door overhead
+        previous_room_world_position = self.get_world_position(
+            room_transitioning_from.position
+        )
+        horizontal_door_overhead = collided_door.get_node(name="HorizontalDoorOverhead")
+        vertical_door_overhead = collided_door.get_node(name="VerticalDoorOverhead")
+        if collided_door.direction == Vector2.UP():
+            horizontal_door_overhead.position = previous_room_world_position + Vector2(
+                0.0, -10.0
+            )
+        elif collided_door.direction == Vector2.DOWN():
+            horizontal_door_overhead.position = previous_room_world_position + Vector2(
+                0.0, -10.0 + self.current_room.size.y
+            )
+        elif collided_door.direction == Vector2.LEFT():
+            vertical_door_overhead.position = previous_room_world_position + Vector2(
+                -17.0, 0.0
+            )
+        elif collided_door.direction == Vector2.RIGHT():
+            vertical_door_overhead.position = previous_room_world_position + Vector2(
+                -17.0 + self.current_room.size.x, 0.0
+            )
 
         GameContext.set_play_state(PlayState.ROOM_TRANSITION)
 

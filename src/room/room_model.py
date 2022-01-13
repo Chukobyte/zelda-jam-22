@@ -69,15 +69,6 @@ class RoomModel:
             room_type=RoomType.INTRO,
             area_type=AreaType.RED,
         ),
-        # Temp
-        # Vector2(-1.0, 0.0): RoomData(
-        #     left_door_status=DoorStatus.SOLID_WALL,
-        #     right_door_status=DoorStatus.OPEN,
-        #     up_door_status=DoorStatus.SOLID_WALL,
-        #     down_door_status=DoorStatus.SOLID_WALL,
-        #     room_type=RoomType.COMBAT,
-        #     area_type=AreaType.RED,
-        # ),
         Vector2.UP(): RoomData(
             left_door_status=DoorStatus.CLOSED,
             right_door_status=DoorStatus.OPEN,
