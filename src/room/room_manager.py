@@ -101,8 +101,11 @@ class RoomManager:
         ):
             enemy_position = self.get_world_position(
                 grid_position=self.current_room.position
-            ) + Vector2(160, 50)
+            ) + Vector2(200, 50)
             EnemySpawner.spawn_cultist(main_node=main_node, position=enemy_position)
+            EnemySpawner.spawn_brute(
+                main_node=main_node, position=enemy_position + Vector2(-80, 30)
+            )
         elif self.current_room.data.room_type == RoomType.END:
             rainbow_orb = RainbowOrb.new()
             rainbow_orb.position = self.get_world_position(
