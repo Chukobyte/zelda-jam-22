@@ -69,6 +69,14 @@ class RoomModel:
             room_type=RoomType.INTRO,
             area_type=AreaType.RED,
         ),
+        # Vector2.UP(): RoomData(
+        #     left_door_status=DoorStatus.CLOSED,
+        #     right_door_status=DoorStatus.OPEN,
+        #     up_door_status=DoorStatus.OPEN,
+        #     down_door_status=DoorStatus.OPEN,
+        #     room_type=RoomType.BOSS,
+        #     area_type=AreaType.RED,
+        # ),
         Vector2.UP(): RoomData(
             left_door_status=DoorStatus.CLOSED,
             right_door_status=DoorStatus.OPEN,

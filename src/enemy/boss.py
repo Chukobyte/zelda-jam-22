@@ -85,8 +85,7 @@ class Boss(Enemy):
             attack.direction = attack.position.direction_to(target=player.position)
             self.get_parent().add_child(attack)
             yield from co_wait_until_seconds(wait_time=attack.life_time)
-            rand_n = random.randint(0, 1)
-            if rand_n == 1:
+            if random.randint(0, 1) == 1:
                 break
         yield co_return()
 

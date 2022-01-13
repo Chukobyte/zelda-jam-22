@@ -95,6 +95,14 @@ class RoomManager:
                 grid_position=self.current_room.position
             ) + Vector2(160, 35)
             EnemySpawner.spawn_boss(main_node=main_node, position=boss_position)
+        elif (
+            self.current_room.data.room_type == RoomType.COMBAT
+            and not self.current_room.data.is_cleared
+        ):
+            enemy_position = self.get_world_position(
+                grid_position=self.current_room.position
+            ) + Vector2(160, 50)
+            EnemySpawner.spawn_cultist(main_node=main_node, position=enemy_position)
         elif self.current_room.data.room_type == RoomType.END:
             rainbow_orb = RainbowOrb.new()
             rainbow_orb.position = self.get_world_position(
