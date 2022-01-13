@@ -1,7 +1,7 @@
 import random
 
 from seika.assets import Texture
-from seika.math import Rect2
+from seika.math import Rect2, Vector2
 
 from src.attack.enemy_attack import EnemyAttack
 from src.enemy.enemy import Enemy
@@ -15,7 +15,7 @@ class Boss(Enemy):
         boss_texture = Texture.get(file_path="assets/images/enemy/enemy_boss.png")
         self.texture = boss_texture
         self.collider.collider_rect = Rect2(
-            0, 0, boss_texture.width, boss_texture.height
+            8, 2, boss_texture.width - 8, boss_texture.height - 2
         )
         self.tasks.add_task(task=Task(name="shoot", func=self.shoot_shot))
 
@@ -29,8 +29,8 @@ class Boss(Enemy):
         while True:
             yield from co_wait_until_seconds(wait_time=random.uniform(2.0, 4.0))
             attack = EnemyAttack.new()
-            attack.position = self.position
-            attack.direction = self.position.direction_to(target=player.position)
+            attack.position = self.position + Vector2(32, 0)
+            attack.direction = attack.position.direction_to(target=player.position)
             self.get_parent().add_child(attack)
             yield from co_wait_until_seconds(wait_time=attack.life_time)
         yield co_return()

@@ -93,7 +93,7 @@ class RoomManager:
         ):
             boss_position = self.get_world_position(
                 grid_position=self.current_room.position
-            ) + Vector2(200, 45)
+            ) + Vector2(160, 35)
             EnemySpawner.spawn_boss(main_node=main_node, position=boss_position)
         elif self.current_room.data.room_type == RoomType.END:
             rainbow_orb = RainbowOrb.new()
