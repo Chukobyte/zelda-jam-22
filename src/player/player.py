@@ -1,4 +1,5 @@
 from seika.camera import Camera2D
+from seika.color import Color
 from seika.node import AnimatedSprite
 from seika.input import Input
 from seika.math import Vector2
@@ -106,6 +107,12 @@ class Player(AnimatedSprite):
                 self.player_ui_sprite.play("two_hearts")
             if self.stats.hp == 1:
                 self.player_ui_sprite.play("one_heart")
+
+    def set_stat_ui_visibility(self, visible: bool) -> None:
+        if visible:
+            self.player_ui_sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
+        else:
+            self.player_ui_sprite.modulate = Color(1.0, 1.0, 1.0, 0.0)
 
     @Task.task_func()
     def idle(self):
@@ -218,6 +225,7 @@ class Player(AnimatedSprite):
             room_manager.current_room.position
         )
         camera_pos = Camera2D.get_viewport_position()
+        self.set_stat_ui_visibility(visible=False)
         # Delay
         self.stop()
         yield from co_wait_until_seconds(wait_time=0.5)
@@ -243,5 +251,6 @@ class Player(AnimatedSprite):
         Camera2D.set_viewport_position(new_world_position)
         room_manager.wall_colliders.update_wall_positions(new_world_position)
         GameContext.set_play_state(PlayState.MAIN)
+        self.set_stat_ui_visibility(visible=True)
 
         room_manager.finish_room_transition(main_node=self.get_parent())
