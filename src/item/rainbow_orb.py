@@ -19,7 +19,9 @@ class RainbowOrb(CollisionShape2D):
             Color(162 / 255.0, 113 / 255.0, 255 / 255.0),
             Color(243 / 255.0, 97 / 255.0, 255 / 255.0),
         ]
-        self.tasks = TaskManager(initial_tasks=[Task(name="change_color", func=self.change_colors)])
+        self.tasks = TaskManager(
+            initial_tasks=[Task(name="change_color", func=self.change_colors)]
+        )
 
     def _start(self) -> None:
         self.sprite = Sprite.new()

@@ -62,11 +62,7 @@ class RoomManager:
         new_transition_doors = self.transition_doors
         self.transition_doors = self.room_doors
         self.room_doors = new_transition_doors
-        # Update current room doors
-        self.room_doors.left.set_status(self.current_room.data.left_door_status)
-        self.room_doors.right.set_status(self.current_room.data.right_door_status)
-        self.room_doors.up.set_status(self.current_room.data.up_door_status)
-        self.room_doors.down.set_status(self.current_room.data.down_door_status)
+        self.refresh_current_doors_status()
 
         GameContext.set_play_state(PlayState.ROOM_TRANSITION)
 
@@ -88,6 +84,12 @@ class RoomManager:
 
     def set_current_room_to_cleared(self) -> None:
         self.current_room.data.is_cleared = True
+
+    def refresh_current_doors_status(self) -> None:
+        self.room_doors.left.set_status(self.current_room.data.left_door_status)
+        self.room_doors.right.set_status(self.current_room.data.right_door_status)
+        self.room_doors.up.set_status(self.current_room.data.up_door_status)
+        self.room_doors.down.set_status(self.current_room.data.down_door_status)
 
     # TODO: Figure out why rooms aren't being cleaned up without this...
     # TODO: Something to do with Sprite node clean ups as it happens with Attacks too

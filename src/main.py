@@ -21,6 +21,7 @@ class Main(Node2D):
         RoomBuilder.create_wall_colliders(node=self)
         RoomBuilder.create_doors(node=self)
         RoomBuilder.create_rooms(node=self)
+        RoomManager().refresh_current_doors_status()
 
     def _physics_process(self, delta: float) -> None:
         self.world.cached_delta = delta

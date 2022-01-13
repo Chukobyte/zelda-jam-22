@@ -1,4 +1,5 @@
 from seika.assets import Texture
+from seika.color import Color
 from seika.math import Vector2
 from seika.node import CollisionShape2D, Node2D
 
@@ -6,8 +7,9 @@ from seika.node import CollisionShape2D, Node2D
 class DoorStatus:
     OPEN = 0
     CLOSED = 1
-    BREAKABLE_WALL = 2
-    OPEN_WALL = 3
+    SOLID_WALL = 2
+    BREAKABLE_WALL = 3
+    OPEN_WALL = 4
 
 
 class Door(CollisionShape2D):
@@ -41,9 +43,15 @@ class Door(CollisionShape2D):
         if self._status == DoorStatus.OPEN:
             is_open_string = "open"
             self.tags = Door.OPEN_DOOR_TAG
+            self.sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
         elif self._status == DoorStatus.CLOSED:
             is_open_string = "closed"
             self.tags = ["solid"]
+            self.sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
+        elif self._status == DoorStatus.SOLID_WALL:
+            is_open_string = "closed"
+            self.tags = ["solid"]
+            self.sprite.modulate = Color(1.0, 1.0, 1.0, 0.0)
         if is_open_string:
             texture_file_path = (
                 f"assets/images/dungeon/door_{dir_string}_{is_open_string}.png"
