@@ -34,7 +34,7 @@ class EventTextbox(Sprite):
         self.label.word_wrap = True
         self.label.max_characters_per_line = 36
         self.label.new_line_padding = 4
-        # self.set_text("Test text to see how this will show up within the scene!")
+        # self.set_text("Test text to see how this will show up within the scene!  How does this look in the textbox?  It's going to be used for events!")
         self.hide_all()
 
     def set_text(self, value: str) -> None:
