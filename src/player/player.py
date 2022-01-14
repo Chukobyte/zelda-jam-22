@@ -1,13 +1,18 @@
+from typing import Tuple, Optional
+
+from seika.assets import Texture
 from seika.camera import Camera2D
 from seika.color import Color
 from seika.node import AnimatedSprite
 from seika.input import Input
-from seika.math import Vector2
+from seika.math import Vector2, Rect2
 from seika.physics import Collision
 from seika.scene import SceneTree
 from seika.utils import SimpleTimer
 
+from src.event.event_textbox import TextboxManager
 from src.game_context import GameContext, PlayState, GameState
+from src.math.ease import Ease, Easer
 from src.room.door import DoorStatus
 from src.world import World
 from src.room.room_manager import RoomManager
@@ -41,18 +46,25 @@ class Player(AnimatedSprite):
         transitioning_to_room_state = State(
             name="transitioning_to_room", state_func=self.transitioning_to_room
         )
+        event_state = State(name="event", state_func=self.event)
 
         self.task_fsm.add_state(state=idle_state, set_current=True)
         self.task_fsm.add_state(state=move_state)
         self.task_fsm.add_state(state=attack_state)
         self.task_fsm.add_state(state=transitioning_to_room_state)
+        self.task_fsm.add_state(state=event_state)
 
         # Links
+        event_exit = StateExitLink(
+            state_to_transition=event_state,
+            transition_predicate=lambda: GameContext.get_play_state()
+            == PlayState.EVENT,
+        )
         # Idle
         idle_move_exit = StateExitLink(
             state_to_transition=move_state,
             transition_predicate=(
-                lambda: Input.is_action_just_pressed(action_name="move_left")
+                lambda: Input.is_action_pressed(action_name="move_left")
                 or Input.is_action_pressed(action_name="move_right")
                 or Input.is_action_pressed(action_name="move_up")
                 or Input.is_action_pressed(action_name="move_down")
@@ -66,6 +78,7 @@ class Player(AnimatedSprite):
         )
         self.task_fsm.add_state_exit_link(idle_state, state_exit_link=idle_move_exit)
         self.task_fsm.add_state_exit_link(idle_state, state_exit_link=idle_attack_exit)
+        self.task_fsm.add_state_exit_link(idle_state, state_exit_link=event_exit)
         # Move
         move_exit = StateExitLink(
             state_to_transition=attack_state,
@@ -82,6 +95,7 @@ class Player(AnimatedSprite):
         self.task_fsm.add_state_exit_link(
             state=move_state, state_exit_link=move_exit_to_room_transition
         )
+        self.task_fsm.add_state_exit_link(state=move_state, state_exit_link=event_exit)
         self.task_fsm.add_state_finished_link(
             state=move_state, state_to_transition=idle_state
         )
@@ -92,6 +106,15 @@ class Player(AnimatedSprite):
         # Transitioning To Room
         self.task_fsm.add_state_finished_link(
             state=transitioning_to_room_state, state_to_transition=idle_state
+        )
+        # Event
+        to_idle_from_event_exit = StateExitLink(
+            state_to_transition=idle_state,
+            transition_predicate=lambda: GameContext.get_play_state()
+            != PlayState.EVENT,
+        )
+        self.task_fsm.add_state_exit_link(
+            state=event_state, state_exit_link=to_idle_from_event_exit
         )
 
     def _physics_process(self, delta: float) -> None:
@@ -135,37 +158,88 @@ class Player(AnimatedSprite):
     def move(self):
         world = World()
         room_manager = RoomManager()
+        is_move_pressed = False
         while True:
+            # Temp event toggle
+            if Input.is_action_just_pressed(action_name="credits"):
+                if GameContext.get_play_state() == PlayState.MAIN:
+                    GameContext.set_play_state(PlayState.EVENT)
+                    TextboxManager().hide_textbox()
+
             delta = world.cached_delta
             new_velocity = None
             accel = self.stats.move_params.accel * delta
+            non_facing_accel = self.stats.move_params.non_facing_dir_accel * delta
 
+            # TODO: Put into function
             # Input checks
             left_pressed = Input.is_action_pressed(action_name="move_left")
             right_pressed = Input.is_action_pressed(action_name="move_right")
             up_pressed = Input.is_action_pressed(action_name="move_up")
             down_pressed = Input.is_action_pressed(action_name="move_down")
             # Resolve input
-            if left_pressed:
-                self.play(animation_name="move_hort")
-                self.flip_h = True
-                self.direction = Vector2.LEFT()
-                new_velocity = Vector2(self.direction.x * accel, 0)
-            elif right_pressed:
-                self.play(animation_name="move_hort")
-                self.flip_h = False
-                self.direction = Vector2.RIGHT()
-                new_velocity = Vector2(self.direction.x * accel, 0)
-            elif up_pressed:
-                self.play(animation_name="move_up")
-                self.flip_h = False
-                self.direction = Vector2.UP()
-                new_velocity = Vector2(0, self.direction.y * accel)
-            elif down_pressed:
-                self.play(animation_name="move_down")
-                self.flip_h = False
-                self.direction = Vector2.DOWN()
-                new_velocity = Vector2(0, self.direction.y * accel)
+            if not is_move_pressed:
+                if left_pressed:
+                    self.play(animation_name="move_hort")
+                    self.flip_h = True
+                    self.direction = Vector2.LEFT()
+                    new_velocity = Vector2(self.direction.x * accel, 0)
+                    is_move_pressed = True
+                elif right_pressed:
+                    self.play(animation_name="move_hort")
+                    self.flip_h = False
+                    self.direction = Vector2.RIGHT()
+                    new_velocity = Vector2(self.direction.x * accel, 0)
+                    is_move_pressed = True
+                elif up_pressed:
+                    self.play(animation_name="move_up")
+                    self.flip_h = False
+                    self.direction = Vector2.UP()
+                    new_velocity = Vector2(0, self.direction.y * accel)
+                    is_move_pressed = True
+                elif down_pressed:
+                    self.play(animation_name="move_down")
+                    self.flip_h = False
+                    self.direction = Vector2.DOWN()
+                    new_velocity = Vector2(0, self.direction.y * accel)
+                    is_move_pressed = True
+            else:
+                if self.direction == Vector2.LEFT():
+                    if left_pressed:
+                        new_velocity = Vector2(self.direction.x * accel, 0)
+                        if up_pressed:
+                            new_velocity += Vector2(0, -1.0 * non_facing_accel)
+                        elif down_pressed:
+                            new_velocity += Vector2(0, 1.0 * non_facing_accel)
+                    else:
+                        is_move_pressed = False
+                elif self.direction == Vector2.RIGHT():
+                    if right_pressed:
+                        new_velocity = Vector2(self.direction.x * accel, 0)
+                        if up_pressed:
+                            new_velocity += Vector2(0, -1.0 * non_facing_accel)
+                        elif down_pressed:
+                            new_velocity += Vector2(0, 1.0 * non_facing_accel)
+                    else:
+                        is_move_pressed = False
+                elif self.direction == Vector2.UP():
+                    if up_pressed:
+                        new_velocity = Vector2(0, self.direction.y * accel)
+                        if left_pressed:
+                            new_velocity += Vector2(-1.0 * non_facing_accel, 0)
+                        elif right_pressed:
+                            new_velocity += Vector2(1.0 * non_facing_accel, 0)
+                    else:
+                        is_move_pressed = False
+                elif self.direction == Vector2.DOWN():
+                    if down_pressed:
+                        new_velocity = Vector2(0, self.direction.y * accel)
+                        if left_pressed:
+                            new_velocity += Vector2(-1.0 * non_facing_accel, 0)
+                        elif right_pressed:
+                            new_velocity += Vector2(1.0 * non_facing_accel, 0)
+                    else:
+                        is_move_pressed = False
 
             # Integrate new velocity
             if new_velocity:
@@ -206,14 +280,28 @@ class Player(AnimatedSprite):
 
     @Task.task_func()
     def attack(self):
+        self.set_stat_ui_visibility(visible=False)
         player_attack = PlayerAttack.new()
-        player_attack.position = (
-            self.position + Vector2(4, 4) + (self.direction * Vector2(8, 12))
-        )
+        move_offset = Vector2(4, 4)
         self.get_parent().add_child(player_attack)
+        if self.direction == Vector2.UP():
+            move_offset += (self.direction * Vector2(0, 14)) + Vector2(-2, 0)
+            player_attack.sprite.rotation = 270
+            player_attack.collider_rect = Rect2(2, -2, 8, 12)
+        elif self.direction == Vector2.DOWN():
+            move_offset += (self.direction * Vector2(0, 14)) + Vector2(-2, 0)
+            player_attack.sprite.rotation = 90
+            player_attack.collider_rect = Rect2(2, -2, 8, 12)
+        elif self.direction == Vector2.LEFT():
+            player_attack.sprite.flip_h = True
+            move_offset += self.direction * Vector2(14, 0)
+        elif self.direction == Vector2.RIGHT():
+            move_offset += self.direction * Vector2(11, 0)
+        player_attack.position = self.position + move_offset
 
         yield from co_wait_until_seconds(wait_time=player_attack.life_time)
 
+        self.set_stat_ui_visibility(visible=True)
         yield co_return()
 
     @Task.task_func()
@@ -225,6 +313,7 @@ class Player(AnimatedSprite):
             room_manager.current_room.position
         )
         camera_pos = Camera2D.get_viewport_position()
+        initial_camera_pos = camera_pos
         self.set_stat_ui_visibility(visible=False)
         # Delay
         self.stop()
@@ -232,25 +321,41 @@ class Player(AnimatedSprite):
         # Transition Start
         # TODO: Move some of the transition logic from player to something else...
         self.play()
-        # Moving horizontal
         if move_dir.x != 0:
-            transition_accel = 1.05
-        # Moving vertically
+            wait_time = 2.5
         else:
-            transition_accel = 0.6
-        transition_timer = SimpleTimer(wait_time=1.25, start_on_init=True)
+            wait_time = 2.0
+        new_player_pos = self.position + Vector2(130 * move_dir.x, 80 * move_dir.y)
+        player_easer = Easer(
+            from_pos=self.position,
+            to_pos=new_player_pos,
+            duration=wait_time,
+            func=Ease.Cubic.ease_out_vec2,
+        )
+        camera_easer = Easer(
+            from_pos=camera_pos,
+            to_pos=new_world_position,
+            duration=wait_time,
+            func=Ease.Cubic.ease_in_vec2,
+        )
+        transition_timer = SimpleTimer(wait_time=wait_time, start_on_init=True)
         while not transition_timer.tick(delta=world.cached_delta):
-            accel = self.stats.move_params.accel * world.cached_delta * transition_accel
-            self.position += Vector2(move_dir.x * accel, move_dir.y * accel)
-            # TODO: Set proper thing to stop camera
-            camera_accel = accel * 3.0
-            camera_pos += Vector2(move_dir.x * camera_accel, move_dir.y * camera_accel)
+            self.position = player_easer.ease(delta=world.cached_delta)
+            camera_pos = camera_easer.ease(delta=world.cached_delta)
             Camera2D.set_viewport_position(camera_pos)
             yield co_suspend()
         # Transition End
+        self.position = new_player_pos
         Camera2D.set_viewport_position(new_world_position)
         room_manager.wall_colliders.update_wall_positions(new_world_position)
         GameContext.set_play_state(PlayState.MAIN)
         self.set_stat_ui_visibility(visible=True)
 
         room_manager.finish_room_transition(main_node=self.get_parent())
+
+    @Task.task_func()
+    def event(self):
+        while True:
+            if Input.is_action_just_pressed(action_name="credits"):
+                GameContext.set_play_state(PlayState.MAIN)
+            yield co_suspend()
