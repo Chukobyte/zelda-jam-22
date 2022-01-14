@@ -20,6 +20,7 @@ class MeteorShowerAttack(EnemyAttack):
         self.damage = 1
 
     def _start(self) -> None:
+        self.life_timer.start()
         self.sprite = Sprite.new()
         texture = Texture.get(file_path="assets/images/enemy/enemy_boss_spear.png")
         self.sprite.texture = texture
