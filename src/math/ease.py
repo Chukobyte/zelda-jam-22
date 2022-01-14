@@ -16,9 +16,6 @@ class Ease:
         ) -> float:
             change = to_pos - from_pos
             elapsed_time = elapsed_time / duration
-            print(
-                f"from_pos = {from_pos}, to_pos = {to_pos}, elapsed_time = {elapsed_time}"
-            )
             if elapsed_time > math.fabs(1.0):
                 return to_pos
             return change * elapsed_time * elapsed_time * elapsed_time + from_pos
@@ -29,9 +26,6 @@ class Ease:
         ) -> float:
             change = to_pos - from_pos
             elapsed_time = elapsed_time / duration - 1.0
-            print(
-                f"from_pos = {from_pos}, to_pos = {to_pos}, elapsed_time = {elapsed_time}"
-            )
             if elapsed_time > math.fabs(1.0):
                 return to_pos
             return (

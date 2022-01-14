@@ -1,3 +1,5 @@
+from typing import Tuple, Optional
+
 from seika.camera import Camera2D
 from seika.color import Color
 from seika.node import AnimatedSprite
@@ -155,6 +157,7 @@ class Player(AnimatedSprite):
     def move(self):
         world = World()
         room_manager = RoomManager()
+        is_move_pressed = False
         while True:
             # Temp event toggle
             if Input.is_action_just_pressed(action_name="credits"):
@@ -165,6 +168,7 @@ class Player(AnimatedSprite):
             delta = world.cached_delta
             new_velocity = None
             accel = self.stats.move_params.accel * delta
+            non_facing_accel = self.stats.move_params.non_facing_dir_accel * delta
 
             # Input checks
             left_pressed = Input.is_action_pressed(action_name="move_left")
@@ -172,26 +176,68 @@ class Player(AnimatedSprite):
             up_pressed = Input.is_action_pressed(action_name="move_up")
             down_pressed = Input.is_action_pressed(action_name="move_down")
             # Resolve input
-            if left_pressed:
-                self.play(animation_name="move_hort")
-                self.flip_h = True
-                self.direction = Vector2.LEFT()
-                new_velocity = Vector2(self.direction.x * accel, 0)
-            elif right_pressed:
-                self.play(animation_name="move_hort")
-                self.flip_h = False
-                self.direction = Vector2.RIGHT()
-                new_velocity = Vector2(self.direction.x * accel, 0)
-            elif up_pressed:
-                self.play(animation_name="move_up")
-                self.flip_h = False
-                self.direction = Vector2.UP()
-                new_velocity = Vector2(0, self.direction.y * accel)
-            elif down_pressed:
-                self.play(animation_name="move_down")
-                self.flip_h = False
-                self.direction = Vector2.DOWN()
-                new_velocity = Vector2(0, self.direction.y * accel)
+            if not is_move_pressed:
+                if left_pressed:
+                    self.play(animation_name="move_hort")
+                    self.flip_h = True
+                    self.direction = Vector2.LEFT()
+                    new_velocity = Vector2(self.direction.x * accel, 0)
+                    is_move_pressed = True
+                elif right_pressed:
+                    self.play(animation_name="move_hort")
+                    self.flip_h = False
+                    self.direction = Vector2.RIGHT()
+                    new_velocity = Vector2(self.direction.x * accel, 0)
+                    is_move_pressed = True
+                elif up_pressed:
+                    self.play(animation_name="move_up")
+                    self.flip_h = False
+                    self.direction = Vector2.UP()
+                    new_velocity = Vector2(0, self.direction.y * accel)
+                    is_move_pressed = True
+                elif down_pressed:
+                    self.play(animation_name="move_down")
+                    self.flip_h = False
+                    self.direction = Vector2.DOWN()
+                    new_velocity = Vector2(0, self.direction.y * accel)
+                    is_move_pressed = True
+            else:
+                if self.direction == Vector2.LEFT():
+                    if left_pressed:
+                        new_velocity = Vector2(self.direction.x * accel, 0)
+                        if up_pressed:
+                            new_velocity += Vector2(0, -1.0 * non_facing_accel)
+                        elif down_pressed:
+                            new_velocity += Vector2(0, 1.0 * non_facing_accel)
+                    else:
+                        is_move_pressed = False
+                elif self.direction == Vector2.RIGHT():
+                    if right_pressed:
+                        new_velocity = Vector2(self.direction.x * accel, 0)
+                        if up_pressed:
+                            new_velocity += Vector2(0, -1.0 * non_facing_accel)
+                        elif down_pressed:
+                            new_velocity += Vector2(0, 1.0 * non_facing_accel)
+                    else:
+                        is_move_pressed = False
+                elif self.direction == Vector2.UP():
+                    if up_pressed:
+                        new_velocity = Vector2(0, self.direction.y * accel)
+                        if left_pressed:
+                            new_velocity += Vector2(-1.0 * non_facing_accel, 0)
+                        elif right_pressed:
+                            new_velocity += Vector2(1.0 * non_facing_accel, 0)
+                    else:
+                        is_move_pressed = False
+                elif self.direction == Vector2.DOWN():
+                    if down_pressed:
+                        new_velocity = Vector2(0, self.direction.y * accel)
+                        if left_pressed:
+                            new_velocity += Vector2(-1.0 * non_facing_accel, 0)
+                        elif right_pressed:
+                            new_velocity += Vector2(1.0 * non_facing_accel, 0)
+                    else:
+                        is_move_pressed = False
 
             # Integrate new velocity
             if new_velocity:

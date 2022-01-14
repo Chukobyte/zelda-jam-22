@@ -7,6 +7,7 @@ from src.stats import RoomEntityStats
 class MoveParams:
     def __init__(self):
         self.accel = 100
+        self.non_facing_dir_accel = 20
 
 
 class PlayerStats(RoomEntityStats):
