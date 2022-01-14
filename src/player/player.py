@@ -259,8 +259,11 @@ class Player(AnimatedSprite):
         # Transition Start
         # TODO: Move some of the transition logic from player to something else...
         self.play()
-        wait_time = 2.0
-        new_player_pos = self.position + Vector2(80 * move_dir.x, 80 * move_dir.y)
+        if move_dir.x != 0:
+            wait_time = 2.5
+        else:
+            wait_time = 2.0
+        new_player_pos = self.position + Vector2(130 * move_dir.x, 80 * move_dir.y)
         player_easer = Easer(
             from_pos=self.position,
             to_pos=new_player_pos,
