@@ -10,6 +10,7 @@ from seika.physics import Collision
 from seika.scene import SceneTree
 from seika.utils import SimpleTimer
 
+from src.attack.attack import Attack
 from src.event.event_textbox import TextboxManager
 from src.game_context import GameContext, PlayState, GameState
 from src.math.ease import Ease, Easer
@@ -17,7 +18,7 @@ from src.room.door import DoorStatus
 from src.world import World
 from src.room.room_manager import RoomManager
 from src.player.player_stats import PlayerStats
-from src.attack.player_attack import PlayerAttack
+from src.attack.player_attack import PlayerAttack, BoltAttack, BombAttack
 from src.task.task import Task, co_return, co_suspend, co_wait_until_seconds
 from src.task.fsm import FSM, State, StateExitLink
 
@@ -37,12 +38,15 @@ class Player(AnimatedSprite):
         # Temp
         self.collider.tags = [Player.TAG]
         self.last_collided_door = None
+        self.damaged_from_attack_timer = SimpleTimer(wait_time=1.0, start_on_init=True)
 
     def _configure_fsm(self) -> None:
         # State Management
         idle_state = State(name="idle", state_func=self.idle)
         move_state = State(name="move", state_func=self.move)
         attack_state = State(name="attack", state_func=self.attack)
+        bolt_attack_state = State(name="bolt_attack", state_func=self.bolt_attack)
+        bomb_attack_state = State(name="bomb_attack", state_func=self.bomb_attack)
         transitioning_to_room_state = State(
             name="transitioning_to_room", state_func=self.transitioning_to_room
         )
@@ -51,6 +55,8 @@ class Player(AnimatedSprite):
         self.task_fsm.add_state(state=idle_state, set_current=True)
         self.task_fsm.add_state(state=move_state)
         self.task_fsm.add_state(state=attack_state)
+        self.task_fsm.add_state(state=bolt_attack_state)
+        self.task_fsm.add_state(state=bomb_attack_state)
         self.task_fsm.add_state(state=transitioning_to_room_state)
         self.task_fsm.add_state(state=event_state)
 
@@ -76,14 +82,44 @@ class Player(AnimatedSprite):
                 action_name="attack"
             ),
         )
+        idle_bolt_attack_exit = StateExitLink(
+            state_to_transition=bolt_attack_state,
+            transition_predicate=lambda: Input.is_action_just_pressed(
+                action_name="bolt_attack"
+            ),
+        )
+        idle_bomb_attack_exit = StateExitLink(
+            state_to_transition=bomb_attack_state,
+            transition_predicate=lambda: Input.is_action_just_pressed(
+                action_name="bomb_attack"
+            ),
+        )
         self.task_fsm.add_state_exit_link(idle_state, state_exit_link=idle_move_exit)
         self.task_fsm.add_state_exit_link(idle_state, state_exit_link=idle_attack_exit)
+        self.task_fsm.add_state_exit_link(
+            idle_state, state_exit_link=idle_bolt_attack_exit
+        )
+        self.task_fsm.add_state_exit_link(
+            idle_state, state_exit_link=idle_bomb_attack_exit
+        )
         self.task_fsm.add_state_exit_link(idle_state, state_exit_link=event_exit)
         # Move
-        move_exit = StateExitLink(
+        move_attack_exit = StateExitLink(
             state_to_transition=attack_state,
             transition_predicate=lambda: Input.is_action_just_pressed(
                 action_name="attack"
+            ),
+        )
+        move_attack_bolt_exit = StateExitLink(
+            state_to_transition=bolt_attack_state,
+            transition_predicate=lambda: Input.is_action_just_pressed(
+                action_name="bolt_attack"
+            ),
+        )
+        move_attack_bomb_exit = StateExitLink(
+            state_to_transition=bomb_attack_state,
+            transition_predicate=lambda: Input.is_action_just_pressed(
+                action_name="bomb_attack"
             ),
         )
         move_exit_to_room_transition = StateExitLink(
@@ -91,7 +127,15 @@ class Player(AnimatedSprite):
             transition_predicate=lambda: GameContext.get_play_state()
             == PlayState.ROOM_TRANSITION,
         )
-        self.task_fsm.add_state_exit_link(state=move_state, state_exit_link=move_exit)
+        self.task_fsm.add_state_exit_link(
+            state=move_state, state_exit_link=move_attack_exit
+        )
+        self.task_fsm.add_state_exit_link(
+            state=move_state, state_exit_link=move_attack_bolt_exit
+        )
+        self.task_fsm.add_state_exit_link(
+            state=move_state, state_exit_link=move_attack_bomb_exit
+        )
         self.task_fsm.add_state_exit_link(
             state=move_state, state_exit_link=move_exit_to_room_transition
         )
@@ -99,9 +143,15 @@ class Player(AnimatedSprite):
         self.task_fsm.add_state_finished_link(
             state=move_state, state_to_transition=idle_state
         )
-        # Attack
+        # Attacks
         self.task_fsm.add_state_finished_link(
-            state=attack_state, state_to_transition=move_state
+            state=attack_state, state_to_transition=idle_state
+        )
+        self.task_fsm.add_state_finished_link(
+            state=bolt_attack_state, state_to_transition=idle_state
+        )
+        self.task_fsm.add_state_finished_link(
+            state=bomb_attack_state, state_to_transition=idle_state
         )
         # Transitioning To Room
         self.task_fsm.add_state_finished_link(
@@ -119,23 +169,31 @@ class Player(AnimatedSprite):
 
     def _physics_process(self, delta: float) -> None:
         self.task_fsm.process()
+        self.damaged_from_attack_timer.tick(delta)
 
-    def take_damage(self, attack) -> None:
-        self.stats.hp -= attack.damage
-        if self.stats.hp <= 0:
-            self.player_ui_sprite.play("empty")
-            # TODO: Do more stuff...
-        else:
-            if self.stats.hp == 2:
-                self.player_ui_sprite.play("two_hearts")
-            if self.stats.hp == 1:
-                self.player_ui_sprite.play("one_heart")
+    def take_damage(self, attack=None) -> None:
+        if self.damaged_from_attack_timer.time_left <= 0:
+            attack_damage = 1
+            if attack:
+                attack_damage = attack.damage
+            self.stats.hp -= attack_damage
+            if self.stats.hp <= 0:
+                self.player_ui_sprite.play("empty")
+                # TODO: Do more stuff...
+            else:
+                if self.stats.hp == 2:
+                    self.player_ui_sprite.play("two_hearts")
+                if self.stats.hp == 1:
+                    self.player_ui_sprite.play("one_heart")
 
     def set_stat_ui_visibility(self, visible: bool) -> None:
         if visible:
             self.player_ui_sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
         else:
             self.player_ui_sprite.modulate = Color(1.0, 1.0, 1.0, 0.0)
+
+    def _process_collisions(self):
+        pass
 
     @Task.task_func()
     def idle(self):
@@ -159,6 +217,7 @@ class Player(AnimatedSprite):
         world = World()
         room_manager = RoomManager()
         is_move_pressed = False
+        elapsed_time = 0.0
         while True:
             # Temp event toggle
             if Input.is_action_just_pressed(action_name="credits"):
@@ -167,7 +226,9 @@ class Player(AnimatedSprite):
                     TextboxManager().hide_textbox()
 
             delta = world.cached_delta
+            elapsed_time += delta
             new_velocity = None
+            non_facing_velocity = None
             accel = self.stats.move_params.accel * delta
             non_facing_accel = self.stats.move_params.non_facing_dir_accel * delta
 
@@ -208,98 +269,139 @@ class Player(AnimatedSprite):
                     if left_pressed:
                         new_velocity = Vector2(self.direction.x * accel, 0)
                         if up_pressed:
-                            new_velocity += Vector2(0, -1.0 * non_facing_accel)
+                            non_facing_velocity = Vector2(0, -1.0 * non_facing_accel)
                         elif down_pressed:
-                            new_velocity += Vector2(0, 1.0 * non_facing_accel)
+                            non_facing_velocity = Vector2(0, 1.0 * non_facing_accel)
                     else:
                         is_move_pressed = False
                 elif self.direction == Vector2.RIGHT():
                     if right_pressed:
                         new_velocity = Vector2(self.direction.x * accel, 0)
                         if up_pressed:
-                            new_velocity += Vector2(0, -1.0 * non_facing_accel)
+                            non_facing_velocity = Vector2(0, -1.0 * non_facing_accel)
                         elif down_pressed:
-                            new_velocity += Vector2(0, 1.0 * non_facing_accel)
+                            non_facing_velocity = Vector2(0, 1.0 * non_facing_accel)
                     else:
                         is_move_pressed = False
                 elif self.direction == Vector2.UP():
                     if up_pressed:
                         new_velocity = Vector2(0, self.direction.y * accel)
                         if left_pressed:
-                            new_velocity += Vector2(-1.0 * non_facing_accel, 0)
+                            non_facing_velocity = Vector2(-1.0 * non_facing_accel, 0)
                         elif right_pressed:
-                            new_velocity += Vector2(1.0 * non_facing_accel, 0)
+                            non_facing_velocity = Vector2(1.0 * non_facing_accel, 0)
                     else:
                         is_move_pressed = False
                 elif self.direction == Vector2.DOWN():
                     if down_pressed:
                         new_velocity = Vector2(0, self.direction.y * accel)
                         if left_pressed:
-                            new_velocity += Vector2(-1.0 * non_facing_accel, 0)
+                            non_facing_velocity = Vector2(-1.0 * non_facing_accel, 0)
                         elif right_pressed:
-                            new_velocity += Vector2(1.0 * non_facing_accel, 0)
+                            non_facing_velocity = Vector2(1.0 * non_facing_accel, 0)
                     else:
                         is_move_pressed = False
 
             # Integrate new velocity
-            if new_velocity:
-                collided_walls = Collision.get_collided_nodes_by_tag(
-                    node=self.collider, tag="solid", offset=new_velocity
-                )
-                open_doors = Collision.get_collided_nodes_by_tag(
-                    node=self.collider, tag="open-door", offset=new_velocity
-                )
-                rainbow_orbs = Collision.get_collided_nodes_by_tag(
-                    node=self.collider, tag="rainbow_orb", offset=new_velocity
-                )
-                # Collision checks
-                if collided_walls:
-                    pass
-                elif open_doors:
-                    # TODO: temp win state
-                    if GameContext().has_won:
-                        room_manager.clean_up()
-                        GameContext.set_game_state(GameState.END_SCREEN)
-                        SceneTree.change_scene(scene_path="scenes/end_screen.sscn")
-                        yield co_return()
-                    else:
-                        collided_door = open_doors[0]
-                        self.last_collided_door = collided_door
-                        room_manager.start_room_transition(collided_door)
-                elif rainbow_orbs:
-                    GameContext().has_won = True
-                    rainbow_orbs[0].queue_deletion()
-                    # Temp open up door
-                    room_manager.room_doors.up.set_status(DoorStatus.OPEN)
-                else:
-                    self.position += new_velocity
-            else:
+            if not new_velocity and not non_facing_velocity:
                 yield co_return()
+            else:
+                for vel in [new_velocity, non_facing_velocity]:
+                    if vel:
+                        collided_walls = Collision.get_collided_nodes_by_tag(
+                            node=self.collider, tag="solid", offset=vel
+                        )
+                        open_doors = Collision.get_collided_nodes_by_tag(
+                            node=self.collider, tag="open-door", offset=vel
+                        )
+                        rainbow_orbs = Collision.get_collided_nodes_by_tag(
+                            node=self.collider, tag="rainbow_orb", offset=vel
+                        )
+                        # Collision checks
+                        if collided_walls:
+                            pass
+                        elif open_doors:
+                            # TODO: temp win state
+                            if GameContext().has_won:
+                                room_manager.clean_up()
+                                GameContext.set_game_state(GameState.END_SCREEN)
+                                SceneTree.change_scene(
+                                    scene_path="scenes/end_screen.sscn"
+                                )
+                                yield co_return()
+                            else:
+                                collided_door = open_doors[0]
+                                self.last_collided_door = collided_door
+                                room_manager.start_room_transition(collided_door)
+                            break
+                        elif rainbow_orbs:
+                            GameContext().has_won = True
+                            rainbow_orbs[0].queue_deletion()
+                            # Temp open up door
+                            room_manager.room_doors.up.set_status(DoorStatus.OPEN)
+                            break
+                        else:
+                            current_pos = self.position
+                            # TODO: Figure out if a different easing function is needed
+                            self.position = Ease.Cubic.ease_out_vec2(
+                                elapsed_time=elapsed_time,
+                                from_pos=current_pos,
+                                to_pos=current_pos + vel,
+                                duration=elapsed_time + 0.1,
+                            )
+                            # self.position += vel
 
             yield co_suspend()
 
-    @Task.task_func()
-    def attack(self):
+    def setup_attack(self, attack: Attack, adjust_orientation: bool) -> None:
         self.set_stat_ui_visibility(visible=False)
-        player_attack = PlayerAttack.new()
         move_offset = Vector2(4, 4)
-        self.get_parent().add_child(player_attack)
+        self.get_parent().add_child(attack)
         if self.direction == Vector2.UP():
             move_offset += (self.direction * Vector2(0, 14)) + Vector2(-2, 0)
-            player_attack.sprite.rotation = 270
-            player_attack.collider_rect = Rect2(2, -2, 8, 12)
+            if adjust_orientation:
+                attack.sprite.rotation = 270
+                attack.collider_rect = Rect2(2, -2, 8, 12)
         elif self.direction == Vector2.DOWN():
             move_offset += (self.direction * Vector2(0, 14)) + Vector2(-2, 0)
-            player_attack.sprite.rotation = 90
-            player_attack.collider_rect = Rect2(2, -2, 8, 12)
+            if adjust_orientation:
+                attack.sprite.rotation = 90
+                attack.collider_rect = Rect2(2, -2, 8, 12)
         elif self.direction == Vector2.LEFT():
-            player_attack.sprite.flip_h = True
             move_offset += self.direction * Vector2(14, 0)
+            if adjust_orientation:
+                attack.sprite.flip_h = True
         elif self.direction == Vector2.RIGHT():
             move_offset += self.direction * Vector2(11, 0)
-        player_attack.position = self.position + move_offset
+        attack.position = self.position + move_offset
+
+    @Task.task_func()
+    def attack(self):
+        player_attack = PlayerAttack.new()
+        self.setup_attack(attack=player_attack, adjust_orientation=True)
 
         yield from co_wait_until_seconds(wait_time=player_attack.life_time)
+
+        self.set_stat_ui_visibility(visible=True)
+        yield co_return()
+
+    @Task.task_func()
+    def bolt_attack(self):
+        player_attack = BoltAttack.new()
+        player_attack.direction = self.direction
+        self.setup_attack(attack=player_attack, adjust_orientation=True)
+
+        yield from co_wait_until_seconds(wait_time=0.25)
+
+        self.set_stat_ui_visibility(visible=True)
+        yield co_return()
+
+    @Task.task_func()
+    def bomb_attack(self):
+        player_attack = BombAttack.new()
+        self.setup_attack(attack=player_attack, adjust_orientation=False)
+
+        yield from co_wait_until_seconds(wait_time=0.5)
 
         self.set_stat_ui_visibility(visible=True)
         yield co_return()
