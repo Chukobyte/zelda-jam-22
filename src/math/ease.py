@@ -3,6 +3,10 @@ import math
 from seika.math import Vector2, Math
 
 
+def lerp(source, dest, amount):
+    return source + (dest - source) * amount
+
+
 class Ease:
     class Cubic:
         @staticmethod
@@ -11,6 +15,11 @@ class Ease:
         ) -> float:
             change = to_pos - from_pos
             elapsed_time = elapsed_time / duration
+            print(
+                f"from_pos = {from_pos}, to_pos = {to_pos}, elapsed_time = {elapsed_time}"
+            )
+            if elapsed_time > math.fabs(1.0):
+                return to_pos
             return change * elapsed_time * elapsed_time * elapsed_time + from_pos
 
         @staticmethod
@@ -19,7 +28,14 @@ class Ease:
         ) -> float:
             change = to_pos - from_pos
             elapsed_time = elapsed_time / duration - 1.0
-            return change * (elapsed_time * elapsed_time * elapsed_time + 1.0) + from_pos
+            print(
+                f"from_pos = {from_pos}, to_pos = {to_pos}, elapsed_time = {elapsed_time}"
+            )
+            if elapsed_time > math.fabs(1.0):
+                return to_pos
+            return (
+                change * (elapsed_time * elapsed_time * elapsed_time + 1.0) + from_pos
+            )
 
         @staticmethod
         def ease_in_vec2(
@@ -80,7 +96,7 @@ class Ease:
         ) -> Vector2:
             return Vector2(
                 Ease.Bounce.ease_in(elapsed_time, from_pos.x, to_pos.x, duration),
-                Ease.Bounce.ease_in(elapsed_time, from_pos.x, to_pos.y, duration),
+                Ease.Bounce.ease_in(elapsed_time, from_pos.y, to_pos.y, duration),
             )
 
         @staticmethod
@@ -89,7 +105,7 @@ class Ease:
         ) -> Vector2:
             return Vector2(
                 Ease.Bounce.ease_out(elapsed_time, from_pos.x, to_pos.x, duration),
-                Ease.Bounce.ease_out(elapsed_time, from_pos.x, to_pos.y, duration),
+                Ease.Bounce.ease_out(elapsed_time, from_pos.y, to_pos.y, duration),
             )
 
     class Elastic:
