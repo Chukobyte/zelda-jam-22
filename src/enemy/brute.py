@@ -2,6 +2,7 @@ import random
 
 from seika.assets import Texture
 from seika.math import Rect2, Vector2
+from seika.physics import Collision
 from seika.utils import SimpleTimer
 
 from src.attack.enemy_attack import EnemyAttack
@@ -40,10 +41,15 @@ class Brute(Enemy):
                 wait_time=random.uniform(0.5, 1.5), start_on_init=True
             )
             while not move_timer.tick(delta=world.cached_delta):
-                self.position += Vector2(
+                new_vel = Vector2(
                     new_dir.x * move_speed * world.cached_delta,
                     new_dir.y * move_speed * world.cached_delta,
                 )
+                collisions = Collision.get_collided_nodes_by_tag(
+                    node=self.collider, tag="solid", offset=new_vel
+                )
+                if not collisions:
+                    self.position += new_vel
                 yield co_suspend()
         yield co_return()
 
