@@ -137,6 +137,9 @@ class Player(AnimatedSprite):
         else:
             self.player_ui_sprite.modulate = Color(1.0, 1.0, 1.0, 0.0)
 
+    def _process_collisions(self):
+        pass
+
     @Task.task_func()
     def idle(self):
         while True:
@@ -168,6 +171,7 @@ class Player(AnimatedSprite):
 
             delta = world.cached_delta
             new_velocity = None
+            non_facing_velocity = None
             accel = self.stats.move_params.accel * delta
             non_facing_accel = self.stats.move_params.non_facing_dir_accel * delta
 
@@ -208,73 +212,79 @@ class Player(AnimatedSprite):
                     if left_pressed:
                         new_velocity = Vector2(self.direction.x * accel, 0)
                         if up_pressed:
-                            new_velocity += Vector2(0, -1.0 * non_facing_accel)
+                            non_facing_velocity = Vector2(0, -1.0 * non_facing_accel)
                         elif down_pressed:
-                            new_velocity += Vector2(0, 1.0 * non_facing_accel)
+                            non_facing_velocity = Vector2(0, 1.0 * non_facing_accel)
                     else:
                         is_move_pressed = False
                 elif self.direction == Vector2.RIGHT():
                     if right_pressed:
                         new_velocity = Vector2(self.direction.x * accel, 0)
                         if up_pressed:
-                            new_velocity += Vector2(0, -1.0 * non_facing_accel)
+                            non_facing_velocity = Vector2(0, -1.0 * non_facing_accel)
                         elif down_pressed:
-                            new_velocity += Vector2(0, 1.0 * non_facing_accel)
+                            non_facing_velocity = Vector2(0, 1.0 * non_facing_accel)
                     else:
                         is_move_pressed = False
                 elif self.direction == Vector2.UP():
                     if up_pressed:
                         new_velocity = Vector2(0, self.direction.y * accel)
                         if left_pressed:
-                            new_velocity += Vector2(-1.0 * non_facing_accel, 0)
+                            non_facing_velocity = Vector2(-1.0 * non_facing_accel, 0)
                         elif right_pressed:
-                            new_velocity += Vector2(1.0 * non_facing_accel, 0)
+                            non_facing_velocity = Vector2(1.0 * non_facing_accel, 0)
                     else:
                         is_move_pressed = False
                 elif self.direction == Vector2.DOWN():
                     if down_pressed:
                         new_velocity = Vector2(0, self.direction.y * accel)
                         if left_pressed:
-                            new_velocity += Vector2(-1.0 * non_facing_accel, 0)
+                            non_facing_velocity = Vector2(-1.0 * non_facing_accel, 0)
                         elif right_pressed:
-                            new_velocity += Vector2(1.0 * non_facing_accel, 0)
+                            non_facing_velocity = Vector2(1.0 * non_facing_accel, 0)
                     else:
                         is_move_pressed = False
 
             # Integrate new velocity
-            if new_velocity:
-                collided_walls = Collision.get_collided_nodes_by_tag(
-                    node=self.collider, tag="solid", offset=new_velocity
-                )
-                open_doors = Collision.get_collided_nodes_by_tag(
-                    node=self.collider, tag="open-door", offset=new_velocity
-                )
-                rainbow_orbs = Collision.get_collided_nodes_by_tag(
-                    node=self.collider, tag="rainbow_orb", offset=new_velocity
-                )
-                # Collision checks
-                if collided_walls:
-                    pass
-                elif open_doors:
-                    # TODO: temp win state
-                    if GameContext().has_won:
-                        room_manager.clean_up()
-                        GameContext.set_game_state(GameState.END_SCREEN)
-                        SceneTree.change_scene(scene_path="scenes/end_screen.sscn")
-                        yield co_return()
-                    else:
-                        collided_door = open_doors[0]
-                        self.last_collided_door = collided_door
-                        room_manager.start_room_transition(collided_door)
-                elif rainbow_orbs:
-                    GameContext().has_won = True
-                    rainbow_orbs[0].queue_deletion()
-                    # Temp open up door
-                    room_manager.room_doors.up.set_status(DoorStatus.OPEN)
-                else:
-                    self.position += new_velocity
-            else:
+            if not new_velocity and not non_facing_velocity:
                 yield co_return()
+            else:
+                for vel in [new_velocity, non_facing_velocity]:
+                    if vel:
+                        collided_walls = Collision.get_collided_nodes_by_tag(
+                            node=self.collider, tag="solid", offset=vel
+                        )
+                        open_doors = Collision.get_collided_nodes_by_tag(
+                            node=self.collider, tag="open-door", offset=vel
+                        )
+                        rainbow_orbs = Collision.get_collided_nodes_by_tag(
+                            node=self.collider, tag="rainbow_orb", offset=vel
+                        )
+                        # Collision checks
+                        if collided_walls:
+                            pass
+                        elif open_doors:
+                            # TODO: temp win state
+                            if GameContext().has_won:
+                                room_manager.clean_up()
+                                GameContext.set_game_state(GameState.END_SCREEN)
+                                SceneTree.change_scene(
+                                    scene_path="scenes/end_screen.sscn"
+                                )
+                                yield co_return()
+                            else:
+                                collided_door = open_doors[0]
+                                self.last_collided_door = collided_door
+                                room_manager.start_room_transition(collided_door)
+                            break
+                        elif rainbow_orbs:
+                            GameContext().has_won = True
+                            rainbow_orbs[0].queue_deletion()
+                            # Temp open up door
+                            room_manager.room_doors.up.set_status(DoorStatus.OPEN)
+                            break
+                        else:
+                            self.position += vel
 
             yield co_suspend()
 
