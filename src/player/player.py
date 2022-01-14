@@ -5,7 +5,7 @@ from seika.camera import Camera2D
 from seika.color import Color
 from seika.node import AnimatedSprite
 from seika.input import Input
-from seika.math import Vector2
+from seika.math import Vector2, Rect2
 from seika.physics import Collision
 from seika.scene import SceneTree
 from seika.utils import SimpleTimer
@@ -287,9 +287,11 @@ class Player(AnimatedSprite):
         if self.direction == Vector2.UP():
             move_offset += (self.direction * Vector2(0, 14)) + Vector2(-2, 0)
             player_attack.sprite.rotation = 270
+            player_attack.collider_rect = Rect2(2, -2, 8, 12)
         elif self.direction == Vector2.DOWN():
             move_offset += (self.direction * Vector2(0, 14)) + Vector2(-2, 0)
             player_attack.sprite.rotation = 90
+            player_attack.collider_rect = Rect2(2, -2, 8, 12)
         elif self.direction == Vector2.LEFT():
             player_attack.sprite.flip_h = True
             move_offset += self.direction * Vector2(14, 0)
