@@ -63,7 +63,7 @@ class Player(AnimatedSprite):
         idle_move_exit = StateExitLink(
             state_to_transition=move_state,
             transition_predicate=(
-                lambda: Input.is_action_just_pressed(action_name="move_left")
+                lambda: Input.is_action_pressed(action_name="move_left")
                 or Input.is_action_pressed(action_name="move_right")
                 or Input.is_action_pressed(action_name="move_up")
                 or Input.is_action_pressed(action_name="move_down")
@@ -170,6 +170,7 @@ class Player(AnimatedSprite):
             accel = self.stats.move_params.accel * delta
             non_facing_accel = self.stats.move_params.non_facing_dir_accel * delta
 
+            # TODO: Put into function
             # Input checks
             left_pressed = Input.is_action_pressed(action_name="move_left")
             right_pressed = Input.is_action_pressed(action_name="move_right")
