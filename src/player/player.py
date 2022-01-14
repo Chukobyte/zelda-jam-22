@@ -37,6 +37,7 @@ class Player(AnimatedSprite):
         # Temp
         self.collider.tags = [Player.TAG]
         self.last_collided_door = None
+        self.damaged_from_attack_timer = SimpleTimer(wait_time=1.0, start_on_init=True)
 
     def _configure_fsm(self) -> None:
         # State Management
@@ -119,17 +120,22 @@ class Player(AnimatedSprite):
 
     def _physics_process(self, delta: float) -> None:
         self.task_fsm.process()
+        self.damaged_from_attack_timer.tick(delta)
 
-    def take_damage(self, attack) -> None:
-        self.stats.hp -= attack.damage
-        if self.stats.hp <= 0:
-            self.player_ui_sprite.play("empty")
-            # TODO: Do more stuff...
-        else:
-            if self.stats.hp == 2:
-                self.player_ui_sprite.play("two_hearts")
-            if self.stats.hp == 1:
-                self.player_ui_sprite.play("one_heart")
+    def take_damage(self, attack=None) -> None:
+        if self.damaged_from_attack_timer.time_left <= 0:
+            attack_damage = 1
+            if attack:
+                attack_damage = attack.damage
+            self.stats.hp -= attack_damage
+            if self.stats.hp <= 0:
+                self.player_ui_sprite.play("empty")
+                # TODO: Do more stuff...
+            else:
+                if self.stats.hp == 2:
+                    self.player_ui_sprite.play("two_hearts")
+                if self.stats.hp == 1:
+                    self.player_ui_sprite.play("one_heart")
 
     def set_stat_ui_visibility(self, visible: bool) -> None:
         if visible:
@@ -162,6 +168,7 @@ class Player(AnimatedSprite):
         world = World()
         room_manager = RoomManager()
         is_move_pressed = False
+        elapsed_time = 0.0
         while True:
             # Temp event toggle
             if Input.is_action_just_pressed(action_name="credits"):
@@ -170,6 +177,7 @@ class Player(AnimatedSprite):
                     TextboxManager().hide_textbox()
 
             delta = world.cached_delta
+            elapsed_time += delta
             new_velocity = None
             non_facing_velocity = None
             accel = self.stats.move_params.accel * delta
@@ -284,7 +292,15 @@ class Player(AnimatedSprite):
                             room_manager.room_doors.up.set_status(DoorStatus.OPEN)
                             break
                         else:
-                            self.position += vel
+                            current_pos = self.position
+                            # TODO: Figure out if a different easing function is needed
+                            self.position = Ease.Cubic.ease_out_vec2(
+                                elapsed_time=elapsed_time,
+                                from_pos=current_pos,
+                                to_pos=current_pos + vel,
+                                duration=elapsed_time + 0.1,
+                            )
+                            # self.position += vel
 
             yield co_suspend()
 
