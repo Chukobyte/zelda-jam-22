@@ -9,7 +9,7 @@ from seika.utils import SimpleTimer
 
 from src.event.event_textbox import TextboxManager
 from src.game_context import GameContext, PlayState, GameState
-from src.math.ease import Ease
+from src.math.ease import Ease, Easer
 from src.room.door import DoorStatus
 from src.world import World
 from src.room.room_manager import RoomManager
@@ -260,24 +260,23 @@ class Player(AnimatedSprite):
         # TODO: Move some of the transition logic from player to something else...
         self.play()
         wait_time = 2.0
-        elapsed_time = 0.0
         new_player_pos = self.position + Vector2(80 * move_dir.x, 80 * move_dir.y)
-        current_pos = self.position
+        player_easer = Easer(
+            from_pos=self.position,
+            to_pos=new_player_pos,
+            duration=wait_time,
+            func=Ease.Cubic.ease_out_vec2,
+        )
+        camera_easer = Easer(
+            from_pos=camera_pos,
+            to_pos=new_world_position,
+            duration=wait_time,
+            func=Ease.Cubic.ease_in_vec2,
+        )
         transition_timer = SimpleTimer(wait_time=wait_time, start_on_init=True)
         while not transition_timer.tick(delta=world.cached_delta):
-            elapsed_time += world.cached_delta
-            self.position = Ease.Cubic.ease_in_vec2(
-                elapsed_time=elapsed_time,
-                from_pos=current_pos,
-                to_pos=new_player_pos,
-                duration=wait_time,
-            )
-            camera_pos = Ease.Cubic.ease_in_vec2(
-                elapsed_time=elapsed_time,
-                from_pos=initial_camera_pos,
-                to_pos=new_world_position,
-                duration=wait_time,
-            )
+            self.position = player_easer.ease(delta=world.cached_delta)
+            camera_pos = camera_easer.ease(delta=world.cached_delta)
             Camera2D.set_viewport_position(camera_pos)
             yield co_suspend()
         # Transition End

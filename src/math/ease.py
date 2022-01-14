@@ -1,4 +1,5 @@
 import math
+from typing import Callable
 
 from seika.math import Vector2, Math
 
@@ -212,3 +213,16 @@ class Ease:
                     elapsed_time, from_pos.y, to_pos.y, duration, amplitude, period
                 ),
             )
+
+
+class Easer:
+    def __init__(self, from_pos, to_pos, duration: float, func: Callable):
+        self.from_pos = from_pos
+        self.to_pos = to_pos
+        self.duration = duration
+        self.func = func
+        self.elapsed_time = 0.0
+
+    def ease(self, delta: float):
+        self.elapsed_time += delta
+        return self.func(self.elapsed_time, self.from_pos, self.to_pos, self.duration)
