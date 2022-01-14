@@ -137,7 +137,7 @@ class Player(AnimatedSprite):
         else:
             self.player_ui_sprite.modulate = Color(1.0, 1.0, 1.0, 0.0)
 
-    @Task.task_func(debug=True)
+    @Task.task_func()
     def idle(self):
         while True:
             if self.direction == Vector2.UP():
@@ -280,23 +280,26 @@ class Player(AnimatedSprite):
 
     @Task.task_func()
     def attack(self):
+        self.set_stat_ui_visibility(visible=False)
         player_attack = PlayerAttack.new()
         move_offset = Vector2(4, 4)
         self.get_parent().add_child(player_attack)
         if self.direction == Vector2.UP():
-            move_offset += self.direction * Vector2(8, 12)
+            move_offset += (self.direction * Vector2(0, 14)) + Vector2(-2, 0)
+            player_attack.sprite.rotation = 270
         elif self.direction == Vector2.DOWN():
-            move_offset += self.direction * Vector2(8, 12)
+            move_offset += (self.direction * Vector2(0, 14)) + Vector2(-2, 0)
             player_attack.sprite.rotation = 90
         elif self.direction == Vector2.LEFT():
             player_attack.sprite.flip_h = True
-            move_offset += self.direction * Vector2(14, 12)
+            move_offset += self.direction * Vector2(14, 0)
         elif self.direction == Vector2.RIGHT():
-            move_offset += self.direction * Vector2(11, 12)
+            move_offset += self.direction * Vector2(11, 0)
         player_attack.position = self.position + move_offset
 
         yield from co_wait_until_seconds(wait_time=player_attack.life_time)
 
+        self.set_stat_ui_visibility(visible=True)
         yield co_return()
 
     @Task.task_func()

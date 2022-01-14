@@ -164,14 +164,6 @@
         },
         {
             "type": "texture",
-            "file_path": "assets/images/player_attack_vertical.png",
-            "wrap_s": "clamp_to_border",
-            "wrap_t": "clamp_to_border",
-            "filter_min": "nearest",
-            "filter_max": "nearest"
-        },
-        {
-            "type": "texture",
             "file_path": "assets/images/player_spritesheet.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
