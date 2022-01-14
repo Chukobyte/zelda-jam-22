@@ -10,6 +10,7 @@ from seika.physics import Collision
 from seika.scene import SceneTree
 from seika.utils import SimpleTimer
 
+from src.attack.attack import Attack
 from src.event.event_textbox import TextboxManager
 from src.game_context import GameContext, PlayState, GameState
 from src.math.ease import Ease, Easer
@@ -17,7 +18,7 @@ from src.room.door import DoorStatus
 from src.world import World
 from src.room.room_manager import RoomManager
 from src.player.player_stats import PlayerStats
-from src.attack.player_attack import PlayerAttack
+from src.attack.player_attack import PlayerAttack, BoltAttack, BombAttack
 from src.task.task import Task, co_return, co_suspend, co_wait_until_seconds
 from src.task.fsm import FSM, State, StateExitLink
 
@@ -44,6 +45,8 @@ class Player(AnimatedSprite):
         idle_state = State(name="idle", state_func=self.idle)
         move_state = State(name="move", state_func=self.move)
         attack_state = State(name="attack", state_func=self.attack)
+        bolt_attack_state = State(name="bolt_attack", state_func=self.bolt_attack)
+        bomb_attack_state = State(name="bomb_attack", state_func=self.bomb_attack)
         transitioning_to_room_state = State(
             name="transitioning_to_room", state_func=self.transitioning_to_room
         )
@@ -52,6 +55,8 @@ class Player(AnimatedSprite):
         self.task_fsm.add_state(state=idle_state, set_current=True)
         self.task_fsm.add_state(state=move_state)
         self.task_fsm.add_state(state=attack_state)
+        self.task_fsm.add_state(state=bolt_attack_state)
+        self.task_fsm.add_state(state=bomb_attack_state)
         self.task_fsm.add_state(state=transitioning_to_room_state)
         self.task_fsm.add_state(state=event_state)
 
@@ -77,14 +82,44 @@ class Player(AnimatedSprite):
                 action_name="attack"
             ),
         )
+        idle_bolt_attack_exit = StateExitLink(
+            state_to_transition=bolt_attack_state,
+            transition_predicate=lambda: Input.is_action_just_pressed(
+                action_name="bolt_attack"
+            ),
+        )
+        idle_bomb_attack_exit = StateExitLink(
+            state_to_transition=bomb_attack_state,
+            transition_predicate=lambda: Input.is_action_just_pressed(
+                action_name="bomb_attack"
+            ),
+        )
         self.task_fsm.add_state_exit_link(idle_state, state_exit_link=idle_move_exit)
         self.task_fsm.add_state_exit_link(idle_state, state_exit_link=idle_attack_exit)
+        self.task_fsm.add_state_exit_link(
+            idle_state, state_exit_link=idle_bolt_attack_exit
+        )
+        self.task_fsm.add_state_exit_link(
+            idle_state, state_exit_link=idle_bomb_attack_exit
+        )
         self.task_fsm.add_state_exit_link(idle_state, state_exit_link=event_exit)
         # Move
-        move_exit = StateExitLink(
+        move_attack_exit = StateExitLink(
             state_to_transition=attack_state,
             transition_predicate=lambda: Input.is_action_just_pressed(
                 action_name="attack"
+            ),
+        )
+        move_attack_bolt_exit = StateExitLink(
+            state_to_transition=bolt_attack_state,
+            transition_predicate=lambda: Input.is_action_just_pressed(
+                action_name="bolt_attack"
+            ),
+        )
+        move_attack_bomb_exit = StateExitLink(
+            state_to_transition=bomb_attack_state,
+            transition_predicate=lambda: Input.is_action_just_pressed(
+                action_name="bomb_attack"
             ),
         )
         move_exit_to_room_transition = StateExitLink(
@@ -92,7 +127,15 @@ class Player(AnimatedSprite):
             transition_predicate=lambda: GameContext.get_play_state()
             == PlayState.ROOM_TRANSITION,
         )
-        self.task_fsm.add_state_exit_link(state=move_state, state_exit_link=move_exit)
+        self.task_fsm.add_state_exit_link(
+            state=move_state, state_exit_link=move_attack_exit
+        )
+        self.task_fsm.add_state_exit_link(
+            state=move_state, state_exit_link=move_attack_bolt_exit
+        )
+        self.task_fsm.add_state_exit_link(
+            state=move_state, state_exit_link=move_attack_bomb_exit
+        )
         self.task_fsm.add_state_exit_link(
             state=move_state, state_exit_link=move_exit_to_room_transition
         )
@@ -100,9 +143,15 @@ class Player(AnimatedSprite):
         self.task_fsm.add_state_finished_link(
             state=move_state, state_to_transition=idle_state
         )
-        # Attack
+        # Attacks
         self.task_fsm.add_state_finished_link(
-            state=attack_state, state_to_transition=move_state
+            state=attack_state, state_to_transition=idle_state
+        )
+        self.task_fsm.add_state_finished_link(
+            state=bolt_attack_state, state_to_transition=idle_state
+        )
+        self.task_fsm.add_state_finished_link(
+            state=bomb_attack_state, state_to_transition=idle_state
         )
         # Transitioning To Room
         self.task_fsm.add_state_finished_link(
@@ -304,26 +353,49 @@ class Player(AnimatedSprite):
 
             yield co_suspend()
 
-    @Task.task_func()
-    def attack(self):
+    def setup_attack(self, attack: Attack) -> None:
         self.set_stat_ui_visibility(visible=False)
-        player_attack = PlayerAttack.new()
         move_offset = Vector2(4, 4)
-        self.get_parent().add_child(player_attack)
+        self.get_parent().add_child(attack)
         if self.direction == Vector2.UP():
             move_offset += (self.direction * Vector2(0, 14)) + Vector2(-2, 0)
-            player_attack.sprite.rotation = 270
-            player_attack.collider_rect = Rect2(2, -2, 8, 12)
+            attack.sprite.rotation = 270
+            attack.collider_rect = Rect2(2, -2, 8, 12)
         elif self.direction == Vector2.DOWN():
             move_offset += (self.direction * Vector2(0, 14)) + Vector2(-2, 0)
-            player_attack.sprite.rotation = 90
-            player_attack.collider_rect = Rect2(2, -2, 8, 12)
+            attack.sprite.rotation = 90
+            attack.collider_rect = Rect2(2, -2, 8, 12)
         elif self.direction == Vector2.LEFT():
-            player_attack.sprite.flip_h = True
+            attack.sprite.flip_h = True
             move_offset += self.direction * Vector2(14, 0)
         elif self.direction == Vector2.RIGHT():
             move_offset += self.direction * Vector2(11, 0)
-        player_attack.position = self.position + move_offset
+        attack.position = self.position + move_offset
+
+    @Task.task_func()
+    def attack(self):
+        player_attack = PlayerAttack.new()
+        self.setup_attack(player_attack)
+
+        yield from co_wait_until_seconds(wait_time=player_attack.life_time)
+
+        self.set_stat_ui_visibility(visible=True)
+        yield co_return()
+
+    @Task.task_func()
+    def bolt_attack(self):
+        player_attack = BoltAttack.new()
+        self.setup_attack(player_attack)
+
+        yield from co_wait_until_seconds(wait_time=player_attack.life_time)
+
+        self.set_stat_ui_visibility(visible=True)
+        yield co_return()
+
+    @Task.task_func()
+    def bomb_attack(self):
+        player_attack = BombAttack.new()
+        self.setup_attack(player_attack)
 
         yield from co_wait_until_seconds(wait_time=player_attack.life_time)
 
