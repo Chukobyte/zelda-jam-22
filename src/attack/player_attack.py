@@ -1,5 +1,5 @@
 from seika.assets import Texture
-from seika.math import Rect2
+from seika.math import Rect2, Vector2
 from seika.node import Sprite
 from seika.physics import Collision
 
@@ -39,7 +39,7 @@ class BoltAttack(Attack):
     def __init__(self, entity_id: int):
         super().__init__(entity_id)
         self.sprite = None
-        self.set_life_time(0.5)
+        self.set_life_time(3.0)
         self.damage = 1
 
     def _start(self) -> None:
@@ -53,6 +53,9 @@ class BoltAttack(Attack):
 
     def _physics_process(self, delta: float) -> None:
         super()._physics_process(delta)
+        self.position += self.direction * Vector2(
+            self.speed * delta, self.speed * delta
+        )
         enemies_colliders = Collision.get_collided_nodes_by_tag(
             node=self, tag=Enemy.TAG
         )
@@ -66,7 +69,7 @@ class BombAttack(Attack):
     def __init__(self, entity_id: int):
         super().__init__(entity_id)
         self.sprite = None
-        self.set_life_time(0.5)
+        self.set_life_time(2.0)
         self.damage = 1
 
     def _start(self) -> None:

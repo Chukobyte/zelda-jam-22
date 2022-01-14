@@ -353,21 +353,24 @@ class Player(AnimatedSprite):
 
             yield co_suspend()
 
-    def setup_attack(self, attack: Attack) -> None:
+    def setup_attack(self, attack: Attack, adjust_orientation: bool) -> None:
         self.set_stat_ui_visibility(visible=False)
         move_offset = Vector2(4, 4)
         self.get_parent().add_child(attack)
         if self.direction == Vector2.UP():
             move_offset += (self.direction * Vector2(0, 14)) + Vector2(-2, 0)
-            attack.sprite.rotation = 270
-            attack.collider_rect = Rect2(2, -2, 8, 12)
+            if adjust_orientation:
+                attack.sprite.rotation = 270
+                attack.collider_rect = Rect2(2, -2, 8, 12)
         elif self.direction == Vector2.DOWN():
             move_offset += (self.direction * Vector2(0, 14)) + Vector2(-2, 0)
-            attack.sprite.rotation = 90
-            attack.collider_rect = Rect2(2, -2, 8, 12)
+            if adjust_orientation:
+                attack.sprite.rotation = 90
+                attack.collider_rect = Rect2(2, -2, 8, 12)
         elif self.direction == Vector2.LEFT():
-            attack.sprite.flip_h = True
             move_offset += self.direction * Vector2(14, 0)
+            if adjust_orientation:
+                attack.sprite.flip_h = True
         elif self.direction == Vector2.RIGHT():
             move_offset += self.direction * Vector2(11, 0)
         attack.position = self.position + move_offset
@@ -375,7 +378,7 @@ class Player(AnimatedSprite):
     @Task.task_func()
     def attack(self):
         player_attack = PlayerAttack.new()
-        self.setup_attack(player_attack)
+        self.setup_attack(attack=player_attack, adjust_orientation=True)
 
         yield from co_wait_until_seconds(wait_time=player_attack.life_time)
 
@@ -385,9 +388,10 @@ class Player(AnimatedSprite):
     @Task.task_func()
     def bolt_attack(self):
         player_attack = BoltAttack.new()
-        self.setup_attack(player_attack)
+        player_attack.direction = self.direction
+        self.setup_attack(attack=player_attack, adjust_orientation=True)
 
-        yield from co_wait_until_seconds(wait_time=player_attack.life_time)
+        yield from co_wait_until_seconds(wait_time=0.25)
 
         self.set_stat_ui_visibility(visible=True)
         yield co_return()
@@ -395,9 +399,9 @@ class Player(AnimatedSprite):
     @Task.task_func()
     def bomb_attack(self):
         player_attack = BombAttack.new()
-        self.setup_attack(player_attack)
+        self.setup_attack(attack=player_attack, adjust_orientation=False)
 
-        yield from co_wait_until_seconds(wait_time=player_attack.life_time)
+        yield from co_wait_until_seconds(wait_time=0.5)
 
         self.set_stat_ui_visibility(visible=True)
         yield co_return()
