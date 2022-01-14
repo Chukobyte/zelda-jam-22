@@ -20,7 +20,6 @@ class EaseTest(Node2D):
         self.initial = -100.0
         self.new_value = self.initial
 
-
     def _physics_process(self, delta: float) -> None:
         if Input.is_action_just_pressed(action_name="debug_quit"):
             Engine.exit()
@@ -29,13 +28,11 @@ class EaseTest(Node2D):
             self.has_started = True
         if self.has_started:
             self.elapsed_time += delta
-            new_position = Ease.Elastic.ease_out_vec2(
+            new_position = Ease.Bounce.ease_out_vec2(
                 elapsed_time=self.elapsed_time,
-                # from_pos=self.point_a.position,
                 from_pos=self.initial_pos,
                 to_pos=self.point_b.position,
                 duration=5.0,
-                # duration=15.0,
             )
             self.point_a.position = new_position
             self.position_text_label.text = (

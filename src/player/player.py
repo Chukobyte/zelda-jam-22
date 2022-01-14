@@ -259,34 +259,16 @@ class Player(AnimatedSprite):
         # Transition Start
         # TODO: Move some of the transition logic from player to something else...
         self.play()
-        # # Moving horizontal
-        # if move_dir.x != 0:
-        #     transition_accel = 1.05
-        # # Moving vertically
-        # else:
-        #     transition_accel = 0.6
-        # transition_timer = SimpleTimer(wait_time=1.25, start_on_init=True)
-        # while not transition_timer.tick(delta=world.cached_delta):
-        #     accel = self.stats.move_params.accel * world.cached_delta * transition_accel
-        #     self.position += Vector2(move_dir.x * accel, move_dir.y * accel)
-        #     # TODO: Set proper thing to stop camera
-        #     camera_accel = accel * 3.0
-        #     camera_pos += Vector2(move_dir.x * camera_accel, move_dir.y * camera_accel)
-        #     Camera2D.set_viewport_position(camera_pos)
-        #     yield co_suspend()
         wait_time = 2.0
-        transition_timer = SimpleTimer(wait_time=wait_time, start_on_init=True)
         elapsed_time = 0.0
         new_player_pos = self.position + Vector2(80 * move_dir.x, 80 * move_dir.y)
         current_pos = self.position
-        print(f"new_player_pos = {new_player_pos}, current_pos = {current_pos}")
+        transition_timer = SimpleTimer(wait_time=wait_time, start_on_init=True)
         while not transition_timer.tick(delta=world.cached_delta):
             elapsed_time += world.cached_delta
             self.position = Ease.Cubic.ease_in_vec2(
                 elapsed_time=elapsed_time,
-                # from_pos=self.position,
                 from_pos=current_pos,
-                # to_pos=new_world_position,
                 to_pos=new_player_pos,
                 duration=wait_time,
             )
@@ -297,10 +279,6 @@ class Player(AnimatedSprite):
                 duration=wait_time,
             )
             Camera2D.set_viewport_position(camera_pos)
-            # print(
-            #     f"player.position = {self.position}, camera_pos = {camera_pos}, new_world_position = {new_world_position}"
-            # )
-            print(f"player.position = {self.position}")
             yield co_suspend()
         # Transition End
         self.position = new_player_pos
