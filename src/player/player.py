@@ -1,5 +1,6 @@
 from typing import Tuple, Optional
 
+from seika.assets import Texture
 from seika.camera import Camera2D
 from seika.color import Color
 from seika.node import AnimatedSprite
@@ -280,10 +281,19 @@ class Player(AnimatedSprite):
     @Task.task_func()
     def attack(self):
         player_attack = PlayerAttack.new()
-        player_attack.position = (
-            self.position + Vector2(4, 4) + (self.direction * Vector2(8, 12))
-        )
+        move_offset = Vector2(4, 4)
         self.get_parent().add_child(player_attack)
+        if self.direction == Vector2.UP():
+            move_offset += self.direction * Vector2(8, 12)
+        elif self.direction == Vector2.DOWN():
+            move_offset += self.direction * Vector2(8, 12)
+            player_attack.sprite.rotation = 90
+        elif self.direction == Vector2.LEFT():
+            player_attack.sprite.flip_h = True
+            move_offset += self.direction * Vector2(14, 12)
+        elif self.direction == Vector2.RIGHT():
+            move_offset += self.direction * Vector2(11, 12)
+        player_attack.position = self.position + move_offset
 
         yield from co_wait_until_seconds(wait_time=player_attack.life_time)
 
