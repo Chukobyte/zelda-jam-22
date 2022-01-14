@@ -5,7 +5,6 @@ from seika.math import Rect2, Vector2
 from seika.physics import Collision
 from seika.utils import SimpleTimer
 
-from src.attack.enemy_attack import EnemyAttack
 from src.enemy.enemy import Enemy
 from src.task.task import Task, co_wait_until_seconds, co_return, co_suspend
 from src.world import World
@@ -36,7 +35,6 @@ class Brute(Enemy):
             rand_dirs = [Vector2.DOWN(), Vector2.UP(), Vector2.LEFT(), Vector2.RIGHT()]
             random.shuffle(rand_dirs)
             new_dir = rand_dirs.pop(0)
-            move_count = 0
             move_timer = SimpleTimer(
                 wait_time=random.uniform(0.5, 1.5), start_on_init=True
             )
