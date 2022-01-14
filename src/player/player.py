@@ -251,6 +251,7 @@ class Player(AnimatedSprite):
             room_manager.current_room.position
         )
         camera_pos = Camera2D.get_viewport_position()
+        initial_camera_pos = camera_pos
         self.set_stat_ui_visibility(visible=False)
         # Delay
         self.stop()
@@ -273,31 +274,36 @@ class Player(AnimatedSprite):
         #     camera_pos += Vector2(move_dir.x * camera_accel, move_dir.y * camera_accel)
         #     Camera2D.set_viewport_position(camera_pos)
         #     yield co_suspend()
-        transition_timer = SimpleTimer(wait_time=1.25, start_on_init=True)
+        wait_time = 2.0
+        transition_timer = SimpleTimer(wait_time=wait_time, start_on_init=True)
         elapsed_time = 0.0
-        new_player_pos = self.position + Vector2(0, -50)
-        print(f"new_player_pos = {new_player_pos}")
+        new_player_pos = self.position + Vector2(80 * move_dir.x, 80 * move_dir.y)
+        current_pos = self.position
+        print(f"new_player_pos = {new_player_pos}, current_pos = {current_pos}")
         while not transition_timer.tick(delta=world.cached_delta):
             elapsed_time += world.cached_delta
-            self.position += Ease.Elastic.ease_in_vec2(
+            self.position = Ease.Cubic.ease_in_vec2(
                 elapsed_time=elapsed_time,
-                from_pos=self.position,
+                # from_pos=self.position,
+                from_pos=current_pos,
                 # to_pos=new_world_position,
                 to_pos=new_player_pos,
-                duration=1.25,
+                duration=wait_time,
             )
-            # camera_pos += Ease.Cubic.ease_in_vec2(
-            #     elapsed_time=elapsed_time,
-            #     from_pos=camera_pos,
-            #     to_pos=new_world_position,
-            #     duration=1.25,
+            camera_pos = Ease.Cubic.ease_in_vec2(
+                elapsed_time=elapsed_time,
+                from_pos=initial_camera_pos,
+                to_pos=new_world_position,
+                duration=wait_time,
+            )
+            Camera2D.set_viewport_position(camera_pos)
+            # print(
+            #     f"player.position = {self.position}, camera_pos = {camera_pos}, new_world_position = {new_world_position}"
             # )
-            # Camera2D.set_viewport_position(camera_pos)
-            print(
-                f"player.position = {self.position}, camera_pos = {camera_pos}, new_world_position = {new_world_position}"
-            )
+            print(f"player.position = {self.position}")
             yield co_suspend()
         # Transition End
+        self.position = new_player_pos
         Camera2D.set_viewport_position(new_world_position)
         room_manager.wall_colliders.update_wall_positions(new_world_position)
         GameContext.set_play_state(PlayState.MAIN)
