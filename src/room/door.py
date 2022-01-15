@@ -4,12 +4,12 @@ from seika.math import Vector2
 from seika.node import CollisionShape2D, Node2D
 
 
-class DoorStatus:
+class DoorState:
     OPEN = 0
     CLOSED = 1
     SOLID_WALL = 2
     BREAKABLE_WALL = 3
-    OPEN_WALL = 4
+    CRACKED_OPEN_WALL = 4
 
 
 class Door(CollisionShape2D):
@@ -23,7 +23,7 @@ class Door(CollisionShape2D):
     def __init__(self, entity_id: int):
         super().__init__(entity_id)
         self.direction = Vector2()
-        self._status = DoorStatus.CLOSED
+        self._state = DoorState.CLOSED
         self.sprite = None
 
     def _get_dir_string(self) -> str:
@@ -36,32 +36,41 @@ class Door(CollisionShape2D):
         elif self.direction == Vector2.LEFT():
             return "left"
 
-    def set_status(self, status: int) -> None:
-        self._status = status
+    def set_state(self, state: int) -> None:
+        self._state = state
         dir_string = self._get_dir_string()
         is_open_string = ""
-        if self._status == DoorStatus.OPEN:
+        if self._state == DoorState.OPEN:
             is_open_string = "open"
             self.tags = Door.OPEN_DOOR_TAG
             self.sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
-        elif self._status == DoorStatus.CLOSED:
+        elif self._state == DoorState.CLOSED:
             is_open_string = "closed"
             self.tags = ["solid"]
             self.sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
-        elif self._status == DoorStatus.SOLID_WALL:
+        elif self._state == DoorState.SOLID_WALL:
             is_open_string = "closed"
             self.tags = ["solid"]
             self.sprite.modulate = Color(1.0, 1.0, 1.0, 0.0)
+        elif self._state == DoorState.BREAKABLE_WALL:
+            is_open_string = "closed"
+            self.tags = ["solid"]
+            self.sprite.modulate = Color(1.0, 1.0, 1.0, 0.0)
+        elif self._state == DoorState.CRACKED_OPEN_WALL:
+            dir_string = f"wall_cracked_{dir_string}"
+            is_open_string = "open"
+            self.tags = Door.OPEN_DOOR_TAG
+            self.sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
         if is_open_string:
             texture_file_path = (
                 f"assets/images/dungeon/door_{dir_string}_{is_open_string}.png"
             )
             self.sprite.texture = Texture.get(file_path=texture_file_path)
         else:
-            print(f"{status} is an invalid status!")
+            print(f"{state} is an invalid state!")
 
     def get_status(self) -> int:
-        return self._status
+        return self._state
 
     @staticmethod
     def new_door(dir: Vector2):
