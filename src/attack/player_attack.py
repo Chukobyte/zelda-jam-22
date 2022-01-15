@@ -13,21 +13,40 @@ from src.enemy.enemy import Enemy
 class WaveAttack(Attack):
     def __init__(self, entity_id: int):
         super().__init__(entity_id)
-        self.sprite = None
+        # self.sprite = None
+        self.anim_sprite = None
         self.set_life_time(0.5)
         self.damage = 1
 
     def _start(self) -> None:
         super()._start()
-        self.sprite = Sprite.new()
-        texture = Texture.get(file_path="assets/images/player/player_wave_attack.png")
-        self.sprite.texture = texture
-        texture_rect = Rect2(0, 0, texture.width / 6, texture.height)
-        # self.sprite.draw_source = texture_rect
-        self.sprite.draw_source = Rect2(180, 0, texture.width / 6, texture.height)
-        self.add_child(self.sprite)
+        self.anim_sprite = AnimatedSprite.new()
+        self.anim_sprite.animations = [self._get_animation()]
+        self.add_child(self.anim_sprite)
+        self.anim_sprite.loops = False
+        self.anim_sprite.play()
 
-        self.collider_rect = texture_rect
+        # self.sprite = Sprite.new()
+        # texture = Texture.get(file_path="assets/images/player/player_wave_attack.png")
+        # self.sprite.texture = texture
+        # texture_rect = Rect2(0, 0, texture.width / 6, texture.height)
+        # self.sprite.draw_source = texture_rect
+        # self.sprite.draw_source = Rect2(180, 0, texture.width / 6, texture.height)
+        # self.add_child(self.sprite)
+
+        self.collider_rect = Rect2(0, 0, 60, 34)
+
+    def _get_animation(self) -> Animation:
+        texture = Texture.get(file_path="assets/images/player/player_wave_attack.png")
+        anim_frames = []
+        for i in range(6):
+            anim_frames.append(
+                AnimationFrame(
+                    texture=texture, draw_source=Rect2(60 * i, 0, 60, 34), index=i
+                )
+            )
+        # return Animation(name="wave", speed=300, frames=anim_frames)
+        return Animation(name="wave", speed=80, frames=anim_frames)
 
     def _physics_process(self, delta: float) -> None:
         super()._physics_process(delta)
