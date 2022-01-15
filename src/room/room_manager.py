@@ -69,11 +69,11 @@ class RoomManager:
         vertical_door_overhead = collided_door.get_node(name="VerticalDoorOverhead")
         if collided_door.direction == Vector2.UP():
             horizontal_door_overhead.position = previous_room_world_position + Vector2(
-                0.0, -10.0
+                0.0, -24.0
             )
         elif collided_door.direction == Vector2.DOWN():
             horizontal_door_overhead.position = previous_room_world_position + Vector2(
-                0.0, -10.0 + self.current_room.size.y
+                0.0, -24.0 + self.current_room.size.y
             )
         elif collided_door.direction == Vector2.LEFT():
             vertical_door_overhead.position = previous_room_world_position + Vector2(
