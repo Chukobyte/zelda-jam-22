@@ -1,5 +1,6 @@
 import math
 
+from seika.assets import Texture
 from seika.math import Vector2
 
 from src.enemy.enemy_spawner import EnemySpawner
@@ -22,6 +23,18 @@ class RoomManager:
             cls.wall_colliders = None
             cls.room_doors = None
             cls.transition_doors = None
+            cls.horizontal_door_overhead_texture = Texture.get(
+                file_path="assets/images/dungeon/horizontal_door_overhead.png"
+            )
+            cls.horizontal_cracked_wall_door_overhead_texture = Texture.get(
+                file_path="assets/images/dungeon/horizontal_cracked_wall_door_overhead.png"
+            )
+            cls.vertical_door_overhead_texture = Texture.get(
+                file_path="assets/images/dungeon/vertical_door_overhead.png"
+            )
+            cls.vertical_cracked_wall_door_overhead_texture = Texture.get(
+                file_path="assets/images/dungeon/vertical_cracked_wall_door_overhead.png"
+            )
         return cls._instance
 
     def add_room(self, room: Room) -> None:
@@ -71,18 +84,42 @@ class RoomManager:
             horizontal_door_overhead.position = previous_room_world_position + Vector2(
                 0.0, -24.0
             )
+            if collided_door.get_state() == DoorState.OPEN:
+                horizontal_door_overhead.texture = self.horizontal_door_overhead_texture
+            elif collided_door.get_state() == DoorState.CRACKED_OPEN_WALL:
+                horizontal_door_overhead.texture = (
+                    self.horizontal_cracked_wall_door_overhead_texture
+                )
         elif collided_door.direction == Vector2.DOWN():
             horizontal_door_overhead.position = previous_room_world_position + Vector2(
                 0.0, -24.0 + self.current_room.size.y
             )
+            if collided_door.get_state() == DoorState.OPEN:
+                horizontal_door_overhead.texture = self.horizontal_door_overhead_texture
+            elif collided_door.get_state() == DoorState.CRACKED_OPEN_WALL:
+                horizontal_door_overhead.texture = (
+                    self.horizontal_cracked_wall_door_overhead_texture
+                )
         elif collided_door.direction == Vector2.LEFT():
             vertical_door_overhead.position = previous_room_world_position + Vector2(
                 -55.0, 0.0
             )
+            if collided_door.get_state() == DoorState.OPEN:
+                vertical_door_overhead.texture = self.vertical_door_overhead_texture
+            elif collided_door.get_state() == DoorState.CRACKED_OPEN_WALL:
+                vertical_door_overhead.texture = (
+                    self.vertical_cracked_wall_door_overhead_texture
+                )
         elif collided_door.direction == Vector2.RIGHT():
             vertical_door_overhead.position = previous_room_world_position + Vector2(
                 -55.0 + self.current_room.size.x, 0.0
             )
+            if collided_door.get_state() == DoorState.OPEN:
+                vertical_door_overhead.texture = self.vertical_door_overhead_texture
+            elif collided_door.get_state() == DoorState.CRACKED_OPEN_WALL:
+                vertical_door_overhead.texture = (
+                    self.vertical_cracked_wall_door_overhead_texture
+                )
 
         GameContext.set_play_state(PlayState.ROOM_TRANSITION)
 

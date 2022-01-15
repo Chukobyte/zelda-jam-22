@@ -124,7 +124,23 @@
         },
         {
             "type": "texture",
+            "file_path": "assets/images/dungeon/horizontal_cracked_wall_door_overhead.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "texture",
             "file_path": "assets/images/dungeon/vertical_door_overhead.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "texture",
+            "file_path": "assets/images/dungeon/vertical_cracked_wall_door_overhead.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
             "filter_min": "nearest",
