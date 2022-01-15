@@ -22,7 +22,7 @@ class Cultist(Enemy):
     def _physics_process(self, delta: float) -> None:
         self.tasks.run_tasks()
 
-    @Task.task_func(debug=True)
+    @Task.task_func()
     def shoot_shot(self):
         player = self.get_node(name="Player")
         assert player

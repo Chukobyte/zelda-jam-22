@@ -75,7 +75,7 @@ class Boss(Enemy):
         self.task_fsm.process()
         self.tasks.run_tasks()
 
-    @Task.task_func(debug=True)
+    @Task.task_func()
     def shoot_shot(self):
         player = self.get_node(name="Player")
         assert player
@@ -90,7 +90,7 @@ class Boss(Enemy):
                 break
         yield co_return()
 
-    @Task.task_func(debug=True)
+    @Task.task_func()
     def meteor_shower(self):
         camera_pos = Camera2D.get_viewport_position()
         base_pos = camera_pos + Vector2(0, 120)

@@ -55,7 +55,7 @@ class Enemy(Sprite):
                 task=Task(name="damaged_flash", func=self.damaged_flash)
             )
 
-    @Task.task_func(debug=True)
+    @Task.task_func()
     def damaged_flash(self):
         colors = self.damaged_colors.copy()
         while len(colors) > 0:
