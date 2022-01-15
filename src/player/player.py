@@ -394,15 +394,14 @@ class Player(AnimatedSprite):
         move_offset = Vector2(-22, -12)
         self.get_parent().add_child(attack)
         if self.direction == Vector2.UP():
-            move_offset += (self.direction * Vector2(0, 28))
+            move_offset += self.direction * Vector2(0, 28)
             attack.sprite.rotation = 270
-            attack.collider_rect = Rect2(2, -2, 8, 12)
+            attack.collider_rect = Rect2(15, -12, 32, 52)
         elif self.direction == Vector2.DOWN():
             move_offset += (self.direction * Vector2(0, 36)) + Vector2(0, 0)
             attack.sprite.rotation = 90
-            attack.collider_rect = Rect2(2, -2, 8, 12)
+            attack.collider_rect = Rect2(15, -6, 32, 52)
         elif self.direction == Vector2.LEFT():
-            # move_offset += self.direction * Vector2(14, 0)
             move_offset += self.direction * Vector2(28, 0) + Vector2(0, 2)
             attack.sprite.flip_h = True
         elif self.direction == Vector2.RIGHT():

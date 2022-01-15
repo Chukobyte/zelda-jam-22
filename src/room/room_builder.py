@@ -162,7 +162,9 @@ class RoomBuilder:
     @staticmethod
     def create_rooms(node: Node) -> None:
         room_manager = RoomManager()
-        room_bg_texture = Texture.get(file_path="assets/images/dungeon/dungeon_level.png")
+        room_bg_texture = Texture.get(
+            file_path="assets/images/dungeon/dungeon_level.png"
+        )
         for pos in RoomModel.INITIAL_DATA:
             room_data = RoomModel.INITIAL_DATA[pos]
             room = Room(position=pos)
