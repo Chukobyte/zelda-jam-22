@@ -1,6 +1,7 @@
 from typing import Tuple, Optional
 
 from seika.assets import Texture
+from seika.audio import Audio
 from seika.camera import Camera2D
 from seika.color import Color
 from seika.node import AnimatedSprite
@@ -377,6 +378,7 @@ class Player(AnimatedSprite):
 
     @Task.task_func()
     def attack(self):
+        Audio.play_sound(sound_id="assets/audio/sfx/wave.wav")
         player_attack = PlayerAttack.new()
         self.setup_attack(attack=player_attack, adjust_orientation=True)
 
@@ -387,6 +389,7 @@ class Player(AnimatedSprite):
 
     @Task.task_func()
     def bolt_attack(self):
+        Audio.play_sound(sound_id="assets/audio/sfx/bolt.wav")
         player_attack = BoltAttack.new()
         player_attack.direction = self.direction
         self.setup_attack(attack=player_attack, adjust_orientation=True)
@@ -398,6 +401,7 @@ class Player(AnimatedSprite):
 
     @Task.task_func()
     def bomb_attack(self):
+        Audio.play_sound(sound_id="assets/audio/sfx/bomb_place.wav")
         player_attack = BombAttack.new()
         self.setup_attack(attack=player_attack, adjust_orientation=False)
 
@@ -415,7 +419,6 @@ class Player(AnimatedSprite):
             room_manager.current_room.position
         )
         camera_pos = Camera2D.get_viewport_position()
-        initial_camera_pos = camera_pos
         self.set_stat_ui_visibility(visible=False)
         # Delay
         self.stop()

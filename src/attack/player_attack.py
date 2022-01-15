@@ -1,4 +1,5 @@
 from seika.assets import Texture
+from seika.audio import Audio
 from seika.math import Rect2, Vector2
 from seika.node import Sprite
 from seika.physics import Collision
@@ -90,3 +91,6 @@ class BombAttack(Attack):
             self.has_collided = True
             first_enemy = enemies_colliders[0].get_parent()
             first_enemy.take_damage(attack=self)
+
+    def _end(self) -> None:
+        Audio.play_sound(sound_id="assets/audio/sfx/bomb_explosion.wav")

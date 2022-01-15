@@ -215,6 +215,38 @@
             "size": 8
         },
         {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/wave.wav"
+        },
+        {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/bolt.wav"
+        },
+        {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/bomb_explosion.wav"
+        },
+        {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/bomb_place.wav"
+        },
+        {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/confirm.wav"
+        },
+        {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/enemy_hit.wav"
+        },
+        {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/random_swing.wav"
+        },
+        {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/select.wav"
+        },
+        {
             "type": "audio_stream",
             "file_path": "assets/audio/music/no_color_theme.wav",
             "uid": "no-color-theme",
