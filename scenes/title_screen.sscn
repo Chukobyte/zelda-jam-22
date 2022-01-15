@@ -37,7 +37,7 @@
                 {
                     "transform2D": {
                         "position": {
-                            "x": 68.0,
+                            "x": 160.0,
                             "y": 33.0
                         },
                         "scale": {
@@ -52,7 +52,7 @@
                 },
                 {
                     "text_label": {
-                        "text": "Zelda Jam Game",
+                        "text": "NUL",
                         "font_uid": "nes-20",
                         "color": {
                             "red": 0.23620864748954773,

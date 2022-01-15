@@ -19,7 +19,7 @@ from src.room.door import DoorStatus
 from src.world import World
 from src.room.room_manager import RoomManager
 from src.player.player_stats import PlayerStats
-from src.attack.player_attack import PlayerAttack, BoltAttack, BombAttack
+from src.attack.player_attack import WaveAttack, BoltAttack, BombAttack
 from src.task.task import Task, co_return, co_suspend, co_wait_until_seconds
 from src.task.fsm import FSM, State, StateExitLink
 
@@ -29,7 +29,7 @@ class Player(AnimatedSprite):
 
     def _start(self) -> None:
         self.stats = PlayerStats()
-        self.stats.set_all_hp(value=3)
+        self.stats.set_all_hp(value=6)
         self.collider = self.get_node(name="PlayerCollider")
         self.player_ui_sprite = self.get_node(name="PlayerUISprite")
         self.velocity = Vector2()
@@ -45,7 +45,7 @@ class Player(AnimatedSprite):
         # State Management
         idle_state = State(name="idle", state_func=self.idle)
         move_state = State(name="move", state_func=self.move)
-        attack_state = State(name="attack", state_func=self.attack)
+        wave_attack_state = State(name="wave_attack", state_func=self.wave_attack)
         bolt_attack_state = State(name="bolt_attack", state_func=self.bolt_attack)
         bomb_attack_state = State(name="bomb_attack", state_func=self.bomb_attack)
         transitioning_to_room_state = State(
@@ -55,7 +55,7 @@ class Player(AnimatedSprite):
 
         self.task_fsm.add_state(state=idle_state, set_current=True)
         self.task_fsm.add_state(state=move_state)
-        self.task_fsm.add_state(state=attack_state)
+        self.task_fsm.add_state(state=wave_attack_state)
         self.task_fsm.add_state(state=bolt_attack_state)
         self.task_fsm.add_state(state=bomb_attack_state)
         self.task_fsm.add_state(state=transitioning_to_room_state)
@@ -78,7 +78,7 @@ class Player(AnimatedSprite):
             ),
         )
         idle_attack_exit = StateExitLink(
-            state_to_transition=attack_state,
+            state_to_transition=wave_attack_state,
             transition_predicate=lambda: Input.is_action_just_pressed(
                 action_name="attack"
             ),
@@ -106,7 +106,7 @@ class Player(AnimatedSprite):
         self.task_fsm.add_state_exit_link(idle_state, state_exit_link=event_exit)
         # Move
         move_attack_exit = StateExitLink(
-            state_to_transition=attack_state,
+            state_to_transition=wave_attack_state,
             transition_predicate=lambda: Input.is_action_just_pressed(
                 action_name="attack"
             ),
@@ -146,7 +146,7 @@ class Player(AnimatedSprite):
         )
         # Attacks
         self.task_fsm.add_state_finished_link(
-            state=attack_state, state_to_transition=idle_state
+            state=wave_attack_state, state_to_transition=idle_state
         )
         self.task_fsm.add_state_finished_link(
             state=bolt_attack_state, state_to_transition=idle_state
@@ -182,9 +182,15 @@ class Player(AnimatedSprite):
                 self.player_ui_sprite.play("empty")
                 # TODO: Do more stuff...
             else:
-                if self.stats.hp == 2:
+                if self.stats.hp == 5:
+                    self.player_ui_sprite.play("five_hearts")
+                elif self.stats.hp == 4:
+                    self.player_ui_sprite.play("four_hearts")
+                elif self.stats.hp == 3:
+                    self.player_ui_sprite.play("three_hearts")
+                elif self.stats.hp == 2:
                     self.player_ui_sprite.play("two_hearts")
-                if self.stats.hp == 1:
+                elif self.stats.hp == 1:
                     self.player_ui_sprite.play("one_heart")
 
     def set_stat_ui_visibility(self, visible: bool) -> None:
@@ -361,7 +367,7 @@ class Player(AnimatedSprite):
 
             yield co_suspend()
 
-    def setup_attack(self, attack: Attack, adjust_orientation: bool) -> None:
+    def _setup_attack(self, attack: Attack, adjust_orientation: bool) -> None:
         self.set_stat_ui_visibility(visible=False)
         move_offset = Vector2(4, 4)
         self.get_parent().add_child(attack)
@@ -383,11 +389,30 @@ class Player(AnimatedSprite):
             move_offset += self.direction * Vector2(11, 0)
         attack.position = self.position + move_offset
 
+    def _setup_wave_attack(self, attack: WaveAttack) -> None:
+        self.set_stat_ui_visibility(visible=False)
+        move_offset = Vector2(-22, -12)
+        self.get_parent().add_child(attack)
+        if self.direction == Vector2.UP():
+            move_offset += self.direction * Vector2(0, 28)
+            attack.anim_sprite.rotation = 270
+            attack.collider_rect = Rect2(15, -12, 32, 52)
+        elif self.direction == Vector2.DOWN():
+            move_offset += (self.direction * Vector2(0, 36)) + Vector2(0, 0)
+            attack.anim_sprite.rotation = 90
+            attack.collider_rect = Rect2(15, -6, 32, 52)
+        elif self.direction == Vector2.LEFT():
+            move_offset += self.direction * Vector2(28, 0) + Vector2(0, 2)
+            attack.anim_sprite.flip_h = True
+        elif self.direction == Vector2.RIGHT():
+            move_offset += self.direction * Vector2(28, 0) + Vector2(0, 2)
+        attack.position = self.position + move_offset
+
     @Task.task_func()
-    def attack(self):
+    def wave_attack(self):
         Audio.play_sound(sound_id="assets/audio/sfx/wave.wav")
-        player_attack = PlayerAttack.new()
-        self.setup_attack(attack=player_attack, adjust_orientation=True)
+        player_attack = WaveAttack.new()
+        self._setup_wave_attack(attack=player_attack)
 
         yield from co_wait_until_seconds(wait_time=player_attack.life_time)
 
@@ -399,7 +424,7 @@ class Player(AnimatedSprite):
         Audio.play_sound(sound_id="assets/audio/sfx/bolt.wav")
         player_attack = BoltAttack.new()
         player_attack.direction = self.direction
-        self.setup_attack(attack=player_attack, adjust_orientation=True)
+        self._setup_attack(attack=player_attack, adjust_orientation=True)
 
         yield from co_wait_until_seconds(wait_time=0.25)
 
@@ -410,7 +435,7 @@ class Player(AnimatedSprite):
     def bomb_attack(self):
         Audio.play_sound(sound_id="assets/audio/sfx/bomb_place.wav")
         player_attack = BombAttack.new()
-        self.setup_attack(attack=player_attack, adjust_orientation=False)
+        self._setup_attack(attack=player_attack, adjust_orientation=False)
 
         yield from co_wait_until_seconds(wait_time=0.5)
 

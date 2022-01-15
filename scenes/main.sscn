@@ -52,7 +52,7 @@
                 },
                 {
                     "sprite": {
-                        "texture_path": "assets/images/dungeon_level.png",
+                        "texture_path": "assets/images/dungeon/dungeon_level.png",
                         "draw_source": {
                             "x": 0.0,
                             "y": 0.0,
@@ -113,7 +113,7 @@
                                 "frames": [
                                     {
                                         "frame": 0,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 0.0,
                                             "y": 0.0,
@@ -123,7 +123,7 @@
                                     },
                                     {
                                         "frame": 1,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 16.0,
                                             "y": 0.0,
@@ -133,7 +133,7 @@
                                     },
                                     {
                                         "frame": 2,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 32.0,
                                             "y": 0.0,
@@ -143,7 +143,7 @@
                                     },
                                     {
                                         "frame": 3,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 48.0,
                                             "y": 0.0,
@@ -159,7 +159,7 @@
                                 "frames": [
                                     {
                                         "frame": 0,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 0.0,
                                             "y": 32.0,
@@ -169,7 +169,7 @@
                                     },
                                     {
                                         "frame": 1,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 16.0,
                                             "y": 32.0,
@@ -179,7 +179,7 @@
                                     },
                                     {
                                         "frame": 2,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 32.0,
                                             "y": 32.0,
@@ -189,7 +189,7 @@
                                     },
                                     {
                                         "frame": 3,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 48.0,
                                             "y": 32.0,
@@ -205,7 +205,7 @@
                                 "frames": [
                                     {
                                         "frame": 0,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 0.0,
                                             "y": 16.0,
@@ -215,7 +215,7 @@
                                     },
                                     {
                                         "frame": 1,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 16.0,
                                             "y": 16.0,
@@ -225,7 +225,7 @@
                                     },
                                     {
                                         "frame": 2,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 32.0,
                                             "y": 16.0,
@@ -235,7 +235,7 @@
                                     },
                                     {
                                         "frame": 3,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 48.0,
                                             "y": 16.0,
@@ -251,7 +251,7 @@
                                 "frames": [
                                     {
                                         "frame": 0,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 0.0,
                                             "y": 48.0,
@@ -261,7 +261,7 @@
                                     },
                                     {
                                         "frame": 1,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 16.0,
                                             "y": 48.0,
@@ -271,7 +271,7 @@
                                     },
                                     {
                                         "frame": 2,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 32.0,
                                             "y": 48.0,
@@ -281,7 +281,7 @@
                                     },
                                     {
                                         "frame": 3,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 48.0,
                                             "y": 48.0,
@@ -297,7 +297,7 @@
                                 "frames": [
                                     {
                                         "frame": 0,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 0.0,
                                             "y": 80.0,
@@ -307,7 +307,7 @@
                                     },
                                     {
                                         "frame": 1,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 16.0,
                                             "y": 80.0,
@@ -317,7 +317,7 @@
                                     },
                                     {
                                         "frame": 2,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 32.0,
                                             "y": 80.0,
@@ -327,7 +327,7 @@
                                     },
                                     {
                                         "frame": 3,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 48.0,
                                             "y": 80.0,
@@ -343,7 +343,7 @@
                                 "frames": [
                                     {
                                         "frame": 0,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 0.0,
                                             "y": 64.0,
@@ -353,7 +353,7 @@
                                     },
                                     {
                                         "frame": 1,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 16.0,
                                             "y": 64.0,
@@ -363,7 +363,7 @@
                                     },
                                     {
                                         "frame": 2,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 32.0,
                                             "y": 64.0,
@@ -373,7 +373,7 @@
                                     },
                                     {
                                         "frame": 3,
-                                        "texture_path": "assets/images/player_spritesheet.png",
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
                                         "draw_source": {
                                             "x": 48.0,
                                             "y": 64.0,
@@ -444,7 +444,7 @@
                         {
                             "transform2D": {
                                 "position": {
-                                    "x": -4.0,
+                                    "x": -10.0,
                                     "y": -14.0
                                 },
                                 "scale": {
@@ -479,9 +479,9 @@
                                                 "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
                                                 "draw_source": {
                                                     "x": 0.0,
-                                                    "y": 24.0,
-                                                    "width": 24.0,
-                                                    "height": 8.0
+                                                    "y": 36.0,
+                                                    "width": 36.0,
+                                                    "height": 6.0
                                                 }
                                             }
                                         ]
@@ -496,8 +496,8 @@
                                                 "draw_source": {
                                                     "x": 0.0,
                                                     "y": 0.0,
-                                                    "width": 24.0,
-                                                    "height": 8.0
+                                                    "width": 36.0,
+                                                    "height": 6.0
                                                 }
                                             }
                                         ]
@@ -511,9 +511,9 @@
                                                 "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
                                                 "draw_source": {
                                                     "x": 0.0,
-                                                    "y": 16.0,
-                                                    "width": 24.0,
-                                                    "height": 8.0
+                                                    "y": 30.0,
+                                                    "width": 36.0,
+                                                    "height": 6.0
                                                 }
                                             }
                                         ]
@@ -527,9 +527,57 @@
                                                 "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
                                                 "draw_source": {
                                                     "x": 0.0,
-                                                    "y": 8.0,
-                                                    "width": 24.0,
-                                                    "height": 8.0
+                                                    "y": 24.0,
+                                                    "width": 36.0,
+                                                    "height": 6.0
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "three_hearts",
+                                        "speed": 1000,
+                                        "frames": [
+                                            {
+                                                "frame": 0,
+                                                "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
+                                                "draw_source": {
+                                                    "x": 0.0,
+                                                    "y": 18.0,
+                                                    "width": 36.0,
+                                                    "height": 6.0
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "four_hearts",
+                                        "speed": 1000,
+                                        "frames": [
+                                            {
+                                                "frame": 0,
+                                                "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
+                                                "draw_source": {
+                                                    "x": 0.0,
+                                                    "y": 12.0,
+                                                    "width": 36.0,
+                                                    "height": 6.0
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "five_hearts",
+                                        "speed": 1000,
+                                        "frames": [
+                                            {
+                                                "frame": 0,
+                                                "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
+                                                "draw_source": {
+                                                    "x": 0.0,
+                                                    "y": 6.0,
+                                                    "width": 36.0,
+                                                    "height": 6.0
                                                 }
                                             }
                                         ]
