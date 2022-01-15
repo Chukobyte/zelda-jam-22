@@ -1,3 +1,4 @@
+from seika.audio import Audio
 from seika.node import Node2D
 from seika.scene import SceneTree
 from seika.input import Input
@@ -14,5 +15,6 @@ class CreditsScreen(Node2D):
         if Input.is_action_just_pressed(
             action_name="attack"
         ) or Input.is_action_just_pressed(action_name="credits"):
+            Audio.play_sound(sound_id="assets/audio/sfx/select.wav")
             GameContext.set_game_state(GameState.TITLE_SCREEN)
             SceneTree.change_scene(scene_path="scenes/title_screen.sscn")

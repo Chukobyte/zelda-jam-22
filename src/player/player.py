@@ -23,7 +23,7 @@ from src.attack.player_attack import PlayerAttack, BoltAttack, BombAttack
 from src.task.task import Task, co_return, co_suspend, co_wait_until_seconds
 from src.task.fsm import FSM, State, StateExitLink
 
-
+# TODO: Refactor this class especially move()...
 class Player(AnimatedSprite):
     TAG = "player"
 
@@ -336,6 +336,7 @@ class Player(AnimatedSprite):
                                 room_manager.start_room_transition(collided_door)
                             break
                         elif rainbow_orbs:
+                            Audio.play_sound(sound_id="")
                             GameContext().has_won = True
                             rainbow_orbs[0].queue_deletion()
                             # Temp open up door

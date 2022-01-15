@@ -247,6 +247,10 @@
             "file_path": "assets/audio/sfx/select.wav"
         },
         {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/emerald_gain.wav"
+        },
+        {
             "type": "audio_stream",
             "file_path": "assets/audio/music/no_color_theme.wav",
             "uid": "no-color-theme",
