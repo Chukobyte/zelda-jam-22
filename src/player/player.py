@@ -336,7 +336,7 @@ class Player(AnimatedSprite):
                                 room_manager.start_room_transition(collided_door)
                             break
                         elif rainbow_orbs:
-                            Audio.play_sound(sound_id="")
+                            Audio.play_sound(sound_id="assets/audio/sfx/rainbow_orb.wav")
                             GameContext().has_won = True
                             rainbow_orbs[0].queue_deletion()
                             # Temp open up door

@@ -256,7 +256,7 @@
         },
         {
             "type": "sound",
-            "file_path": "assets/audio/sfx/emerald_gain.wav"
+            "file_path": "assets/audio/sfx/rainbow_orb.wav"
         },
         {
             "type": "audio_stream",
