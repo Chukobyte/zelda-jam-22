@@ -100,7 +100,7 @@
         },
         {
             "type": "texture",
-            "file_path": "assets/images/dungeon_level.png",
+            "file_path": "assets/images/dungeon/dungeon_level.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
             "filter_min": "nearest",
@@ -188,7 +188,7 @@
         },
         {
             "type": "texture",
-            "file_path": "assets/images/player_spritesheet.png",
+            "file_path": "assets/images/player/player_spritesheet.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
             "filter_min": "nearest",
