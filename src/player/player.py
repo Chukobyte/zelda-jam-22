@@ -1,7 +1,7 @@
 from typing import Tuple, Optional
 
 from seika.assets import Texture
-from seika.audio import Audio
+from seika.audio import Audio, AudioStream
 from seika.camera import Camera2D
 from seika.color import Color
 from seika.node import AnimatedSprite
@@ -336,7 +336,13 @@ class Player(AnimatedSprite):
                                 room_manager.start_room_transition(collided_door)
                             break
                         elif rainbow_orbs:
-                            Audio.play_sound(sound_id="assets/audio/sfx/rainbow_orb.wav")
+                            music_audio_stream = AudioStream.get(
+                                stream_uid="no-color-theme"
+                            )
+                            music_audio_stream.stop()
+                            Audio.play_sound(
+                                sound_id="assets/audio/sfx/rainbow_orb.wav"
+                            )
                             GameContext().has_won = True
                             rainbow_orbs[0].queue_deletion()
                             # Temp open up door

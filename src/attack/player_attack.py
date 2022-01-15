@@ -1,8 +1,9 @@
 from seika.assets import Texture
 from seika.audio import Audio
 from seika.math import Rect2, Vector2
-from seika.node import Sprite
+from seika.node import Sprite, AnimatedSprite
 from seika.physics import Collision
+from seika.assets import Animation, AnimationFrame
 
 from src.attack.attack import Attack
 from src.enemy.enemy import Enemy
@@ -69,19 +70,31 @@ class BoltAttack(Attack):
 class BombExplosion(Attack):
     def __init__(self, entity_id: int):
         super().__init__(entity_id)
-        self.sprite = None
-        self.set_life_time(2.0)
+        self.anim_sprite = None
+        self.set_life_time(1.8)
         self.damage = 2
 
-    def _start(self) -> None:
-        super()._start()
-        self.sprite = Sprite.new()
+    def _get_animation(self) -> Animation:
         texture = Texture.get(
             file_path="assets/images/player/player_bomb_explosion.png"
         )
-        self.sprite.texture = texture
-        self.sprite.draw_source = Rect2(0, 0, 48, 48)
-        self.add_child(self.sprite)
+        anim_frames = []
+        for i in range(7):
+            anim_frames.append(
+                AnimationFrame(
+                    texture=texture, draw_source=Rect2(48 * i, 0, 48, 48), index=i
+                )
+            )
+        return Animation(name="explode", speed=300, frames=anim_frames)
+
+    def _start(self) -> None:
+        super()._start()
+        self.anim_sprite = AnimatedSprite.new()
+        self.anim_sprite.animations = [self._get_animation()]
+        self.add_child(self.anim_sprite)
+        self.anim_sprite.loops = False
+        self.anim_sprite.frame = 0
+        self.anim_sprite.play(animation_name="explode")
 
         self.collider_rect = Rect2(0, 0, 48, 48)
         Audio.play_sound(sound_id="assets/audio/sfx/bomb_explosion.wav")
