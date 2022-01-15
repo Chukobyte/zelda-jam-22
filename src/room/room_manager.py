@@ -77,11 +77,11 @@ class RoomManager:
             )
         elif collided_door.direction == Vector2.LEFT():
             vertical_door_overhead.position = previous_room_world_position + Vector2(
-                -17.0, 0.0
+                -55.0, 0.0
             )
         elif collided_door.direction == Vector2.RIGHT():
             vertical_door_overhead.position = previous_room_world_position + Vector2(
-                -17.0 + self.current_room.size.x, 0.0
+                -55.0 + self.current_room.size.x, 0.0
             )
 
         GameContext.set_play_state(PlayState.ROOM_TRANSITION)
