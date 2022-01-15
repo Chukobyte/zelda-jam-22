@@ -6,7 +6,7 @@ from src.enemy.enemy_spawner import EnemySpawner
 from src.game_context import PlayState, GameContext
 from src.item.rainbow_orb import RainbowOrb
 from src.room.room import Room
-from src.room.door import Door, DoorStatus
+from src.room.door import Door, DoorState
 from src.project_properties import ProjectProperties
 from src.room.room_model import RoomType
 
@@ -117,10 +117,10 @@ class RoomManager:
         self.current_room.data.is_cleared = True
 
     def refresh_current_doors_status(self) -> None:
-        self.room_doors.left.set_status(self.current_room.data.left_door_status)
-        self.room_doors.right.set_status(self.current_room.data.right_door_status)
-        self.room_doors.up.set_status(self.current_room.data.up_door_status)
-        self.room_doors.down.set_status(self.current_room.data.down_door_status)
+        self.room_doors.left.set_state(self.current_room.data.left_door_status)
+        self.room_doors.right.set_state(self.current_room.data.right_door_status)
+        self.room_doors.up.set_state(self.current_room.data.up_door_status)
+        self.room_doors.down.set_state(self.current_room.data.down_door_status)
 
     # TODO: Figure out why rooms aren't being cleaned up without this...
     # TODO: Something to do with Sprite node clean ups as it happens with Attacks too

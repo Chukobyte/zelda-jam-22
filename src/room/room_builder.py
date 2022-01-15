@@ -3,7 +3,7 @@ from seika.math import Vector2, Rect2
 from seika.assets import Texture
 
 from src.room.room import Room, WallColliders
-from src.room.door import DungeonDoors, Door, DoorStatus
+from src.room.door import DungeonDoors, Door, DoorState
 from src.room.room_manager import RoomManager
 from src.room.room_model import RoomModel
 
@@ -79,7 +79,7 @@ class RoomBuilder:
                 current_doors.left,
                 Door.ROOM_LEFT_POSITION,
                 left_door_collider_rect,
-                DoorStatus.CLOSED,
+                DoorState.CLOSED,
                 current_doors.container,
                 left_door_texture,
             ],
@@ -87,7 +87,7 @@ class RoomBuilder:
                 current_doors.right,
                 Door.ROOM_RIGHT_POSITION,
                 right_door_collider_rect,
-                DoorStatus.CLOSED,
+                DoorState.CLOSED,
                 current_doors.container,
                 right_door_texture,
             ],
@@ -95,7 +95,7 @@ class RoomBuilder:
                 current_doors.up,
                 Door.ROOM_UP_POSITION,
                 up_door_collider_rect,
-                DoorStatus.OPEN,
+                DoorState.OPEN,
                 current_doors.container,
                 up_door_texture,
             ],
@@ -103,7 +103,7 @@ class RoomBuilder:
                 current_doors.down,
                 Door.ROOM_DOWN_POSITION,
                 down_door_collider_rect,
-                DoorStatus.CLOSED,
+                DoorState.CLOSED,
                 current_doors.container,
                 down_door_texture,
             ],
@@ -112,7 +112,7 @@ class RoomBuilder:
                 transition_doors.left,
                 Door.ROOM_LEFT_POSITION,
                 left_door_collider_rect,
-                DoorStatus.CLOSED,
+                DoorState.CLOSED,
                 transition_doors.container,
                 left_door_texture,
             ],
@@ -120,7 +120,7 @@ class RoomBuilder:
                 transition_doors.right,
                 Door.ROOM_RIGHT_POSITION,
                 right_door_collider_rect,
-                DoorStatus.CLOSED,
+                DoorState.CLOSED,
                 transition_doors.container,
                 right_door_texture,
             ],
@@ -128,7 +128,7 @@ class RoomBuilder:
                 transition_doors.up,
                 Door.ROOM_UP_POSITION,
                 up_door_collider_rect,
-                DoorStatus.CLOSED,
+                DoorState.CLOSED,
                 transition_doors.container,
                 up_door_texture,
             ],
@@ -136,7 +136,7 @@ class RoomBuilder:
                 transition_doors.down,
                 Door.ROOM_DOWN_POSITION,
                 down_door_collider_rect,
-                DoorStatus.CLOSED,
+                DoorState.CLOSED,
                 transition_doors.container,
                 down_door_texture,
             ],
@@ -152,7 +152,7 @@ class RoomBuilder:
             sprite = Sprite.new()
             door.sprite = sprite
             # sprite.texture = door_data[5]
-            door.set_status(door_data[3])
+            door.set_state(door_data[3])
             door.add_child(child_node=sprite)
 
         room_manager = RoomManager()

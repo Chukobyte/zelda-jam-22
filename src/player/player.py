@@ -15,7 +15,7 @@ from src.attack.attack import Attack
 from src.event.event_textbox import TextboxManager
 from src.game_context import GameContext, PlayState, GameState
 from src.math.ease import Ease, Easer
-from src.room.door import DoorStatus
+from src.room.door import DoorState
 from src.world import World
 from src.room.room_manager import RoomManager
 from src.player.player_stats import PlayerStats
@@ -352,7 +352,7 @@ class Player(AnimatedSprite):
                             GameContext().has_won = True
                             rainbow_orbs[0].queue_deletion()
                             # Temp open up door
-                            room_manager.room_doors.up.set_status(DoorStatus.OPEN)
+                            room_manager.room_doors.up.set_state(DoorState.OPEN)
                             break
                         else:
                             current_pos = self.position
