@@ -1,6 +1,7 @@
 from typing import Tuple, Optional
 
 from seika.assets import Texture
+from seika.audio import Audio, AudioStream
 from seika.camera import Camera2D
 from seika.color import Color
 from seika.node import AnimatedSprite
@@ -22,7 +23,7 @@ from src.attack.player_attack import PlayerAttack, BoltAttack, BombAttack
 from src.task.task import Task, co_return, co_suspend, co_wait_until_seconds
 from src.task.fsm import FSM, State, StateExitLink
 
-
+# TODO: Refactor this class especially move()...
 class Player(AnimatedSprite):
     TAG = "player"
 
@@ -335,6 +336,13 @@ class Player(AnimatedSprite):
                                 room_manager.start_room_transition(collided_door)
                             break
                         elif rainbow_orbs:
+                            music_audio_stream = AudioStream.get(
+                                stream_uid="no-color-theme"
+                            )
+                            music_audio_stream.stop()
+                            Audio.play_sound(
+                                sound_id="assets/audio/sfx/rainbow_orb.wav"
+                            )
                             GameContext().has_won = True
                             rainbow_orbs[0].queue_deletion()
                             # Temp open up door
@@ -377,6 +385,7 @@ class Player(AnimatedSprite):
 
     @Task.task_func()
     def attack(self):
+        Audio.play_sound(sound_id="assets/audio/sfx/wave.wav")
         player_attack = PlayerAttack.new()
         self.setup_attack(attack=player_attack, adjust_orientation=True)
 
@@ -387,6 +396,7 @@ class Player(AnimatedSprite):
 
     @Task.task_func()
     def bolt_attack(self):
+        Audio.play_sound(sound_id="assets/audio/sfx/bolt.wav")
         player_attack = BoltAttack.new()
         player_attack.direction = self.direction
         self.setup_attack(attack=player_attack, adjust_orientation=True)
@@ -398,6 +408,7 @@ class Player(AnimatedSprite):
 
     @Task.task_func()
     def bomb_attack(self):
+        Audio.play_sound(sound_id="assets/audio/sfx/bomb_place.wav")
         player_attack = BombAttack.new()
         self.setup_attack(attack=player_attack, adjust_orientation=False)
 
@@ -415,7 +426,6 @@ class Player(AnimatedSprite):
             room_manager.current_room.position
         )
         camera_pos = Camera2D.get_viewport_position()
-        initial_camera_pos = camera_pos
         self.set_stat_ui_visibility(visible=False)
         # Delay
         self.stop()

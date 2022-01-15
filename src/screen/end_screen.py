@@ -1,7 +1,7 @@
 from seika.engine import Engine
 from seika.input import Input
 from seika.node import Node2D
-from seika.audio import AudioStream
+from seika.audio import AudioStream, Audio
 from seika.scene import SceneTree
 
 from src.game_context import GameContext, GameState
@@ -24,6 +24,7 @@ class EndScreen(Node2D):
             Engine.exit()
 
         if Input.is_action_just_pressed(action_name="attack"):
+            Audio.play_sound(sound_id="assets/audio/sfx/select.wav")
             game_context = GameContext()
             game_context.has_won = False
             game_context.play_time_counter.reset()

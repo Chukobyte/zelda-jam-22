@@ -180,6 +180,14 @@
         },
         {
             "type": "texture",
+            "file_path": "assets/images/player/player_bomb_explosion.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "texture",
             "file_path": "assets/images/player_spritesheet.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
@@ -213,6 +221,42 @@
             "uid": "nes-8",
             "file_path": "assets/fonts/nes.ttf",
             "size": 8
+        },
+        {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/wave.wav"
+        },
+        {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/bolt.wav"
+        },
+        {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/bomb_explosion.wav"
+        },
+        {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/bomb_place.wav"
+        },
+        {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/confirm.wav"
+        },
+        {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/enemy_hit.wav"
+        },
+        {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/random_swing.wav"
+        },
+        {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/select.wav"
+        },
+        {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/rainbow_orb.wav"
         },
         {
             "type": "audio_stream",
