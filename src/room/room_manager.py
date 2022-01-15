@@ -105,9 +105,9 @@ class RoomManager:
                 -55.0, 0.0
             )
             if collided_door.get_state() == DoorState.OPEN:
-                horizontal_door_overhead.texture = self.vertical_door_overhead_texture
+                vertical_door_overhead.texture = self.vertical_door_overhead_texture
             elif collided_door.get_state() == DoorState.CRACKED_OPEN_WALL:
-                horizontal_door_overhead.texture = (
+                vertical_door_overhead.texture = (
                     self.vertical_cracked_wall_door_overhead_texture
                 )
         elif collided_door.direction == Vector2.RIGHT():
@@ -115,10 +115,9 @@ class RoomManager:
                 -55.0 + self.current_room.size.x, 0.0
             )
             if collided_door.get_state() == DoorState.OPEN:
-                horizontal_door_overhead.texture = self.vertical_door_overhead_texture
+                vertical_door_overhead.texture = self.vertical_door_overhead_texture
             elif collided_door.get_state() == DoorState.CRACKED_OPEN_WALL:
-                print("Cracked open")
-                horizontal_door_overhead.texture = (
+                vertical_door_overhead.texture = (
                     self.vertical_cracked_wall_door_overhead_texture
                 )
 
