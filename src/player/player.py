@@ -29,7 +29,7 @@ class Player(AnimatedSprite):
 
     def _start(self) -> None:
         self.stats = PlayerStats()
-        self.stats.set_all_hp(value=3)
+        self.stats.set_all_hp(value=6)
         self.collider = self.get_node(name="PlayerCollider")
         self.player_ui_sprite = self.get_node(name="PlayerUISprite")
         self.velocity = Vector2()
@@ -182,9 +182,15 @@ class Player(AnimatedSprite):
                 self.player_ui_sprite.play("empty")
                 # TODO: Do more stuff...
             else:
-                if self.stats.hp == 2:
+                if self.stats.hp == 5:
+                    self.player_ui_sprite.play("five_hearts")
+                elif self.stats.hp == 4:
+                    self.player_ui_sprite.play("four_hearts")
+                elif self.stats.hp == 3:
+                    self.player_ui_sprite.play("three_hearts")
+                elif self.stats.hp == 2:
                     self.player_ui_sprite.play("two_hearts")
-                if self.stats.hp == 1:
+                elif self.stats.hp == 1:
                     self.player_ui_sprite.play("one_heart")
 
     def set_stat_ui_visibility(self, visible: bool) -> None:
