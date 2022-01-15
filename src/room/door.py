@@ -69,7 +69,7 @@ class Door(CollisionShape2D):
         else:
             print(f"{state} is an invalid state!")
 
-    def get_status(self) -> int:
+    def get_state(self) -> int:
         return self._state
 
     @staticmethod
