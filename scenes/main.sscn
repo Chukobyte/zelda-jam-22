@@ -643,7 +643,7 @@
                 {
                     "transform2D": {
                         "position": {
-                            "x": -14.0,
+                            "x": -255.0,
                             "y": 0.0
                         },
                         "scale": {
@@ -662,7 +662,7 @@
                         "draw_source": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 36.0,
+                            "width": 110.0,
                             "height": 225.0
                         },
                         "flip_x": false,

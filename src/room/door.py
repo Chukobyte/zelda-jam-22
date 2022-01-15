@@ -14,7 +14,7 @@ class DoorState:
 
 class Door(CollisionShape2D):
     Z_INDEX = 1
-    ROOM_LEFT_POSITION = Vector2(22, 74)
+    ROOM_LEFT_POSITION = Vector2(21, 74)
     ROOM_RIGHT_POSITION = Vector2(334, 74)
     ROOM_UP_POSITION = Vector2(168, 8)
     ROOM_DOWN_POSITION = Vector2(168, 190)
