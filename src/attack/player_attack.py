@@ -10,7 +10,7 @@ from src.enemy.enemy import Enemy
 
 
 # TODO: Refactor to avoid duplication
-class PlayerAttack(Attack):
+class WaveAttack(Attack):
     def __init__(self, entity_id: int):
         super().__init__(entity_id)
         self.sprite = None
@@ -20,11 +20,14 @@ class PlayerAttack(Attack):
     def _start(self) -> None:
         super()._start()
         self.sprite = Sprite.new()
-        texture = Texture.get(file_path="assets/images/player/player_attack.png")
+        texture = Texture.get(file_path="assets/images/player/player_wave_attack.png")
         self.sprite.texture = texture
+        texture_rect = Rect2(0, 0, texture.width / 6, texture.height)
+        # self.sprite.draw_source = texture_rect
+        self.sprite.draw_source = Rect2(180, 0, texture.width / 6, texture.height)
         self.add_child(self.sprite)
 
-        self.collider_rect = Rect2(0, 0, texture.width, texture.height)
+        self.collider_rect = texture_rect
 
     def _physics_process(self, delta: float) -> None:
         super()._physics_process(delta)
