@@ -200,6 +200,7 @@ class Player(AnimatedSprite):
                 SceneTree.change_scene(scene_path="scenes/end_screen.sscn")
                 # TODO: Do more stuff...
             else:
+                Audio.play_sound(sound_id="assets/audio/sfx/player_hurt.wav")
                 if self.stats.hp == 5:
                     self.player_ui_sprite.play("five_hearts")
                 elif self.stats.hp == 4:
