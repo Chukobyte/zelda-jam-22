@@ -1,6 +1,7 @@
 import random
 
 from seika.assets import Texture, AnimationFrame, Animation
+from seika.color import Color
 from seika.math import Rect2, Vector2
 from seika.physics import Collision
 from seika.utils import SimpleTimer
@@ -62,6 +63,31 @@ class EnemyShield(Enemy):
         if self.game_context.get_play_state() != PlayState.ROOM_TRANSITION:
             self.tasks.run_tasks()
 
+    def _is_facing_player(self) -> bool:
+        player = self.get_node(name="Player")
+        if (
+            (self.direction == Vector2.RIGHT() and player.direction == Vector2.LEFT())
+            or (
+                self.direction == Vector2.LEFT() and player.direction == Vector2.RIGHT()
+            )
+            or (self.direction == Vector2.UP() and player.direction == Vector2.DOWN())
+            or (self.direction == Vector2.DOWN() and player.direction == Vector2.UP())
+        ):
+            return True
+        return False
+
+    def take_damage(self, attack) -> None:
+        if not self._is_facing_player():
+            self.stats.hp -= attack.damage
+            color_value = self.modulate.r * 0.75
+            self.modulate = Color(color_value, color_value, color_value)
+            if self.stats.hp <= 0:
+                self.queue_deletion()
+            else:
+                self.tasks.add_task(
+                    task=Task(name="damaged_flash", func=self.damaged_flash)
+                )
+
     def _get_movement_dir_towards_player(self, player_pos: Vector2) -> Vector2:
         player_dir = self.position.direction_to(target=player_pos)
         valid_dirs = []
@@ -85,9 +111,9 @@ class EnemyShield(Enemy):
         while True:
             # Will sometimes move towards the player, otherwise move randomly
             if random.randint(0, 2) <= 1:
-                new_dir = self._get_movement_dir_towards_player(player.position)
+                self.direction = self._get_movement_dir_towards_player(player.position)
             else:
-                new_dir = random.choice(
+                self.direction = random.choice(
                     [
                         Vector2.DOWN(),
                         Vector2.UP(),
@@ -95,16 +121,16 @@ class EnemyShield(Enemy):
                         Vector2.RIGHT(),
                     ]
                 )
-            if new_dir == Vector2.UP():
+            if self.direction == Vector2.UP():
                 self.play(animation_name="move_up")
                 self.flip_h = False
-            if new_dir == Vector2.DOWN():
+            if self.direction == Vector2.DOWN():
                 self.play(animation_name="move_down")
                 self.flip_h = False
-            elif new_dir == Vector2.RIGHT():
+            elif self.direction == Vector2.RIGHT():
                 self.play(animation_name="move_hort")
                 self.flip_h = False
-            elif new_dir == Vector2.LEFT():
+            elif self.direction == Vector2.LEFT():
                 self.play(animation_name="move_hort")
                 self.flip_h = True
             move_timer = SimpleTimer(
@@ -112,8 +138,8 @@ class EnemyShield(Enemy):
             )
             while not move_timer.tick(delta=world.cached_delta):
                 new_vel = Vector2(
-                    new_dir.x * move_speed * world.cached_delta,
-                    new_dir.y * move_speed * world.cached_delta,
+                    self.direction.x * move_speed * world.cached_delta,
+                    self.direction.y * move_speed * world.cached_delta,
                 )
 
                 new_pos = new_vel + self.position

@@ -1,4 +1,5 @@
 from seika.color import Color
+from seika.math import Vector2
 from seika.node import CollisionShape2D, AnimatedSprite
 
 from src.stats import RoomEntityStats
@@ -31,6 +32,7 @@ class Enemy(AnimatedSprite):
         self.stats = EnemyStats()
         self.collider = None
         self.tasks = TaskManager()
+        self.direction = Vector2.DOWN()
         self.damaged_colors = [
             Color(2.0, 2.0, 2.0),
             Color(2.0, 1.5, 1.5),

@@ -1,5 +1,5 @@
 {
-    "game_title": "zelda-jam-22",
+    "game_title": "null",
     "initial_scene": "scenes/init.sscn",
     "base_resolution": {
         "width": 400,
@@ -92,7 +92,7 @@
         },
         {
             "type": "texture",
-            "file_path": "assets/images/dungeon/door_wall_cracked_up_open.png",
+            "file_path": "assets/images/dungeon/door_wall_cracked_left_open.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
             "filter_min": "nearest",
@@ -108,7 +108,7 @@
         },
         {
             "type": "texture",
-            "file_path": "assets/images/dungeon/door_wall_cracked_left_open.png",
+            "file_path": "assets/images/dungeon/door_wall_cracked_up_open.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
             "filter_min": "nearest",
@@ -116,7 +116,7 @@
         },
         {
             "type": "texture",
-            "file_path": "assets/images/dungeon/horizontal_door_overhead.png",
+            "file_path": "assets/images/dungeon/dungeon_level.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
             "filter_min": "nearest",
@@ -132,7 +132,7 @@
         },
         {
             "type": "texture",
-            "file_path": "assets/images/dungeon/vertical_door_overhead.png",
+            "file_path": "assets/images/dungeon/horizontal_door_overhead.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
             "filter_min": "nearest",
@@ -148,7 +148,7 @@
         },
         {
             "type": "texture",
-            "file_path": "assets/images/dungeon/dungeon_level.png",
+            "file_path": "assets/images/dungeon/vertical_door_overhead.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
             "filter_min": "nearest",
@@ -180,14 +180,6 @@
         },
         {
             "type": "texture",
-            "file_path": "assets/images/enemy/enemy_shield.png",
-            "wrap_s": "clamp_to_border",
-            "wrap_t": "clamp_to_border",
-            "filter_min": "nearest",
-            "filter_max": "nearest"
-        },
-        {
-            "type": "texture",
             "file_path": "assets/images/enemy/enemy_cultist.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
@@ -204,7 +196,7 @@
         },
         {
             "type": "texture",
-            "file_path": "assets/images/items/rainbow_orb.png",
+            "file_path": "assets/images/enemy/enemy_shield.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
             "filter_min": "nearest",
@@ -212,7 +204,7 @@
         },
         {
             "type": "texture",
-            "file_path": "assets/images/player/player_wave_attack.png",
+            "file_path": "assets/images/items/rainbow_orb.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
             "filter_min": "nearest",
@@ -252,6 +244,14 @@
         },
         {
             "type": "texture",
+            "file_path": "assets/images/player/player_wave_attack.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "texture",
             "file_path": "assets/images/ui/player_health_ui_spritesheet.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
@@ -269,18 +269,14 @@
         {
             "type": "font",
             "uid": "pine-type-48",
-            "file_path": "assets/fonts/pine_type.ttf",
+            "file_path": "assets/fonts/pine.ttf",
             "size": 48
         },
         {
             "type": "font",
             "uid": "pine-type-8",
-            "file_path": "assets/fonts/pine_type.ttf",
+            "file_path": "assets/fonts/pine.ttf",
             "size": 16
-        },
-        {
-            "type": "sound",
-            "file_path": "assets/audio/sfx/wave.wav"
         },
         {
             "type": "sound",
@@ -304,6 +300,10 @@
         },
         {
             "type": "sound",
+            "file_path": "assets/audio/sfx/rainbow_orb.wav"
+        },
+        {
+            "type": "sound",
             "file_path": "assets/audio/sfx/random_swing.wav"
         },
         {
@@ -312,7 +312,7 @@
         },
         {
             "type": "sound",
-            "file_path": "assets/audio/sfx/rainbow_orb.wav"
+            "file_path": "assets/audio/sfx/wave.wav"
         },
         {
             "type": "audio_stream",
