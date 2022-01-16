@@ -180,7 +180,7 @@
         },
         {
             "type": "texture",
-            "file_path": "assets/images/enemy/enemy_brute.png",
+            "file_path": "assets/images/enemy/enemy_shield.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
             "filter_min": "nearest",

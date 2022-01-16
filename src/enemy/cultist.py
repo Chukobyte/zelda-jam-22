@@ -15,9 +15,8 @@ class Cultist(Enemy):
         self.stats.set_all_hp(3)
         boss_texture = Texture.get(file_path="assets/images/enemy/enemy_cultist.png")
         self.texture = boss_texture
-        self.collider.collider_rect = Rect2(
-            0, 0, boss_texture.width, boss_texture.height
-        )
+        self.draw_source = Rect2(0, 0, 16, 16)
+        self.collider.collider_rect = Rect2(0, 0, 16, 16)
         self.tasks.add_task(task=Task(name="shoot", func=self.shoot_shot))
         self.game_context = GameContext()
 

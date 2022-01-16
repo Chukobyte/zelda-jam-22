@@ -2,7 +2,7 @@ from seika.node import Node2D
 from seika.math import Vector2
 
 from src.enemy.boss import Boss
-from src.enemy.brute import Brute
+from src.enemy.enemy_shield import EnemyShield
 from src.enemy.cultist import Cultist
 
 
@@ -22,8 +22,8 @@ class EnemySpawner:
         return cultist
 
     @staticmethod
-    def spawn_brute(main_node: Node2D, position: Vector2) -> Brute:
-        brute = Brute.new()
-        brute.position = position
-        main_node.add_child(brute)
-        return brute
+    def spawn_shield(main_node: Node2D, position: Vector2) -> EnemyShield:
+        shield = EnemyShield.new()
+        shield.position = position
+        main_node.add_child(shield)
+        return shield

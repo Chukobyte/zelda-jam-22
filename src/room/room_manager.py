@@ -140,7 +140,7 @@ class RoomManager:
                 grid_position=self.current_room.position
             ) + Vector2(200, 50)
             EnemySpawner.spawn_cultist(main_node=main_node, position=enemy_position)
-            EnemySpawner.spawn_brute(
+            EnemySpawner.spawn_shield(
                 main_node=main_node, position=enemy_position + Vector2(-80, 30)
             )
         elif self.current_room.data.room_type == RoomType.END:

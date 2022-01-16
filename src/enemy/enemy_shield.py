@@ -13,15 +13,14 @@ from src.task.task import Task, co_wait_until_seconds, co_return, co_suspend
 from src.world import World
 
 
-class Brute(Enemy):
+class EnemyShield(Enemy):
     def _start(self) -> None:
         super()._start()
         self.stats.set_all_hp(3)
-        boss_texture = Texture.get(file_path="assets/images/enemy/enemy_brute.png")
+        boss_texture = Texture.get(file_path="assets/images/enemy/enemy_shield.png")
         self.texture = boss_texture
-        self.collider.collider_rect = Rect2(
-            0, 0, boss_texture.width, boss_texture.height
-        )
+        self.draw_source = Rect2(0, 0, 16, 16)
+        self.collider.collider_rect = Rect2(0, 0, 16, 16)
         self.tasks.add_task(task=Task(name="move_randomly", func=self.move_randomly))
         self.game_context = GameContext()
 
