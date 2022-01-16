@@ -94,7 +94,6 @@ class RoomModel:
             right_door_status=DoorState.OPEN,
             up_door_status=DoorState.OPEN,
             down_door_status=DoorState.SOLID_WALL,
-            # room_type=RoomType.BOSS,
             room_type=RoomType.COMBAT,
             area_type=AreaType.RED,
             enemies=2,
