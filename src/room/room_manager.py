@@ -1,6 +1,7 @@
 import math
 
 from seika.assets import Texture
+from seika.color import Color
 from seika.math import Vector2
 
 from src.enemy.enemy_spawner import EnemySpawner
@@ -80,6 +81,8 @@ class RoomManager:
         )
         horizontal_door_overhead = collided_door.get_node(name="HorizontalDoorOverhead")
         vertical_door_overhead = collided_door.get_node(name="VerticalDoorOverhead")
+        horizontal_door_overhead.modulate = Color(1.0, 1.0, 1.0, 1.0)
+        vertical_door_overhead.modulate = Color(1.0, 1.0, 1.0, 1.0)
         if collided_door.direction == Vector2.UP():
             horizontal_door_overhead.position = previous_room_world_position + Vector2(
                 0.0, -24.0
@@ -143,6 +146,18 @@ class RoomManager:
             EnemySpawner.spawn_shield(
                 main_node=main_node, position=enemy_position + Vector2(-80, 30)
             )
+            if self.current_room.data.up_door_status == DoorState.OPEN:
+                self.current_room.data.up_door_status = DoorState.CLOSED
+                self.room_doors.up.set_state(state=DoorState.CLOSED)
+            if self.current_room.data.down_door_status == DoorState.OPEN:
+                self.current_room.data.down_door_status = DoorState.CLOSED
+                self.room_doors.down.set_state(state=DoorState.CLOSED)
+            if self.current_room.data.left_door_status == DoorState.OPEN:
+                self.current_room.data.left_door_status = DoorState.CLOSED
+                self.room_doors.left.set_state(state=DoorState.CLOSED)
+            if self.current_room.data.right_door_status == DoorState.OPEN:
+                self.current_room.data.right_door_status = DoorState.CLOSED
+                self.room_doors.right.set_state(state=DoorState.CLOSED)
         elif self.current_room.data.room_type == RoomType.END:
             rainbow_orb = RainbowOrb.new()
             rainbow_orb.position = self.get_world_position(
@@ -150,8 +165,25 @@ class RoomManager:
             ) + Vector2(200, 45)
             main_node.add_child(rainbow_orb)
 
+        horizontal_door_overhead = main_node.get_node(name="HorizontalDoorOverhead")
+        vertical_door_overhead = main_node.get_node(name="VerticalDoorOverhead")
+        horizontal_door_overhead.modulate = Color(1.0, 1.0, 1.0, 0.0)
+        vertical_door_overhead.modulate = Color(1.0, 1.0, 1.0, 0.0)
+
     def set_current_room_to_cleared(self) -> None:
         self.current_room.data.is_cleared = True
+        if self.current_room.data.up_door_status == DoorState.CLOSED:
+            self.current_room.data.up_door_status = DoorState.OPEN
+            self.room_doors.up.set_state(state=DoorState.OPEN)
+        if self.current_room.data.down_door_status == DoorState.CLOSED:
+            self.current_room.data.down_door_status = DoorState.OPEN
+            self.room_doors.down.set_state(state=DoorState.OPEN)
+        if self.current_room.data.left_door_status == DoorState.CLOSED:
+            self.current_room.data.left_door_status = DoorState.OPEN
+            self.room_doors.left.set_state(state=DoorState.OPEN)
+        if self.current_room.data.right_door_status == DoorState.CLOSED:
+            self.current_room.data.right_door_status = DoorState.OPEN
+            self.room_doors.right.set_state(state=DoorState.OPEN)
 
     def refresh_current_doors_status(self) -> None:
         self.room_doors.left.set_state(self.current_room.data.left_door_status)

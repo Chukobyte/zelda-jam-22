@@ -55,6 +55,7 @@ class Room:
         self.data.up_door_status = data.up_door_status
         self.data.down_door_status = data.down_door_status
         self.data.room_type = data.room_type
+        self.data.enemies = data.enemies
 
     def __str__(self):
         return f"(position = {self.position}, size = {self.size}, data = {self.data})"
