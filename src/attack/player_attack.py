@@ -11,6 +11,7 @@ from src.enemy.enemy import Enemy
 
 # TODO: Refactor to avoid duplication
 from src.room.door import DoorState
+from src.room.room_manager import RoomManager
 
 
 class WaveAttack(Attack):
@@ -129,7 +130,24 @@ class BombExplosion(Attack):
             node=self, tag="break_wall"
         )
         if breakable_wall_colliders:
-            breakable_wall_colliders[0].set_state(state=DoorState.CRACKED_OPEN_WALL)
+            room_manager = RoomManager()
+            breakable_wall_colliders[0].set_state(DoorState.CRACKED_OPEN_WALL)
+            if breakable_wall_colliders[0].direction == Vector2.RIGHT():
+                room_manager.current_room.data.right_door_status = (
+                    DoorState.CRACKED_OPEN_WALL
+                )
+            elif breakable_wall_colliders[0].direction == Vector2.LEFT():
+                room_manager.current_room.data.left_door_status = (
+                    DoorState.CRACKED_OPEN_WALL
+                )
+            elif breakable_wall_colliders[0].direction == Vector2.UP():
+                room_manager.current_room.data.up_door_status = (
+                    DoorState.CRACKED_OPEN_WALL
+                )
+            elif breakable_wall_colliders[0].direction == Vector2.DOWN():
+                room_manager.current_room.data.down_door_status = (
+                    DoorState.CRACKED_OPEN_WALL
+                )
 
 
 class BombAttack(Attack):
