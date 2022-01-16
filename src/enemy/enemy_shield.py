@@ -38,7 +38,7 @@ class EnemyShield(Enemy):
 
         up_anim_frames = []
         for i in range(4):
-            down_anim_frames.append(
+            up_anim_frames.append(
                 AnimationFrame(
                     texture=texture, draw_source=Rect2(16 * i, 16, 16, 16), index=i
                 )
@@ -95,9 +95,8 @@ class EnemyShield(Enemy):
                         Vector2.RIGHT(),
                     ]
                 )
-            # TODO: Fix up and left anims
             if new_dir == Vector2.UP():
-                # self.play(animation_name="move_up")
+                self.play(animation_name="move_up")
                 self.flip_h = False
             if new_dir == Vector2.DOWN():
                 self.play(animation_name="move_down")
@@ -106,7 +105,7 @@ class EnemyShield(Enemy):
                 self.play(animation_name="move_hort")
                 self.flip_h = False
             elif new_dir == Vector2.LEFT():
-                # self.play(animation_name="move_hort")
+                self.play(animation_name="move_hort")
                 self.flip_h = True
             move_timer = SimpleTimer(
                 wait_time=random.uniform(2.0, 3.0), start_on_init=True
