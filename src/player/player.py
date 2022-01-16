@@ -20,7 +20,13 @@ from src.world import World
 from src.room.room_manager import RoomManager
 from src.player.player_stats import PlayerStats
 from src.attack.player_attack import WaveAttack, BoltAttack, BombAttack
-from src.task.task import Task, co_return, co_suspend, co_wait_until_seconds
+from src.task.task import (
+    Task,
+    co_return,
+    co_suspend,
+    co_wait_until_seconds,
+    TaskManager,
+)
 from src.task.fsm import FSM, State, StateExitLink
 
 # TODO: Refactor this class especially move()...
@@ -34,12 +40,13 @@ class Player(AnimatedSprite):
         self.player_ui_sprite = self.get_node(name="PlayerUISprite")
         self.velocity = Vector2()
         self.direction = Vector2.DOWN()
+        self.tasks = TaskManager()
         self.task_fsm = FSM()
         self._configure_fsm()
         # Temp
         self.collider.tags = [Player.TAG]
         self.last_collided_door = None
-        self.damaged_from_attack_timer = SimpleTimer(wait_time=1.0, start_on_init=True)
+        self.on_damage_cool_down = False
 
     def _configure_fsm(self) -> None:
         # State Management
@@ -170,10 +177,10 @@ class Player(AnimatedSprite):
 
     def _physics_process(self, delta: float) -> None:
         self.task_fsm.process()
-        self.damaged_from_attack_timer.tick(delta)
+        self.tasks.run_tasks()
 
     def take_damage(self, attack=None) -> None:
-        if self.damaged_from_attack_timer.time_left <= 0:
+        if not self.on_damage_cool_down:
             attack_damage = 1
             if attack:
                 attack_damage = attack.damage
@@ -195,6 +202,10 @@ class Player(AnimatedSprite):
                     self.player_ui_sprite.play("two_hearts")
                 elif self.stats.hp == 1:
                     self.player_ui_sprite.play("one_heart")
+                self.on_damage_cool_down = True
+                self.tasks.add_task(
+                    task=Task(name="damaged", func=self.damaged_from_attack)
+                )
 
     def set_stat_ui_visibility(self, visible: bool) -> None:
         if visible:
@@ -492,6 +503,21 @@ class Player(AnimatedSprite):
         self.set_stat_ui_visibility(visible=True)
 
         room_manager.finish_room_transition(main_node=self.get_parent())
+
+    @Task.task_func()
+    def damaged_from_attack(self):
+        lower_opacity = True
+        for i in range(15):
+            if lower_opacity:
+                self.modulate = Color(1.0, 1.0, 1.0, 0.4)
+            else:
+                self.modulate = Color(1.0, 1.0, 1.0, 1.0)
+            yield from co_wait_until_seconds(wait_time=0.1)
+            lower_opacity = not lower_opacity
+
+        self.modulate = Color(1.0, 1.0, 1.0, 1.0)
+        self.on_damage_cool_down = False
+        yield co_return()
 
     @Task.task_func()
     def event(self):
