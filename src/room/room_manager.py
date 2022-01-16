@@ -172,6 +172,18 @@ class RoomManager:
 
     def set_current_room_to_cleared(self) -> None:
         self.current_room.data.is_cleared = True
+        if self.current_room.data.up_door_status == DoorState.CLOSED:
+            self.current_room.data.up_door_status = DoorState.OPEN
+            self.room_doors.up.set_state(state=DoorState.OPEN)
+        if self.current_room.data.down_door_status == DoorState.CLOSED:
+            self.current_room.data.down_door_status = DoorState.OPEN
+            self.room_doors.down.set_state(state=DoorState.OPEN)
+        if self.current_room.data.left_door_status == DoorState.CLOSED:
+            self.current_room.data.left_door_status = DoorState.OPEN
+            self.room_doors.left.set_state(state=DoorState.OPEN)
+        if self.current_room.data.right_door_status == DoorState.CLOSED:
+            self.current_room.data.right_door_status = DoorState.OPEN
+            self.room_doors.right.set_state(state=DoorState.OPEN)
 
     def refresh_current_doors_status(self) -> None:
         self.room_doors.left.set_state(self.current_room.data.left_door_status)

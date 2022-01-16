@@ -40,4 +40,7 @@ class Main(Node2D):
         yield co_return()
 
     def _on_room_cleared(self, args: list) -> None:
-        RoomManager().set_current_room_to_cleared()
+        room_manager = RoomManager()
+        room_manager.current_room.data.enemies -= 1
+        if room_manager.current_room.data.enemies <= 0:
+            RoomManager().set_current_room_to_cleared()
