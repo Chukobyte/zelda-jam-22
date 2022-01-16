@@ -64,7 +64,7 @@ class RoomModel:
         Vector2.ZERO(): RoomData(
             left_door_status=DoorState.SOLID_WALL,
             right_door_status=DoorState.SOLID_WALL,
-            up_door_status=DoorState.CRACKED_OPEN_WALL,
+            up_door_status=DoorState.OPEN,
             down_door_status=DoorState.SOLID_WALL,
             room_type=RoomType.INTRO,
             area_type=AreaType.RED,
