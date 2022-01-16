@@ -212,6 +212,14 @@
         },
         {
             "type": "texture",
+            "file_path": "assets/images/items/tricolora.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "texture",
             "file_path": "assets/images/player/player_bolt_attack.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
@@ -237,6 +245,14 @@
         {
             "type": "texture",
             "file_path": "assets/images/player/player_spritesheet.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "texture",
+            "file_path": "assets/images/player/player_victory_pose.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
             "filter_min": "nearest",
@@ -315,12 +331,12 @@
             "file_path": "assets/audio/sfx/wave.wav"
         },
         {
-            "type": "audio_stream",
-            "file_path": "assets/audio/music/no_color_theme.wav",
-            "uid": "no-color-theme",
-            "pitch": 1.0,
-            "gain": 1.0,
-            "loops": true
+            "type": "sound",
+            "file_path": "assets/audio/sfx/player_hurt.wav"
+        },
+        {
+            "type": "music",
+            "file_path": "assets/audio/music/no_color_theme.wav"
         }
     ],
     "input_actions": [

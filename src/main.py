@@ -1,7 +1,7 @@
 from seika.node import Node2D
 from seika.input import Input
 from seika.engine import Engine
-from seika.audio import AudioStream
+from seika.audio import AudioStream, Audio
 
 from src.room.room_manager import RoomManager
 from src.world import World
@@ -35,8 +35,7 @@ class Main(Node2D):
     def start_music(self):
         yield from co_wait_until_seconds(wait_time=0.25)
 
-        music_audio_stream = AudioStream.get(stream_uid="no-color-theme")
-        music_audio_stream.play()
+        Audio.play_music(music_id="assets/audio/music/no_color_theme.wav")
         yield co_return()
 
     def _on_room_cleared(self, args: list) -> None:
