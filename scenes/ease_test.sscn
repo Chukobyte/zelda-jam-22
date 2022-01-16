@@ -141,7 +141,7 @@
                 {
                     "text_label": {
                         "text": "Positon:",
-                        "font_uid": "nes-8",
+                        "font_uid": "pine-type-8",
                         "color": {
                             "red": 1.0,
                             "green": 1.0,

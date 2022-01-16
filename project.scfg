@@ -268,14 +268,14 @@
         },
         {
             "type": "font",
-            "uid": "nes-20",
-            "file_path": "assets/fonts/nes.ttf",
+            "uid": "pine-type-48",
+            "file_path": "assets/fonts/pine_type.ttf",
             "size": 48
         },
         {
             "type": "font",
-            "uid": "nes-8",
-            "file_path": "assets/fonts/nes.ttf",
+            "uid": "pine-type-8",
+            "file_path": "assets/fonts/pine_type.ttf",
             "size": 16
         },
         {

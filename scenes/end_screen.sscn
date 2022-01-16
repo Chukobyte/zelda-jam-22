@@ -53,7 +53,7 @@
                 {
                     "text_label": {
                         "text": "You Win!",
-                        "font_uid": "nes-20",
+                        "font_uid": "pine-type-48",
                         "color": {
                             "red": 1.0,
                             "green": 1.0,
@@ -90,7 +90,7 @@
                 {
                     "text_label": {
                         "text": "Press ESC to Exit",
-                        "font_uid": "nes-8",
+                        "font_uid": "pine-type-8",
                         "color": {
                             "red": 1.0,
                             "green": 1.0,
@@ -127,7 +127,7 @@
                 {
                     "text_label": {
                         "text": "Play Time: 10.00",
-                        "font_uid": "nes-8",
+                        "font_uid": "pine-type-8",
                         "color": {
                             "red": 1.0,
                             "green": 1.0,
@@ -164,7 +164,7 @@
                 {
                     "text_label": {
                         "text": "Press SPACE to Restart",
-                        "font_uid": "nes-8",
+                        "font_uid": "pine-type-8",
                         "color": {
                             "red": 1.0,
                             "green": 1.0,

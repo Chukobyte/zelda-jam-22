@@ -53,7 +53,7 @@
                 {
                     "text_label": {
                         "text": "NUL",
-                        "font_uid": "nes-20",
+                        "font_uid": "pine-type-48",
                         "color": {
                             "red": 0.23620864748954773,
                             "green": 0.5830116271972656,
@@ -90,7 +90,7 @@
                 {
                     "text_label": {
                         "text": "Press Space To Play",
-                        "font_uid": "nes-8",
+                        "font_uid": "pine-type-8",
                         "color": {
                             "red": 1.0,
                             "green": 1.0,
@@ -127,7 +127,7 @@
                 {
                     "text_label": {
                         "text": "Press c For Credits",
-                        "font_uid": "nes-8",
+                        "font_uid": "pine-type-8",
                         "color": {
                             "red": 1.0,
                             "green": 1.0,
