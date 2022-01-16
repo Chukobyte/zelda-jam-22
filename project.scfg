@@ -270,13 +270,13 @@
             "type": "font",
             "uid": "nes-20",
             "file_path": "assets/fonts/nes.ttf",
-            "size": 20
+            "size": 48
         },
         {
             "type": "font",
             "uid": "nes-8",
             "file_path": "assets/fonts/nes.ttf",
-            "size": 8
+            "size": 16
         },
         {
             "type": "sound",

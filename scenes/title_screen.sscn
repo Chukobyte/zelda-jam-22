@@ -37,8 +37,8 @@
                 {
                     "transform2D": {
                         "position": {
-                            "x": 160.0,
-                            "y": 33.0
+                            "x": 180.0,
+                            "y": 20.0
                         },
                         "scale": {
                             "x": 1.0,
@@ -74,7 +74,7 @@
                 {
                     "transform2D": {
                         "position": {
-                            "x": 121.0,
+                            "x": 150.0,
                             "y": 110.0
                         },
                         "scale": {
@@ -111,8 +111,8 @@
                 {
                     "transform2D": {
                         "position": {
-                            "x": 113.0,
-                            "y": 150.0
+                            "x": 150.0,
+                            "y": 140.0
                         },
                         "scale": {
                             "x": 1.0,
@@ -126,7 +126,7 @@
                 },
                 {
                     "text_label": {
-                        "text": "Press 'c\" For Credits",
+                        "text": "Press c For Credits",
                         "font_uid": "nes-8",
                         "color": {
                             "red": 1.0,
