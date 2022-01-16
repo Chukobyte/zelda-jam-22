@@ -124,15 +124,15 @@ class RoomManager:
         GameContext.set_play_state(PlayState.ROOM_TRANSITION)
 
     def finish_room_transition(self, main_node) -> None:
+        # if (
+        #     self.current_room.data.room_type == RoomType.BOSS
+        #     and not self.current_room.data.is_cleared
+        # ):
+        #     boss_position = self.get_world_position(
+        #         grid_position=self.current_room.position
+        #     ) + Vector2(160, 35)
+        #     EnemySpawner.spawn_boss(main_node=main_node, position=boss_position)
         if (
-            self.current_room.data.room_type == RoomType.BOSS
-            and not self.current_room.data.is_cleared
-        ):
-            boss_position = self.get_world_position(
-                grid_position=self.current_room.position
-            ) + Vector2(160, 35)
-            EnemySpawner.spawn_boss(main_node=main_node, position=boss_position)
-        elif (
             self.current_room.data.room_type == RoomType.COMBAT
             and not self.current_room.data.is_cleared
         ):

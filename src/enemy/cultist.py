@@ -1,6 +1,6 @@
 import random
 
-from seika.assets import Texture
+from seika.assets import Texture, AnimationFrame, Animation
 from seika.math import Rect2, Vector2
 
 from src.attack.enemy_attack import CultistAttack
@@ -13,16 +13,32 @@ class Cultist(Enemy):
     def _start(self) -> None:
         super()._start()
         self.stats.set_all_hp(3)
-        boss_texture = Texture.get(file_path="assets/images/enemy/enemy_cultist.png")
-        self.texture = boss_texture
-        self.draw_source = Rect2(0, 0, 16, 16)
+        self.animations = self._get_animations()
         self.collider.collider_rect = Rect2(0, 0, 16, 16)
         self.tasks.add_task(task=Task(name="shoot", func=self.shoot_shot))
         self.game_context = GameContext()
+        self.play()
 
     def _physics_process(self, delta: float) -> None:
         if self.game_context.get_play_state() != PlayState.ROOM_TRANSITION:
             self.tasks.run_tasks()
+
+    def _get_animations(self) -> list:
+        texture = Texture.get(file_path="assets/images/enemy/enemy_cultist.png")
+        animations = []
+
+        idle_down_anim_frames = []
+        for i in range(4):
+            idle_down_anim_frames.append(
+                AnimationFrame(
+                    texture=texture, draw_source=Rect2(16 * i, 0, 16, 16), index=i
+                )
+            )
+        animations.append(
+            Animation(name="idle_down", speed=200, frames=idle_down_anim_frames)
+        )
+
+        return animations
 
     @Task.task_func()
     def shoot_shot(self):

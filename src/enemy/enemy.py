@@ -1,5 +1,5 @@
 from seika.color import Color
-from seika.node import Sprite, CollisionShape2D, Node2D
+from seika.node import CollisionShape2D, AnimatedSprite
 
 from src.stats import RoomEntityStats
 from src.task.task import (
@@ -15,7 +15,7 @@ class EnemyStats(RoomEntityStats):
     pass
 
 
-class Enemy(Sprite):
+class Enemy(AnimatedSprite):
     """
     Base class for enemies.  Includes the following:
         * stats

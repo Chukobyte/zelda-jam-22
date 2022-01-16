@@ -90,7 +90,8 @@ class RoomModel:
             right_door_status=DoorState.OPEN,
             up_door_status=DoorState.CLOSED,
             down_door_status=DoorState.OPEN,
-            room_type=RoomType.BOSS,
+            # room_type=RoomType.BOSS,
+            room_type=RoomType.COMBAT,
             area_type=AreaType.RED,
         ),
         Vector2(1.0, -1.0): RoomData(

@@ -1,15 +1,13 @@
 import random
 
-from seika.assets import Texture
+from seika.assets import Texture, AnimationFrame, Animation
 from seika.math import Rect2, Vector2
 from seika.physics import Collision
 from seika.utils import SimpleTimer
 
-from src.attack.attack import Attack
 from src.enemy.enemy import Enemy
 from src.game_context import GameContext, PlayState
-from src.math.ease import Ease
-from src.task.task import Task, co_wait_until_seconds, co_return, co_suspend
+from src.task.task import Task, co_return, co_suspend
 from src.world import World
 
 
@@ -17,12 +15,48 @@ class EnemyShield(Enemy):
     def _start(self) -> None:
         super()._start()
         self.stats.set_all_hp(3)
-        boss_texture = Texture.get(file_path="assets/images/enemy/enemy_shield.png")
-        self.texture = boss_texture
-        self.draw_source = Rect2(0, 0, 16, 16)
+        self.animations = self._get_animations()
         self.collider.collider_rect = Rect2(0, 0, 16, 16)
         self.tasks.add_task(task=Task(name="move_randomly", func=self.move_randomly))
         self.game_context = GameContext()
+        self.play()
+
+    def _get_animations(self) -> list:
+        texture = Texture.get(file_path="assets/images/enemy/enemy_shield.png")
+        animations = []
+
+        down_anim_frames = []
+        for i in range(4):
+            down_anim_frames.append(
+                AnimationFrame(
+                    texture=texture, draw_source=Rect2(16 * i, 0, 16, 16), index=i
+                )
+            )
+        animations.append(
+            Animation(name="move_down", speed=200, frames=down_anim_frames)
+        )
+
+        up_anim_frames = []
+        for i in range(4):
+            down_anim_frames.append(
+                AnimationFrame(
+                    texture=texture, draw_source=Rect2(16 * i, 16, 16, 16), index=i
+                )
+            )
+        animations.append(Animation(name="move_up", speed=200, frames=up_anim_frames))
+
+        right_anim_frames = []
+        for i in range(4):
+            right_anim_frames.append(
+                AnimationFrame(
+                    texture=texture, draw_source=Rect2(16 * i, 32, 16, 16), index=i
+                )
+            )
+        animations.append(
+            Animation(name="move_hort", speed=200, frames=right_anim_frames)
+        )
+
+        return animations
 
     def _physics_process(self, delta: float) -> None:
         if self.game_context.get_play_state() != PlayState.ROOM_TRANSITION:
