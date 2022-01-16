@@ -3,7 +3,7 @@ import random
 from seika.assets import Texture
 from seika.math import Rect2, Vector2
 
-from src.attack.enemy_attack import EnemyAttack
+from src.attack.enemy_attack import CultistAttack
 from src.enemy.enemy import Enemy
 from src.game_context import PlayState, GameContext
 from src.task.task import Task, co_wait_until_seconds, co_return
@@ -30,7 +30,7 @@ class Cultist(Enemy):
         assert player
         while True:
             yield from co_wait_until_seconds(wait_time=random.uniform(2.0, 4.0))
-            attack = EnemyAttack.new()
+            attack = CultistAttack.new()
             attack.position = self.position
             attack.direction = attack.position.direction_to(target=player.position)
             self.get_parent().add_child(attack)
