@@ -1,6 +1,6 @@
-## Zelda Jam 22 Game
+## NULL
 
-A work in progress game being made for the [KB Games Zelda Jam '22](https://itch.io/jam/zeldajam-22).  Made with [Seika Engine](https://github.com/Chukobyte/seika-engine).
+A game made for the [KB Games Zelda Jam '22](https://itch.io/jam/zeldajam-22).  Made with [Seika Engine](https://github.com/Chukobyte/seika-engine).
 
 ### Controls
 
@@ -9,11 +9,11 @@ A work in progress game being made for the [KB Games Zelda Jam '22](https://itch
 - Move: WASD, Arrow Keys
 - Attack: Space
 - Bomb: E
-- Debug Exit: ESC
 
 #### Controller (Xbox)
 
 - Move: Left Analog
 - Attack: A Button
 - Attack: B Button
-- Debug Exit: Back Button
+
+*Note: The bomb is unlocked through play*
