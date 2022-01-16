@@ -13,7 +13,6 @@ from src.enemy.enemy import Enemy
 class WaveAttack(Attack):
     def __init__(self, entity_id: int):
         super().__init__(entity_id)
-        # self.sprite = None
         self.anim_sprite = None
         self.set_life_time(0.5)
         self.damage = 1
@@ -25,14 +24,6 @@ class WaveAttack(Attack):
         self.add_child(self.anim_sprite)
         self.anim_sprite.loops = False
         self.anim_sprite.play()
-
-        # self.sprite = Sprite.new()
-        # texture = Texture.get(file_path="assets/images/player/player_wave_attack.png")
-        # self.sprite.texture = texture
-        # texture_rect = Rect2(0, 0, texture.width / 6, texture.height)
-        # self.sprite.draw_source = texture_rect
-        # self.sprite.draw_source = Rect2(180, 0, texture.width / 6, texture.height)
-        # self.add_child(self.sprite)
 
         self.collider_rect = Rect2(0, 0, 60, 34)
 
@@ -93,8 +84,9 @@ class BombExplosion(Attack):
     def __init__(self, entity_id: int):
         super().__init__(entity_id)
         self.anim_sprite = None
-        self.set_life_time(1.8)
-        self.damage = 2
+        # self.set_life_time(1.8)
+        self.set_life_time(1.0)
+        self.damage = 3
 
     def _get_animation(self) -> Animation:
         texture = Texture.get(
@@ -104,10 +96,10 @@ class BombExplosion(Attack):
         for i in range(7):
             anim_frames.append(
                 AnimationFrame(
-                    texture=texture, draw_source=Rect2(48 * i, 0, 48, 48), index=i
+                    texture=texture, draw_source=Rect2(37 * i, 0, 37, 33), index=i
                 )
             )
-        return Animation(name="explode", speed=300, frames=anim_frames)
+        return Animation(name="explode", speed=100, frames=anim_frames)
 
     def _start(self) -> None:
         super()._start()
@@ -118,7 +110,7 @@ class BombExplosion(Attack):
         self.anim_sprite.frame = 0
         self.anim_sprite.play(animation_name="explode")
 
-        self.collider_rect = Rect2(0, 0, 48, 48)
+        self.collider_rect = Rect2(0, 0, 37, 37)
         Audio.play_sound(sound_id="assets/audio/sfx/bomb_explosion.wav")
 
     def _physics_process(self, delta: float) -> None:
