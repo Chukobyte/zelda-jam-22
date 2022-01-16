@@ -26,8 +26,8 @@ class Main(Node2D):
     def _physics_process(self, delta: float) -> None:
         self.world.cached_delta = delta
         self.game_context.play_time_counter.update(delta=delta)
-        if Input.is_action_just_pressed(action_name="debug_quit"):
-            Engine.exit()
+        # if Input.is_action_just_pressed(action_name="debug_quit"):
+        #     Engine.exit()
         self.task_manager.run_tasks()
 
     # Countdown test
