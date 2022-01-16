@@ -180,7 +180,7 @@
         },
         {
             "type": "texture",
-            "file_path": "assets/images/enemy/enemy_brute.png",
+            "file_path": "assets/images/enemy/enemy_shield.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
             "filter_min": "nearest",
@@ -189,6 +189,14 @@
         {
             "type": "texture",
             "file_path": "assets/images/enemy/enemy_cultist.png",
+            "wrap_s": "clamp_to_border",
+            "wrap_t": "clamp_to_border",
+            "filter_min": "nearest",
+            "filter_max": "nearest"
+        },
+        {
+            "type": "texture",
+            "file_path": "assets/images/enemy/enemy_curse_proj.png",
             "wrap_s": "clamp_to_border",
             "wrap_t": "clamp_to_border",
             "filter_min": "nearest",
@@ -260,15 +268,15 @@
         },
         {
             "type": "font",
-            "uid": "nes-20",
-            "file_path": "assets/fonts/nes.ttf",
-            "size": 20
+            "uid": "pine-type-48",
+            "file_path": "assets/fonts/pine_type.ttf",
+            "size": 48
         },
         {
             "type": "font",
-            "uid": "nes-8",
-            "file_path": "assets/fonts/nes.ttf",
-            "size": 8
+            "uid": "pine-type-8",
+            "file_path": "assets/fonts/pine_type.ttf",
+            "size": 16
         },
         {
             "type": "sound",

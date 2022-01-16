@@ -1,41 +1,82 @@
 import random
 
-from seika.assets import Texture
+from seika.assets import Texture, AnimationFrame, Animation
 from seika.math import Rect2, Vector2
+from seika.utils import SimpleTimer
 
-from src.attack.enemy_attack import EnemyAttack
+from src.attack.enemy_attack import CultistAttack
 from src.enemy.enemy import Enemy
 from src.game_context import PlayState, GameContext
-from src.task.task import Task, co_wait_until_seconds, co_return
+from src.task.task import Task, co_wait_until_seconds, co_return, co_suspend
+from src.world import World
 
 
 class Cultist(Enemy):
     def _start(self) -> None:
         super()._start()
         self.stats.set_all_hp(3)
-        boss_texture = Texture.get(file_path="assets/images/enemy/enemy_cultist.png")
-        self.texture = boss_texture
-        self.collider.collider_rect = Rect2(
-            0, 0, boss_texture.width, boss_texture.height
-        )
+        self.animations = self._get_animations()
+        self.collider.collider_rect = Rect2(0, 0, 16, 16)
         self.tasks.add_task(task=Task(name="shoot", func=self.shoot_shot))
         self.game_context = GameContext()
+        self.play(animation_name="idle_down")
 
     def _physics_process(self, delta: float) -> None:
         if self.game_context.get_play_state() != PlayState.ROOM_TRANSITION:
             self.tasks.run_tasks()
 
+    def _get_animations(self) -> list:
+        texture = Texture.get(file_path="assets/images/enemy/enemy_cultist.png")
+        animations = []
+
+        idle_down_anim_frames = []
+        for i in range(4):
+            idle_down_anim_frames.append(
+                AnimationFrame(
+                    texture=texture, draw_source=Rect2(16 * i, 0, 16, 16), index=i
+                )
+            )
+        animations.append(
+            Animation(name="idle_down", speed=200, frames=idle_down_anim_frames)
+        )
+
+        attack_down_anim_frames = []
+        for i in range(4):
+            attack_down_anim_frames.append(
+                AnimationFrame(
+                    texture=texture, draw_source=Rect2(16 * i, 96, 16, 16), index=i
+                )
+            )
+        animations.append(
+            Animation(name="attack_down", speed=200, frames=attack_down_anim_frames)
+        )
+
+        return animations
+
     @Task.task_func()
     def shoot_shot(self):
+        world = World()
         player = self.get_node(name="Player")
         assert player
+        attack_life_timer = SimpleTimer(wait_time=1.0)
         while True:
+            has_attacked = False
             yield from co_wait_until_seconds(wait_time=random.uniform(2.0, 4.0))
-            attack = EnemyAttack.new()
+            self.loops = False
+            self.play(animation_name="attack_down")
+            attack = CultistAttack.new()
             attack.position = self.position
             attack.direction = attack.position.direction_to(target=player.position)
-            self.get_parent().add_child(attack)
-            yield from co_wait_until_seconds(wait_time=attack.life_time)
+            attack_life_timer.wait_time = attack.life_time
+            attack_life_timer.start()
+            while not attack_life_timer.tick(delta=world.cached_delta):
+                if self.frame == 3 and not has_attacked:
+                    has_attacked = True
+                    self.get_parent().add_child(attack)
+                yield co_suspend()
+            # yield from co_wait_until_seconds(wait_time=attack.life_time)
+            self.play(animation_name="idle_down")
+            self.loops = True
         yield co_return()
 
     # Temp clearing room

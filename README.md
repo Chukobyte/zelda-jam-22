@@ -8,10 +8,12 @@ A work in progress game being made for the [KB Games Zelda Jam '22](https://itch
 
 - Move: WASD, Arrow Keys
 - Attack: Space
+- Bomb: E
 - Debug Exit: ESC
 
 #### Controller (Xbox)
 
 - Move: Left Analog
 - Attack: A Button
+- Attack: B Button
 - Debug Exit: Back Button

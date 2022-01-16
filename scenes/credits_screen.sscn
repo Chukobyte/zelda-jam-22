@@ -38,7 +38,7 @@
                     "transform2D": {
                         "position": {
                             "x": 100.0,
-                            "y": 80.0
+                            "y": 50.0
                         },
                         "scale": {
                             "x": 1.0,
@@ -53,7 +53,7 @@
                 {
                     "text_label": {
                         "text": "Chukobyte - Programming",
-                        "font_uid": "nes-8",
+                        "font_uid": "pine-type-8",
                         "color": {
                             "red": 1.0,
                             "green": 1.0,
@@ -75,7 +75,7 @@
                     "transform2D": {
                         "position": {
                             "x": 100.0,
-                            "y": 120.0
+                            "y": 90.0
                         },
                         "scale": {
                             "x": 1.0,
@@ -90,7 +90,7 @@
                 {
                     "text_label": {
                         "text": "Pine - Art",
-                        "font_uid": "nes-8",
+                        "font_uid": "pine-type-8",
                         "color": {
                             "red": 1.0,
                             "green": 1.0,
@@ -112,7 +112,7 @@
                     "transform2D": {
                         "position": {
                             "x": 100.0,
-                            "y": 160.0
+                            "y": 130.0
                         },
                         "scale": {
                             "x": 1.0,
@@ -127,7 +127,7 @@
                 {
                     "text_label": {
                         "text": "Dnebesh - Audio",
-                        "font_uid": "nes-8",
+                        "font_uid": "pine-type-8",
                         "color": {
                             "red": 1.0,
                             "green": 1.0,

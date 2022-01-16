@@ -64,7 +64,7 @@ class RoomModel:
         Vector2.ZERO(): RoomData(
             left_door_status=DoorState.SOLID_WALL,
             right_door_status=DoorState.SOLID_WALL,
-            up_door_status=DoorState.CRACKED_OPEN_WALL,
+            up_door_status=DoorState.OPEN,
             down_door_status=DoorState.SOLID_WALL,
             room_type=RoomType.INTRO,
             area_type=AreaType.RED,
@@ -90,7 +90,8 @@ class RoomModel:
             right_door_status=DoorState.OPEN,
             up_door_status=DoorState.CLOSED,
             down_door_status=DoorState.OPEN,
-            room_type=RoomType.BOSS,
+            # room_type=RoomType.BOSS,
+            room_type=RoomType.COMBAT,
             area_type=AreaType.RED,
         ),
         Vector2(1.0, -1.0): RoomData(
