@@ -367,22 +367,12 @@ class Player(AnimatedSprite):
                                 room_manager.start_room_transition(collided_door)
                             break
                         elif rainbow_orbs:
-                            music_audio_stream = AudioStream.get(
-                                stream_uid="no-color-theme"
-                            )
-                            music_audio_stream.stop()
-                            Audio.play_sound(
-                                sound_id="assets/audio/sfx/rainbow_orb.wav"
-                            )
                             rainbow_orbs[0].queue_deletion()
                             self.bomb_unlocked = True
                             room_manager.set_current_room_to_cleared()
                             break
                         elif tricolora:
-                            music_audio_stream = AudioStream.get(
-                                stream_uid="no-color-theme"
-                            )
-                            music_audio_stream.stop()
+                            Audio.stop_music()
                             Audio.play_sound(
                                 sound_id="assets/audio/sfx/rainbow_orb.wav"
                             )

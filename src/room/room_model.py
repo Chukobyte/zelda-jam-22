@@ -80,16 +80,6 @@ class RoomModel:
             area_type=AreaType.RED,
             enemies=2,
         ),
-        # Vector2.UP(): RoomData(
-        #     left_door_status=DoorState.OPEN,
-        #     right_door_status=DoorState.SOLID_WALL,
-        #     up_door_status=DoorState.OPEN,
-        #     down_door_status=DoorState.OPEN,
-        #     room_type=RoomType.END,
-        #     # room_type=RoomType.GAIN_BOMB,
-        #     area_type=AreaType.RED,
-        #     enemies=2,
-        # ),
         Vector2(0.0, -2.0): RoomData(
             left_door_status=DoorState.OPEN,
             right_door_status=DoorState.OPEN,
@@ -180,10 +170,10 @@ class RoomModel:
             area_type=AreaType.RED,
             enemies=3,
         ),
-        Vector2(3.0, -5.0): RoomData(
+        Vector2(2.0, -6.0): RoomData(
             left_door_status=DoorState.OPEN,
             right_door_status=DoorState.SOLID_WALL,
-            up_door_status=DoorState.CLOSED,
+            up_door_status=DoorState.SOLID_WALL,
             down_door_status=DoorState.SOLID_WALL,
             room_type=RoomType.END,
             area_type=AreaType.RED,
