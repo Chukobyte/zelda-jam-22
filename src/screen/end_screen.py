@@ -33,5 +33,5 @@ class EndScreen(Node2D):
             game_context = GameContext()
             game_context.has_won = False
             game_context.play_time_counter.reset()
-            GameContext.set_game_state(GameState.PLAYING)
+            GameContext.set_play_state(GameState.PLAYING)
             SceneTree.change_scene(scene_path="scenes/main.sscn")

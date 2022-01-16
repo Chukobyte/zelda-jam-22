@@ -390,7 +390,9 @@ class Player(AnimatedSprite):
                             victory_pose_sprite.texture = Texture.get(
                                 file_path="assets/images/player/player_victory_pose.png"
                             )
-                            victory_pose_sprite.position = self.position
+                            victory_pose_sprite.position = self.position + Vector2(
+                                0, -12
+                            )
                             self.get_parent().add_child(victory_pose_sprite)
                             self.modulate = Color(1.0, 1.0, 1.0, 0.0)
                             self.set_stat_ui_visibility(visible=False)
@@ -565,4 +567,11 @@ class Player(AnimatedSprite):
     @Task.task_func()
     def event(self):
         while True:
+            yield from co_wait_until_seconds(wait_time=2.5)
+            if GameContext().has_won:
+                RoomManager().clean_up()
+                GameContext.set_game_state(GameState.END_SCREEN)
+                SceneTree.change_scene(scene_path="scenes/end_screen.sscn")
+                break
             yield co_suspend()
+        yield co_return()
