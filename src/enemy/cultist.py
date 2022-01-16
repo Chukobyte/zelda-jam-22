@@ -5,6 +5,7 @@ from seika.math import Rect2, Vector2
 
 from src.attack.enemy_attack import EnemyAttack
 from src.enemy.enemy import Enemy
+from src.game_context import PlayState, GameContext
 from src.task.task import Task, co_wait_until_seconds, co_return
 
 
@@ -18,9 +19,11 @@ class Cultist(Enemy):
             0, 0, boss_texture.width, boss_texture.height
         )
         self.tasks.add_task(task=Task(name="shoot", func=self.shoot_shot))
+        self.game_context = GameContext()
 
     def _physics_process(self, delta: float) -> None:
-        self.tasks.run_tasks()
+        if self.game_context.get_play_state() != PlayState.ROOM_TRANSITION:
+            self.tasks.run_tasks()
 
     @Task.task_func()
     def shoot_shot(self):

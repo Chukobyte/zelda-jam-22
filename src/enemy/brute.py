@@ -7,6 +7,7 @@ from seika.utils import SimpleTimer
 
 from src.attack.attack import Attack
 from src.enemy.enemy import Enemy
+from src.game_context import GameContext, PlayState
 from src.math.ease import Ease
 from src.task.task import Task, co_wait_until_seconds, co_return, co_suspend
 from src.world import World
@@ -22,9 +23,11 @@ class Brute(Enemy):
             0, 0, boss_texture.width, boss_texture.height
         )
         self.tasks.add_task(task=Task(name="move_randomly", func=self.move_randomly))
+        self.game_context = GameContext()
 
     def _physics_process(self, delta: float) -> None:
-        self.tasks.run_tasks()
+        if self.game_context.get_play_state() != PlayState.ROOM_TRANSITION:
+            self.tasks.run_tasks()
 
     def _get_movement_dir_towards_player(self, player_pos: Vector2) -> Vector2:
         player_dir = self.position.direction_to(target=player_pos)
