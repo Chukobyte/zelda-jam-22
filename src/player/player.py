@@ -44,10 +44,11 @@ class Player(AnimatedSprite):
         self.tasks = TaskManager()
         self.task_fsm = FSM()
         self._configure_fsm()
-        # Temp
+
         self.collider.tags = [Player.TAG]
         self.last_collided_door = None
         self.on_damage_cool_down = False
+        self.bomb_cooldown_timer = SimpleTimer(wait_time=3.5, start_on_init=True)
 
     def _configure_fsm(self) -> None:
         # State Management
@@ -101,7 +102,8 @@ class Player(AnimatedSprite):
             state_to_transition=bomb_attack_state,
             transition_predicate=lambda: Input.is_action_just_pressed(
                 action_name="bomb_attack"
-            ),
+            )
+            and self.bomb_cooldown_timer.time_left <= 0,
         )
         self.task_fsm.add_state_exit_link(idle_state, state_exit_link=idle_move_exit)
         self.task_fsm.add_state_exit_link(idle_state, state_exit_link=idle_attack_exit)
@@ -129,7 +131,8 @@ class Player(AnimatedSprite):
             state_to_transition=bomb_attack_state,
             transition_predicate=lambda: Input.is_action_just_pressed(
                 action_name="bomb_attack"
-            ),
+            )
+            and self.bomb_cooldown_timer.time_left <= 0,
         )
         move_exit_to_room_transition = StateExitLink(
             state_to_transition=transitioning_to_room_state,
@@ -179,6 +182,7 @@ class Player(AnimatedSprite):
     def _physics_process(self, delta: float) -> None:
         self.task_fsm.process()
         self.tasks.run_tasks()
+        self.bomb_cooldown_timer.tick(delta=delta)
 
     def take_damage(self, attack=None) -> None:
         if not self.on_damage_cool_down:
@@ -460,6 +464,7 @@ class Player(AnimatedSprite):
     @Task.task_func()
     def bomb_attack(self):
         Audio.play_sound(sound_id="assets/audio/sfx/bomb_place.wav")
+        self.bomb_cooldown_timer.start()
         player_attack = BombAttack.new()
         self._setup_attack(attack=player_attack, adjust_orientation=False)
 
