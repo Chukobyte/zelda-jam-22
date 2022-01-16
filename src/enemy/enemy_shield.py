@@ -81,12 +81,10 @@ class EnemyShield(Enemy):
     def move_randomly(self):
         world = World()
         player = self.get_node(name="Player")
-        assert player
-        # move_speed = 90
         move_speed = 25
         while True:
             # Will sometimes move towards the player, otherwise move randomly
-            if random.randint(0, 1) == 0:
+            if random.randint(0, 2) <= 1:
                 new_dir = self._get_movement_dir_towards_player(player.position)
             else:
                 new_dir = random.choice(
@@ -97,6 +95,19 @@ class EnemyShield(Enemy):
                         Vector2.RIGHT(),
                     ]
                 )
+            # TODO: Fix up and left anims
+            if new_dir == Vector2.UP():
+                # self.play(animation_name="move_up")
+                self.flip_h = False
+            if new_dir == Vector2.DOWN():
+                self.play(animation_name="move_down")
+                self.flip_h = False
+            elif new_dir == Vector2.RIGHT():
+                self.play(animation_name="move_hort")
+                self.flip_h = False
+            elif new_dir == Vector2.LEFT():
+                # self.play(animation_name="move_hort")
+                self.flip_h = True
             move_timer = SimpleTimer(
                 wait_time=random.uniform(2.0, 3.0), start_on_init=True
             )
