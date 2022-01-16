@@ -10,6 +10,9 @@ from src.enemy.enemy import Enemy
 
 
 # TODO: Refactor to avoid duplication
+from src.room.door import DoorState
+
+
 class WaveAttack(Attack):
     def __init__(self, entity_id: int):
         super().__init__(entity_id)
@@ -122,6 +125,11 @@ class BombExplosion(Attack):
             self.has_collided = True
             first_enemy = enemies_colliders[0].get_parent()
             first_enemy.take_damage(attack=self)
+        breakable_wall_colliders = Collision.get_collided_nodes_by_tag(
+            node=self, tag="break_wall"
+        )
+        if breakable_wall_colliders:
+            breakable_wall_colliders[0].set_state(state=DoorState.CRACKED_OPEN_WALL)
 
 
 class BombAttack(Attack):

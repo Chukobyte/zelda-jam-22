@@ -54,7 +54,7 @@ class Door(CollisionShape2D):
             self.sprite.modulate = Color(1.0, 1.0, 1.0, 0.0)
         elif self._state == DoorState.BREAKABLE_WALL:
             is_open_string = "closed"
-            self.tags = ["solid"]
+            self.tags = ["solid", "break_wall"]
             self.sprite.modulate = Color(1.0, 1.0, 1.0, 0.0)
         elif self._state == DoorState.CRACKED_OPEN_WALL:
             dir_string = f"wall_cracked_{dir_string}"
