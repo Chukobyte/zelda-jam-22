@@ -20,7 +20,7 @@ from src.room.door import DoorState
 from src.world import World
 from src.room.room_manager import RoomManager
 from src.player.player_stats import PlayerStats
-from src.attack.player_attack import WaveAttack, BoltAttack, BombAttack
+from src.attack.player_attack import WaveAttack, BombAttack
 from src.task.task import (
     Task,
     co_return,
@@ -235,24 +235,24 @@ class Player(AnimatedSprite):
         else:
             self.player_ui_sprite.modulate = Color(1.0, 1.0, 1.0, 0.0)
 
-    def _process_collisions(self):
-        pass
+    def _update_idle_direction(self) -> None:
+        if self.direction == Vector2.UP():
+            self.play(animation_name="idle_up")
+            self.flip_h = False
+        elif self.direction == Vector2.DOWN():
+            self.play(animation_name="idle_down")
+            self.flip_h = False
+        elif self.direction == Vector2.RIGHT():
+            self.play(animation_name="idle_hort")
+            self.flip_h = False
+        elif self.direction == Vector2.LEFT():
+            self.play(animation_name="idle_hort")
+            self.flip_h = True
 
     @Task.task_func()
     def idle(self):
         while True:
-            if self.direction == Vector2.UP():
-                self.play(animation_name="idle_up")
-                self.flip_h = False
-            elif self.direction == Vector2.DOWN():
-                self.play(animation_name="idle_down")
-                self.flip_h = False
-            elif self.direction == Vector2.RIGHT():
-                self.play(animation_name="idle_hort")
-                self.flip_h = False
-            elif self.direction == Vector2.LEFT():
-                self.play(animation_name="idle_hort")
-                self.flip_h = True
+            self._update_idle_direction()
             yield co_suspend()
 
     @Task.task_func()
@@ -570,6 +570,8 @@ class Player(AnimatedSprite):
 
     @Task.task_func()
     def dialogue(self):
+        self._update_idle_direction()
+        self.set_stat_ui_visibility(visible=False)
         while True:
             if Input.is_action_just_pressed(action_name="attack"):
                 GameContext.set_play_state(PlayState.MAIN)
@@ -581,6 +583,7 @@ class Player(AnimatedSprite):
                     pass
                 break
             yield co_suspend()
+        self.set_stat_ui_visibility(visible=True)
         yield co_return()
 
     @Task.task_func()

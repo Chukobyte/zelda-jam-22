@@ -152,7 +152,7 @@ class RoomManager:
                 grid_position=self.current_room.position
             )
             for i in range(self.current_room.data.enemies):
-                rand_pos = Vector2(random.randint(100, 320), random.randint(60, 160))
+                rand_pos = Vector2(random.randint(100, 320), random.randint(70, 150))
                 if random.randint(0, 1) == 0:
                     EnemySpawner.spawn_cultist(
                         main_node=main_node, position=base_room_position + rand_pos
