@@ -19,3 +19,9 @@ A game made for the [KB Games Zelda Jam '22](https://itch.io/jam/zeldajam-22).  
 - Attack: B Button
 
 *Note: The bomb is unlocked through play*
+
+### Credits
+
+* Chukobyte - Programming
+* Pine - Art
+* Dnebesh - Audio
