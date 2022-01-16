@@ -14,7 +14,7 @@ from seika.utils import SimpleTimer
 
 from src.attack.attack import Attack
 from src.event.event_textbox import TextboxManager
-from src.game_context import GameContext, PlayState, GameState
+from src.game_context import GameContext, PlayState, GameState, DialogueEvent
 from src.math.ease import Ease, Easer
 from src.room.door import DoorState
 from src.world import World
@@ -82,7 +82,7 @@ class Player(AnimatedSprite):
         dialogue_exit = StateExitLink(
             state_to_transition=dialogue_state,
             transition_predicate=lambda: GameContext.get_play_state()
-                                         == PlayState.DIALOGUE,
+            == PlayState.DIALOGUE,
         )
         # Idle
         idle_move_exit = StateExitLink(
@@ -182,7 +182,9 @@ class Player(AnimatedSprite):
             state=transitioning_to_room_state, state_to_transition=idle_state
         )
         # Dialogue
-        self.task_fsm.add_state_finished_link(state=dialogue_state, state_to_transition=idle_state)
+        self.task_fsm.add_state_finished_link(
+            state=dialogue_state, state_to_transition=idle_state
+        )
         # Event
         to_idle_from_event_exit = StateExitLink(
             state_to_transition=idle_state,
@@ -573,6 +575,10 @@ class Player(AnimatedSprite):
                 GameContext.set_play_state(PlayState.MAIN)
                 TextboxManager().hide_textbox()
                 Audio.play_sound(sound_id="assets/audio/sfx/select.wav")
+                if GameContext.get_dialogue_event() == DialogueEvent.INIT:
+                    Audio.play_music(music_id="assets/audio/music/no_color_theme.wav")
+                elif GameContext.get_dialogue_event() == DialogueEvent.GAIN_BOMB:
+                    pass
                 break
             yield co_suspend()
         yield co_return()
