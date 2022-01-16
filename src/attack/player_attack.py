@@ -88,9 +88,9 @@ class BombExplosion(Attack):
     def __init__(self, entity_id: int):
         super().__init__(entity_id)
         self.anim_sprite = None
-        # self.set_life_time(1.8)
         self.set_life_time(1.0)
         self.damage = 3
+        self.enemy_damaged_entity_ids = []
 
     def _get_animation(self) -> Animation:
         texture = Texture.get(
@@ -122,10 +122,14 @@ class BombExplosion(Attack):
         enemies_colliders = Collision.get_collided_nodes_by_tag(
             node=self, tag=Enemy.TAG
         )
-        if enemies_colliders and not self.has_collided:
-            self.has_collided = True
-            first_enemy = enemies_colliders[0].get_parent()
-            first_enemy.take_damage(attack=self)
+
+        if enemies_colliders:
+            for collider in enemies_colliders:
+                enemy = collider.get_parent()
+                if enemy.entity_id not in self.enemy_damaged_entity_ids:
+                    enemy.take_damage(attack=self)
+                    self.enemy_damaged_entity_ids.append(enemy.entity_id)
+
         breakable_wall_colliders = Collision.get_collided_nodes_by_tag(
             node=self, tag="break_wall"
         )
