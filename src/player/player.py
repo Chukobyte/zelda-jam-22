@@ -5,7 +5,7 @@ from seika.assets import Texture
 from seika.audio import Audio, AudioStream
 from seika.camera import Camera2D
 from seika.color import Color
-from seika.node import AnimatedSprite
+from seika.node import AnimatedSprite, Sprite
 from seika.input import Input
 from seika.math import Vector2, Rect2
 from seika.physics import Collision
@@ -386,11 +386,18 @@ class Player(AnimatedSprite):
                             Audio.play_sound(
                                 sound_id="assets/audio/sfx/rainbow_orb.wav"
                             )
+                            victory_pose_sprite = Sprite.new()
+                            victory_pose_sprite.texture = Texture.get(
+                                file_path="assets/images/player/player_victory_pose.png"
+                            )
+                            victory_pose_sprite.position = self.position
+                            self.get_parent().add_child(victory_pose_sprite)
+                            self.modulate = Color(1.0, 1.0, 1.0, 0.0)
+                            self.set_stat_ui_visibility(visible=False)
                             # Transition to end game state
+                            GameContext.set_play_state(PlayState.EVENT)
                             GameContext().has_won = True
                             tricolora[0].queue_deletion()
-                            # Temp open up door
-                            room_manager.room_doors.up.set_state(DoorState.OPEN)
                             break
                         else:
                             current_pos = self.position
@@ -558,6 +565,4 @@ class Player(AnimatedSprite):
     @Task.task_func()
     def event(self):
         while True:
-            if Input.is_action_just_pressed(action_name="credits"):
-                GameContext.set_play_state(PlayState.MAIN)
             yield co_suspend()
