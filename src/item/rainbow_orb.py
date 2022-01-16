@@ -34,7 +34,7 @@ class RainbowOrb(CollisionShape2D):
     def _physics_process(self, delta: float) -> None:
         self.tasks.run_tasks()
 
-    @Task.task_func(debug=True)
+    @Task.task_func()
     def change_colors(self):
         current_color_ramp = []
         while True:

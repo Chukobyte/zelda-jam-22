@@ -37,7 +37,7 @@
                 {
                     "transform2D": {
                         "position": {
-                            "x": 180.0,
+                            "x": 160.0,
                             "y": 20.0
                         },
                         "scale": {
@@ -52,7 +52,7 @@
                 },
                 {
                     "text_label": {
-                        "text": "NUL",
+                        "text": "NULL",
                         "font_uid": "pine-type-48",
                         "color": {
                             "red": 0.23620864748954773,

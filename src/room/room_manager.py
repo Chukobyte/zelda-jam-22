@@ -9,6 +9,7 @@ from src.enemy.enemy_spawner import EnemySpawner
 from src.game_context import PlayState, GameContext
 from src.item.rainbow_orb import RainbowOrb
 from src.item.tricolora import Tricolora
+from src.npc.bomb_npc import BombNPC
 from src.room.room import Room
 from src.room.door import Door, DoorState
 from src.project_properties import ProjectProperties
@@ -151,7 +152,7 @@ class RoomManager:
                 grid_position=self.current_room.position
             )
             for i in range(self.current_room.data.enemies):
-                rand_pos = Vector2(random.randint(100, 320), random.randint(60, 160))
+                rand_pos = Vector2(random.randint(100, 320), random.randint(70, 150))
                 if random.randint(0, 1) == 0:
                     EnemySpawner.spawn_cultist(
                         main_node=main_node, position=base_room_position + rand_pos
@@ -170,6 +171,11 @@ class RoomManager:
                 grid_position=self.current_room.position
             ) + Vector2(200, 60)
             main_node.add_child(rainbow_orb)
+
+            bomb_npc = BombNPC.new()
+            bomb_npc.position = rainbow_orb.position + Vector2(-40, 0)
+            main_node.add_child(bomb_npc)
+
             self._close_current_room_doors()
         elif (
             self.current_room.data.room_type == RoomType.END

@@ -23,6 +23,7 @@ class WaveAttack(Attack):
         self.anim_sprite = None
         self.set_life_time(0.5)
         self.damage = 1
+        self.enemy_damaged_entity_ids = []
 
     def _start(self) -> None:
         super()._start()
@@ -51,40 +52,42 @@ class WaveAttack(Attack):
         enemies_colliders = Collision.get_collided_nodes_by_tag(
             node=self, tag=Enemy.TAG
         )
-        if enemies_colliders and not self.has_collided:
-            self.has_collided = True
-            first_enemy = enemies_colliders[0].get_parent()
-            first_enemy.take_damage(attack=self)
+        if enemies_colliders:
+            for collider in enemies_colliders:
+                enemy = collider.get_parent()
+                if enemy.entity_id not in self.enemy_damaged_entity_ids:
+                    enemy.take_damage(attack=self)
+                    self.enemy_damaged_entity_ids.append(enemy.entity_id)
 
 
-class BoltAttack(Attack):
-    def __init__(self, entity_id: int):
-        super().__init__(entity_id)
-        self.sprite = None
-        self.set_life_time(3.0)
-        self.damage = 1
-
-    def _start(self) -> None:
-        super()._start()
-        self.sprite = Sprite.new()
-        texture = Texture.get(file_path="assets/images/player/player_bolt_attack.png")
-        self.sprite.texture = texture
-        self.add_child(self.sprite)
-
-        self.collider_rect = Rect2(0, 0, texture.width, texture.height)
-
-    def _physics_process(self, delta: float) -> None:
-        super()._physics_process(delta)
-        self.position += self.direction * Vector2(
-            self.speed * delta, self.speed * delta
-        )
-        enemies_colliders = Collision.get_collided_nodes_by_tag(
-            node=self, tag=Enemy.TAG
-        )
-        if enemies_colliders and not self.has_collided:
-            self.has_collided = True
-            first_enemy = enemies_colliders[0].get_parent()
-            first_enemy.take_damage(attack=self)
+# class BoltAttack(Attack):
+#     def __init__(self, entity_id: int):
+#         super().__init__(entity_id)
+#         self.sprite = None
+#         self.set_life_time(3.0)
+#         self.damage = 1
+#
+#     def _start(self) -> None:
+#         super()._start()
+#         self.sprite = Sprite.new()
+#         texture = Texture.get(file_path="assets/images/player/player_bolt_attack.png")
+#         self.sprite.texture = texture
+#         self.add_child(self.sprite)
+#
+#         self.collider_rect = Rect2(0, 0, texture.width, texture.height)
+#
+#     def _physics_process(self, delta: float) -> None:
+#         super()._physics_process(delta)
+#         self.position += self.direction * Vector2(
+#             self.speed * delta, self.speed * delta
+#         )
+#         enemies_colliders = Collision.get_collided_nodes_by_tag(
+#             node=self, tag=Enemy.TAG
+#         )
+#         if enemies_colliders and not self.has_collided:
+#             self.has_collided = True
+#             first_enemy = enemies_colliders[0].get_parent()
+#             first_enemy.take_damage(attack=self)
 
 
 class BombExplosion(Attack):

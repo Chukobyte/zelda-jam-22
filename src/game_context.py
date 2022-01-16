@@ -14,6 +14,12 @@ class PlayState:
     DIALOGUE = "dialogue"
 
 
+class DialogueEvent:
+    NONE = "none"
+    INIT = "init"
+    GAIN_BOMB = "gain_bomb"
+
+
 class PlayTimerCounter:
     def __init__(self) -> None:
         self._accumulated_delta = 0.0
@@ -37,6 +43,7 @@ class GameContext:
             cls._instance = object.__new__(cls)
             cls.game_state = GameState.INIT
             cls.play_state = PlayState.MAIN
+            cls.dialogue_event = DialogueEvent.NONE
             cls.play_time_counter = PlayTimerCounter()
             # Temp
             cls.has_won = False
@@ -57,3 +64,11 @@ class GameContext:
     @staticmethod
     def get_play_state() -> str:
         return GameContext().play_state
+
+    @staticmethod
+    def set_dialogue_event(event: str) -> None:
+        GameContext().dialogue_event = event
+
+    @staticmethod
+    def get_dialogue_event() -> str:
+        return GameContext().dialogue_event

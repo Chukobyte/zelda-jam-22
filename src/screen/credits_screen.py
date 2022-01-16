@@ -9,8 +9,8 @@ from src.game_context import GameContext, GameState
 
 class CreditsScreen(Node2D):
     def _physics_process(self, delta: float) -> None:
-        if Input.is_action_pressed(action_name="debug_quit"):
-            Engine.exit()
+        # if Input.is_action_pressed(action_name="debug_quit"):
+        #     Engine.exit()
 
         if Input.is_action_just_pressed(
             action_name="attack"

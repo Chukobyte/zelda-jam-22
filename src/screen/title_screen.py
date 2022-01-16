@@ -9,8 +9,8 @@ from src.game_context import GameContext, GameState
 
 class TitleScreen(Node2D):
     def _physics_process(self, delta: float) -> None:
-        if Input.is_action_just_pressed(action_name="debug_quit"):
-            Engine.exit()
+        # if Input.is_action_just_pressed(action_name="debug_quit"):
+        #     Engine.exit()
 
         if Input.is_action_just_pressed(action_name="credits"):
             Audio.play_sound(sound_id="assets/audio/sfx/select.wav")
