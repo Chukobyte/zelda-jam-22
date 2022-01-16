@@ -11,6 +11,11 @@ class EndScreen(Node2D):
     def _start(self) -> None:
         # Update play time
         game_context = GameContext()
+        result_label = self.get_node(name="YouWinLabel")
+        if game_context.has_won:
+            result_label.text = "You Win!"
+        else:
+            result_label.text = "Try again?"
         play_time_label = self.get_node(name="PlayTimeLabel")
         play_time_label.text = (
             f"Play Time: {game_context.play_time_counter.time_played_text}"

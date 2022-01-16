@@ -180,6 +180,9 @@ class Player(AnimatedSprite):
             self.stats.hp -= attack_damage
             if self.stats.hp <= 0:
                 self.player_ui_sprite.play("empty")
+                RoomManager().clean_up()
+                GameContext.set_game_state(GameState.END_SCREEN)
+                SceneTree.change_scene(scene_path="scenes/end_screen.sscn")
                 # TODO: Do more stuff...
             else:
                 if self.stats.hp == 5:
