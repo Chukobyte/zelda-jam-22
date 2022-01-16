@@ -153,7 +153,7 @@ class RoomModel:
         Vector2(2.0, -5.0): RoomData(
             left_door_status=DoorState.SOLID_WALL,
             right_door_status=DoorState.SOLID_WALL,
-            up_door_status=DoorState.CLOSED,
+            up_door_status=DoorState.OPEN,
             down_door_status=DoorState.OPEN,
             room_type=RoomType.COMBAT,
             area_type=AreaType.RED,
