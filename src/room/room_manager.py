@@ -1,4 +1,5 @@
 import math
+import random
 
 from seika.assets import Texture
 from seika.color import Color
@@ -139,13 +140,20 @@ class RoomManager:
             self.current_room.data.room_type == RoomType.COMBAT
             and not self.current_room.data.is_cleared
         ):
-            enemy_position = self.get_world_position(
+            base_room_position = self.get_world_position(
                 grid_position=self.current_room.position
-            ) + Vector2(200, 50)
-            EnemySpawner.spawn_cultist(main_node=main_node, position=enemy_position)
-            EnemySpawner.spawn_shield(
-                main_node=main_node, position=enemy_position + Vector2(-80, 30)
             )
+            for i in range(self.current_room.data.enemies):
+                rand_pos = Vector2(random.randint(100, 320), random.randint(60, 160))
+                if random.randint(0, 1) == 0:
+                    EnemySpawner.spawn_cultist(
+                        main_node=main_node, position=base_room_position + rand_pos
+                    )
+                else:
+                    EnemySpawner.spawn_shield(
+                        main_node=main_node, position=base_room_position + rand_pos
+                    )
+
             if self.current_room.data.up_door_status == DoorState.OPEN:
                 self.current_room.data.up_door_status = DoorState.CLOSED
                 self.room_doors.up.set_state(state=DoorState.CLOSED)
