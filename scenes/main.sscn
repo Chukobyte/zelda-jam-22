@@ -707,7 +707,7 @@
                             "x": 0.0,
                             "y": 0.0,
                             "width": 300.0,
-                            "height": 100.0
+                            "height": 60.0
                         },
                         "flip_x": false,
                         "flip_y": false,
@@ -737,7 +737,7 @@
                             "transform2D": {
                                 "position": {
                                     "x": 4.0,
-                                    "y": 4.0
+                                    "y": 0.0
                                 },
                                 "scale": {
                                     "x": 1.0,

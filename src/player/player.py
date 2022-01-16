@@ -61,6 +61,7 @@ class Player(AnimatedSprite):
         transitioning_to_room_state = State(
             name="transitioning_to_room", state_func=self.transitioning_to_room
         )
+        dialogue_state = State(name="dialogue", state_func=self.dialogue)
         event_state = State(name="event", state_func=self.event)
 
         self.task_fsm.add_state(state=idle_state, set_current=True)
@@ -69,6 +70,7 @@ class Player(AnimatedSprite):
         # self.task_fsm.add_state(state=bolt_attack_state)
         self.task_fsm.add_state(state=bomb_attack_state)
         self.task_fsm.add_state(state=transitioning_to_room_state)
+        self.task_fsm.add_state(state=dialogue_state)
         self.task_fsm.add_state(state=event_state)
 
         # Links
@@ -76,6 +78,11 @@ class Player(AnimatedSprite):
             state_to_transition=event_state,
             transition_predicate=lambda: GameContext.get_play_state()
             == PlayState.EVENT,
+        )
+        dialogue_exit = StateExitLink(
+            state_to_transition=dialogue_state,
+            transition_predicate=lambda: GameContext.get_play_state()
+                                         == PlayState.DIALOGUE,
         )
         # Idle
         idle_move_exit = StateExitLink(
@@ -115,6 +122,7 @@ class Player(AnimatedSprite):
         self.task_fsm.add_state_exit_link(
             idle_state, state_exit_link=idle_bomb_attack_exit
         )
+        self.task_fsm.add_state_exit_link(idle_state, state_exit_link=dialogue_exit)
         self.task_fsm.add_state_exit_link(idle_state, state_exit_link=event_exit)
         # Move
         move_attack_exit = StateExitLink(
@@ -154,6 +162,7 @@ class Player(AnimatedSprite):
         self.task_fsm.add_state_exit_link(
             state=move_state, state_exit_link=move_exit_to_room_transition
         )
+        self.task_fsm.add_state_exit_link(move_state, state_exit_link=dialogue_exit)
         self.task_fsm.add_state_exit_link(state=move_state, state_exit_link=event_exit)
         self.task_fsm.add_state_finished_link(
             state=move_state, state_to_transition=idle_state
@@ -172,6 +181,8 @@ class Player(AnimatedSprite):
         self.task_fsm.add_state_finished_link(
             state=transitioning_to_room_state, state_to_transition=idle_state
         )
+        # Dialogue
+        self.task_fsm.add_state_finished_link(state=dialogue_state, state_to_transition=idle_state)
         # Event
         to_idle_from_event_exit = StateExitLink(
             state_to_transition=idle_state,
@@ -553,6 +564,17 @@ class Player(AnimatedSprite):
 
         self.modulate = Color(1.0, 1.0, 1.0, 1.0)
         self.on_damage_cool_down = False
+        yield co_return()
+
+    @Task.task_func()
+    def dialogue(self):
+        while True:
+            if Input.is_action_just_pressed(action_name="attack"):
+                GameContext.set_play_state(PlayState.MAIN)
+                TextboxManager().hide_textbox()
+                Audio.play_sound(sound_id="assets/audio/sfx/select.wav")
+                break
+            yield co_suspend()
         yield co_return()
 
     @Task.task_func()

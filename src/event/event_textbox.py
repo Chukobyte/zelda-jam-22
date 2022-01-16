@@ -22,6 +22,9 @@ class TextboxManager:
     def show_textbox(self) -> None:
         self.textbox.show_all()
 
+    def set_text(self, value: str) -> None:
+        self.textbox.set_text(value)
+
 
 class EventTextbox(Sprite):
     def __init__(self, entity_id: int):

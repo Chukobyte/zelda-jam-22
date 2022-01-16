@@ -3,9 +3,10 @@ from seika.input import Input
 from seika.engine import Engine
 from seika.audio import AudioStream, Audio
 
+from src.event.event_textbox import TextboxManager
 from src.room.room_manager import RoomManager
 from src.world import World
-from src.game_context import GameContext
+from src.game_context import GameContext, PlayState
 from src.room.room_builder import RoomBuilder
 from src.task.task import Task, TaskManager, co_return, co_wait_until_seconds
 
@@ -22,6 +23,12 @@ class Main(Node2D):
         RoomBuilder.create_doors(node=self)
         RoomBuilder.create_rooms(node=self)
         RoomManager().refresh_current_doors_status()
+
+        textbox_manager = TextboxManager()
+        textbox_manager.register_textbox(textbox=self.get_node(name="EventTextbox"))
+        textbox_manager.set_text("...")
+        textbox_manager.show_textbox()
+        GameContext.set_play_state(PlayState.DIALOGUE)
 
     def _physics_process(self, delta: float) -> None:
         self.world.cached_delta = delta
