@@ -1,3 +1,4 @@
+import random
 from typing import Tuple, Optional
 
 from seika.assets import Texture
@@ -428,7 +429,18 @@ class Player(AnimatedSprite):
         player_attack = WaveAttack.new()
         self._setup_wave_attack(attack=player_attack)
 
-        yield from co_wait_until_seconds(wait_time=player_attack.life_time)
+        world = World()
+        screen_shaker_timer = SimpleTimer(
+            wait_time=player_attack.life_time / 2.0, start_on_init=True
+        )
+        while not screen_shaker_timer.tick(delta=world.cached_delta):
+            Camera2D.set_offset(
+                offset=Vector2(random.uniform(-1.0, 1.0), random.uniform(-1.0, 1.0))
+            )
+            yield co_suspend()
+
+        Camera2D.set_offset(offset=Vector2(0.0, 0.0))
+        yield from co_wait_until_seconds(wait_time=player_attack.life_time / 2.0)
 
         self.set_stat_ui_visibility(visible=True)
         yield co_return()

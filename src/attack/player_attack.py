@@ -1,5 +1,8 @@
+import random
+
 from seika.assets import Texture
 from seika.audio import Audio
+from seika.camera import Camera2D
 from seika.math import Rect2, Vector2
 from seika.node import Sprite, AnimatedSprite
 from seika.physics import Collision
@@ -118,7 +121,6 @@ class BombExplosion(Attack):
         Audio.play_sound(sound_id="assets/audio/sfx/bomb_explosion.wav")
 
     def _physics_process(self, delta: float) -> None:
-        super()._physics_process(delta)
         enemies_colliders = Collision.get_collided_nodes_by_tag(
             node=self, tag=Enemy.TAG
         )
@@ -152,6 +154,14 @@ class BombExplosion(Attack):
                 room_manager.current_room.data.down_door_status = (
                     DoorState.CRACKED_OPEN_WALL
                 )
+
+        if self.life_timer.tick(delta):
+            Camera2D.set_offset(offset=Vector2.ZERO())
+            self.queue_deletion()
+        else:
+            Camera2D.set_offset(
+                offset=Vector2(random.uniform(-1.0, 1.0), random.uniform(-1.0, 1.0))
+            )
 
 
 class BombAttack(Attack):
