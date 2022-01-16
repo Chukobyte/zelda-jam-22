@@ -8,6 +8,7 @@ from seika.math import Vector2
 from src.enemy.enemy_spawner import EnemySpawner
 from src.game_context import PlayState, GameContext
 from src.item.rainbow_orb import RainbowOrb
+from src.item.tricolora import Tricolora
 from src.room.room import Room
 from src.room.door import Door, DoorState
 from src.project_properties import ProjectProperties
@@ -127,15 +128,21 @@ class RoomManager:
 
         GameContext.set_play_state(PlayState.ROOM_TRANSITION)
 
+    def _close_current_room_doors(self) -> None:
+        if self.current_room.data.up_door_status == DoorState.OPEN:
+            self.current_room.data.up_door_status = DoorState.CLOSED
+            self.room_doors.up.set_state(state=DoorState.CLOSED)
+        if self.current_room.data.down_door_status == DoorState.OPEN:
+            self.current_room.data.down_door_status = DoorState.CLOSED
+            self.room_doors.down.set_state(state=DoorState.CLOSED)
+        if self.current_room.data.left_door_status == DoorState.OPEN:
+            self.current_room.data.left_door_status = DoorState.CLOSED
+            self.room_doors.left.set_state(state=DoorState.CLOSED)
+        if self.current_room.data.right_door_status == DoorState.OPEN:
+            self.current_room.data.right_door_status = DoorState.CLOSED
+            self.room_doors.right.set_state(state=DoorState.CLOSED)
+
     def finish_room_transition(self, main_node) -> None:
-        # if (
-        #     self.current_room.data.room_type == RoomType.BOSS
-        #     and not self.current_room.data.is_cleared
-        # ):
-        #     boss_position = self.get_world_position(
-        #         grid_position=self.current_room.position
-        #     ) + Vector2(160, 35)
-        #     EnemySpawner.spawn_boss(main_node=main_node, position=boss_position)
         if (
             self.current_room.data.room_type == RoomType.COMBAT
             and not self.current_room.data.is_cleared
@@ -153,25 +160,26 @@ class RoomManager:
                     EnemySpawner.spawn_shield(
                         main_node=main_node, position=base_room_position + rand_pos
                     )
-
-            if self.current_room.data.up_door_status == DoorState.OPEN:
-                self.current_room.data.up_door_status = DoorState.CLOSED
-                self.room_doors.up.set_state(state=DoorState.CLOSED)
-            if self.current_room.data.down_door_status == DoorState.OPEN:
-                self.current_room.data.down_door_status = DoorState.CLOSED
-                self.room_doors.down.set_state(state=DoorState.CLOSED)
-            if self.current_room.data.left_door_status == DoorState.OPEN:
-                self.current_room.data.left_door_status = DoorState.CLOSED
-                self.room_doors.left.set_state(state=DoorState.CLOSED)
-            if self.current_room.data.right_door_status == DoorState.OPEN:
-                self.current_room.data.right_door_status = DoorState.CLOSED
-                self.room_doors.right.set_state(state=DoorState.CLOSED)
-        elif self.current_room.data.room_type == RoomType.END:
+            self._close_current_room_doors()
+        elif (
+            self.current_room.data.room_type == RoomType.GAIN_BOMB
+            and not self.current_room.data.is_cleared
+        ):
             rainbow_orb = RainbowOrb.new()
             rainbow_orb.position = self.get_world_position(
                 grid_position=self.current_room.position
-            ) + Vector2(200, 45)
+            ) + Vector2(200, 60)
             main_node.add_child(rainbow_orb)
+            self._close_current_room_doors()
+        elif (
+            self.current_room.data.room_type == RoomType.END
+            and not self.current_room.data.is_cleared
+        ):
+            tricolora = Tricolora.new()
+            tricolora.position = self.get_world_position(
+                grid_position=self.current_room.position
+            ) + Vector2(200, 60)
+            main_node.add_child(tricolora)
 
         horizontal_door_overhead = main_node.get_node(name="HorizontalDoorOverhead")
         vertical_door_overhead = main_node.get_node(name="VerticalDoorOverhead")

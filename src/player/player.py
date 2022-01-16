@@ -48,6 +48,7 @@ class Player(AnimatedSprite):
         self.collider.tags = [Player.TAG]
         self.last_collided_door = None
         self.on_damage_cool_down = False
+        self.bomb_unlocked = False
         self.bomb_cooldown_timer = SimpleTimer(wait_time=3.5, start_on_init=True)
 
     def _configure_fsm(self) -> None:
@@ -103,6 +104,7 @@ class Player(AnimatedSprite):
             transition_predicate=lambda: Input.is_action_just_pressed(
                 action_name="bomb_attack"
             )
+            and self.bomb_unlocked
             and self.bomb_cooldown_timer.time_left <= 0,
         )
         self.task_fsm.add_state_exit_link(idle_state, state_exit_link=idle_move_exit)
@@ -132,6 +134,7 @@ class Player(AnimatedSprite):
             transition_predicate=lambda: Input.is_action_just_pressed(
                 action_name="bomb_attack"
             )
+            and self.bomb_unlocked
             and self.bomb_cooldown_timer.time_left <= 0,
         )
         move_exit_to_room_transition = StateExitLink(
@@ -246,10 +249,10 @@ class Player(AnimatedSprite):
         elapsed_time = 0.0
         while True:
             # Temp event toggle
-            if Input.is_action_just_pressed(action_name="credits"):
-                if GameContext.get_play_state() == PlayState.MAIN:
-                    GameContext.set_play_state(PlayState.EVENT)
-                    TextboxManager().hide_textbox()
+            # if Input.is_action_just_pressed(action_name="credits"):
+            #     if GameContext.get_play_state() == PlayState.MAIN:
+            #         GameContext.set_play_state(PlayState.EVENT)
+            #         TextboxManager().hide_textbox()
 
             delta = world.cached_delta
             elapsed_time += delta
@@ -343,6 +346,9 @@ class Player(AnimatedSprite):
                         rainbow_orbs = Collision.get_collided_nodes_by_tag(
                             node=self.collider, tag="rainbow_orb", offset=vel
                         )
+                        tricolora = Collision.get_collided_nodes_by_tag(
+                            node=self.collider, tag="tricolora", offset=vel
+                        )
                         # Collision checks
                         if collided_walls:
                             pass
@@ -368,8 +374,21 @@ class Player(AnimatedSprite):
                             Audio.play_sound(
                                 sound_id="assets/audio/sfx/rainbow_orb.wav"
                             )
-                            GameContext().has_won = True
                             rainbow_orbs[0].queue_deletion()
+                            self.bomb_unlocked = True
+                            room_manager.set_current_room_to_cleared()
+                            break
+                        elif tricolora:
+                            music_audio_stream = AudioStream.get(
+                                stream_uid="no-color-theme"
+                            )
+                            music_audio_stream.stop()
+                            Audio.play_sound(
+                                sound_id="assets/audio/sfx/rainbow_orb.wav"
+                            )
+                            # Transition to end game state
+                            GameContext().has_won = True
+                            tricolora[0].queue_deletion()
                             # Temp open up door
                             room_manager.room_doors.up.set_state(DoorState.OPEN)
                             break
