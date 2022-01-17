@@ -434,6 +434,19 @@ class Player(AnimatedSprite):
         player_attack = WaveAttack.new()
         self._setup_wave_attack(attack=player_attack)
 
+        if self.direction == Vector2.UP():
+            self.play(animation_name="attack_up")
+            self.flip_h = False
+        elif self.direction == Vector2.DOWN():
+            self.play(animation_name="attack_down")
+            self.flip_h = False
+        elif self.direction == Vector2.RIGHT():
+            self.play(animation_name="attack_hort")
+            self.flip_h = False
+        elif self.direction == Vector2.LEFT():
+            self.play(animation_name="attack_hort")
+            self.flip_h = True
+
         world = World()
         screen_shaker_timer = SimpleTimer(
             wait_time=player_attack.life_time / 2.0, start_on_init=True

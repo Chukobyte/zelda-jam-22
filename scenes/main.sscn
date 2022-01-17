@@ -108,6 +108,174 @@
                         },
                         "animations": [
                             {
+                                "name": "attack_down",
+                                "speed": 100,
+                                "frames": [
+                                    {
+                                        "frame": 0,
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 0.0,
+                                            "y": 96.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 1,
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 16.0,
+                                            "y": 96.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 2,
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 32.0,
+                                            "y": 96.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 3,
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 48.0,
+                                            "y": 96.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 4,
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 64.0,
+                                            "y": 96.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "attack_hort",
+                                "speed": 100,
+                                "frames": [
+                                    {
+                                        "frame": 0,
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 0.0,
+                                            "y": 128.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 1,
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 16.0,
+                                            "y": 128.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 2,
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 32.0,
+                                            "y": 128.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 3,
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 48.0,
+                                            "y": 128.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 4,
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 64.0,
+                                            "y": 128.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "attack_up",
+                                "speed": 100,
+                                "frames": [
+                                    {
+                                        "frame": 0,
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 0.0,
+                                            "y": 112.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 1,
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 16.0,
+                                            "y": 112.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 2,
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 32.0,
+                                            "y": 112.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 3,
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 48.0,
+                                            "y": 112.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    },
+                                    {
+                                        "frame": 4,
+                                        "texture_path": "assets/images/player/player_spritesheet.png",
+                                        "draw_source": {
+                                            "x": 64.0,
+                                            "y": 112.0,
+                                            "width": 16.0,
+                                            "height": 16.0
+                                        }
+                                    }
+                                ]
+                            },
+                            {
                                 "name": "idle_down",
                                 "speed": 200,
                                 "frames": [
@@ -487,6 +655,38 @@
                                         ]
                                     },
                                     {
+                                        "name": "five_hearts",
+                                        "speed": 1000,
+                                        "frames": [
+                                            {
+                                                "frame": 0,
+                                                "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
+                                                "draw_source": {
+                                                    "x": 0.0,
+                                                    "y": 6.0,
+                                                    "width": 36.0,
+                                                    "height": 6.0
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "four_hearts",
+                                        "speed": 1000,
+                                        "frames": [
+                                            {
+                                                "frame": 0,
+                                                "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
+                                                "draw_source": {
+                                                    "x": 0.0,
+                                                    "y": 12.0,
+                                                    "width": 36.0,
+                                                    "height": 6.0
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
                                         "name": "full",
                                         "speed": 1000,
                                         "frames": [
@@ -519,22 +719,6 @@
                                         ]
                                     },
                                     {
-                                        "name": "two_hearts",
-                                        "speed": 1000,
-                                        "frames": [
-                                            {
-                                                "frame": 0,
-                                                "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
-                                                "draw_source": {
-                                                    "x": 0.0,
-                                                    "y": 24.0,
-                                                    "width": 36.0,
-                                                    "height": 6.0
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    {
                                         "name": "three_hearts",
                                         "speed": 1000,
                                         "frames": [
@@ -551,7 +735,7 @@
                                         ]
                                     },
                                     {
-                                        "name": "four_hearts",
+                                        "name": "two_hearts",
                                         "speed": 1000,
                                         "frames": [
                                             {
@@ -559,23 +743,7 @@
                                                 "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
                                                 "draw_source": {
                                                     "x": 0.0,
-                                                    "y": 12.0,
-                                                    "width": 36.0,
-                                                    "height": 6.0
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "five_hearts",
-                                        "speed": 1000,
-                                        "frames": [
-                                            {
-                                                "frame": 0,
-                                                "texture_path": "assets/images/ui/player_health_ui_spritesheet.png",
-                                                "draw_source": {
-                                                    "x": 0.0,
-                                                    "y": 6.0,
+                                                    "y": 24.0,
                                                     "width": 36.0,
                                                     "height": 6.0
                                                 }
