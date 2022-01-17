@@ -1,6 +1,7 @@
 import random
 
 from seika.assets import Texture, AnimationFrame, Animation
+from seika.camera import Camera2D
 from seika.math import Rect2, Vector2
 from seika.utils import SimpleTimer
 
@@ -53,6 +54,11 @@ class Cultist(Enemy):
 
         return animations
 
+    def _get_random_valid_room_position(self) -> Vector2:
+        # Using camera position for room bounds, use room manager's current room pos if camera pos is no longer valid
+        camera_pos = Camera2D.get_viewport_position()
+        return camera_pos + Vector2(random.randint(100, 320), random.randint(70, 150))
+
     @Task.task_func()
     def shoot_shot(self):
         world = World()
@@ -62,6 +68,10 @@ class Cultist(Enemy):
         while True:
             has_attacked = False
             yield from co_wait_until_seconds(wait_time=random.uniform(2.0, 4.0))
+            # Randomly move 25% of the time
+            if random.randint(0, 3) == 0:
+                self.position = self._get_random_valid_room_position()
+                yield from co_wait_until_seconds(wait_time=random.uniform(1.0, 2.0))
             self.loops = False
             self.play(animation_name="attack_down")
             attack = CultistAttack.new()
