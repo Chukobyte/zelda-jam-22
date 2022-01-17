@@ -222,8 +222,6 @@ class RoomManager:
             data=self.current_room.data
         )
 
-    # TODO: Figure out why rooms aren't being cleaned up without this...
-    # TODO: Something to do with Sprite node clean ups as it happens with Attacks too
+    # TOOD: Figure out while current room has to be set on the engine side, will try to retrieve non-existing entity
     def clean_up(self) -> None:
-        for door in self.room_doors.doors + self.transition_doors.doors:
-            door.queue_deletion()
+        self.current_room = None
