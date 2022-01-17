@@ -1,6 +1,6 @@
 ## NULL
 
-A game made for the [KB Games Zelda Jam '22](https://itch.io/jam/zeldajam-22).  Made with [Seika Engine](https://github.com/Chukobyte/seika-engine).
+A game made for the [KB Games Zelda Jam '22](https://itch.io/jam/zeldajam-22).  Made with [Seika Engine](https://github.com/Chukobyte/seika-engine).  A downloadable windows version of the game can be found [here](https://chukobyte.itch.io/null).
 
 ![NULL Screenshot](https://raw.githubusercontent.com/Chukobyte/zelda-jam-22/main/assets/images/screenshots/null_screenshot.gif)
 
