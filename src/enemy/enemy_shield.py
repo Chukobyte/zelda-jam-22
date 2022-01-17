@@ -18,7 +18,7 @@ class EnemyShield(Enemy):
         self.stats.set_all_hp(3)
         self.animations = self._get_animations()
         self.collider.collider_rect = Rect2(0, 0, 16, 16)
-        self.tasks.add_task(task=Task(name="move_randomly", func=self.move_randomly))
+        self.tasks.add_task(task=Task(name="move_around", func=self.move_around))
         self.game_context = GameContext()
         self.play()
 
@@ -94,7 +94,7 @@ class EnemyShield(Enemy):
         if player_dir.x > 0:
             valid_dirs.append(Vector2.RIGHT())
         elif player_dir.x < 0:
-            valid_dirs.append(Vector2.RIGHT())
+            valid_dirs.append(Vector2.LEFT())
         if player_dir.y > 0:
             valid_dirs.append(Vector2.DOWN())
         elif player_dir.y < 0:
@@ -104,13 +104,13 @@ class EnemyShield(Enemy):
         return random.choice(valid_dirs)
 
     @Task.task_func()
-    def move_randomly(self):
+    def move_around(self):
         world = World()
         player = self.get_node(name="Player")
         move_speed = 25
         while True:
             # Will sometimes move towards the player, otherwise move randomly
-            if random.randint(0, 2) <= 1:
+            if random.randint(0, 3) <= 2:
                 self.direction = self._get_movement_dir_towards_player(player.position)
             else:
                 self.direction = random.choice(
