@@ -13,8 +13,8 @@ class WallColliderCollisionRect:
     LEFT_DOWN_DOWN = Rect2(64, 192, 124, 32)
 
     RIGHT_UP_UP = Rect2(212, 0, 128, 32)
-    RIGHT_UP_RIGHT = Rect2(340, 0, 64, 100)
-    RIGHT_DOWN_RIGHT = Rect2(340, 124, 64, 100)
+    RIGHT_UP_RIGHT = Rect2(336, 0, 64, 100)
+    RIGHT_DOWN_RIGHT = Rect2(336, 124, 64, 100)
     RIGHT_DOWN_DOWN = Rect2(212, 192, 128, 32)
 
 
