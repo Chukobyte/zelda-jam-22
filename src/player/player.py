@@ -482,7 +482,7 @@ class Player(AnimatedSprite):
             wait_time = 2.5
         else:
             wait_time = 2.0
-        new_player_pos = self.position + Vector2(130 * move_dir.x, 80 * move_dir.y)
+        new_player_pos = self.position + Vector2(135 * move_dir.x, 80 * move_dir.y)
         player_easer = Easer(
             from_pos=self.position,
             to_pos=new_player_pos,
