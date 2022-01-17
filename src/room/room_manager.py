@@ -142,6 +142,7 @@ class RoomManager:
         if self.current_room.data.right_door_status == DoorState.OPEN:
             self.current_room.data.right_door_status = DoorState.CLOSED
             self.room_doors.right.set_state(state=DoorState.CLOSED)
+        self.refresh_current_room_wall_colliders()
 
     def finish_room_transition(self, main_node) -> None:
         if (
@@ -192,6 +193,8 @@ class RoomManager:
         horizontal_door_overhead.modulate = Color(1.0, 1.0, 1.0, 0.0)
         vertical_door_overhead.modulate = Color(1.0, 1.0, 1.0, 0.0)
 
+        self.refresh_current_room_wall_colliders()
+
     def set_current_room_to_cleared(self) -> None:
         self.current_room.data.is_cleared = True
         if self.current_room.data.up_door_status == DoorState.CLOSED:
@@ -206,12 +209,18 @@ class RoomManager:
         if self.current_room.data.right_door_status == DoorState.CLOSED:
             self.current_room.data.right_door_status = DoorState.OPEN
             self.room_doors.right.set_state(state=DoorState.OPEN)
+        self.refresh_current_room_wall_colliders()
 
     def refresh_current_doors_status(self) -> None:
         self.room_doors.left.set_state(self.current_room.data.left_door_status)
         self.room_doors.right.set_state(self.current_room.data.right_door_status)
         self.room_doors.up.set_state(self.current_room.data.up_door_status)
         self.room_doors.down.set_state(self.current_room.data.down_door_status)
+
+    def refresh_current_room_wall_colliders(self) -> None:
+        self.wall_colliders.update_collision_rects_near_door(
+            data=self.current_room.data
+        )
 
     # TODO: Figure out why rooms aren't being cleaned up without this...
     # TODO: Something to do with Sprite node clean ups as it happens with Attacks too

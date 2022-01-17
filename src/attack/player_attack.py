@@ -4,7 +4,7 @@ from seika.assets import Texture
 from seika.audio import Audio
 from seika.camera import Camera2D
 from seika.math import Rect2, Vector2
-from seika.node import Sprite, AnimatedSprite
+from seika.node import AnimatedSprite
 from seika.physics import Collision
 from seika.assets import Animation, AnimationFrame
 
@@ -58,36 +58,6 @@ class WaveAttack(Attack):
                 if enemy.entity_id not in self.enemy_damaged_entity_ids:
                     enemy.take_damage(attack=self)
                     self.enemy_damaged_entity_ids.append(enemy.entity_id)
-
-
-# class BoltAttack(Attack):
-#     def __init__(self, entity_id: int):
-#         super().__init__(entity_id)
-#         self.sprite = None
-#         self.set_life_time(3.0)
-#         self.damage = 1
-#
-#     def _start(self) -> None:
-#         super()._start()
-#         self.sprite = Sprite.new()
-#         texture = Texture.get(file_path="assets/images/player/player_bolt_attack.png")
-#         self.sprite.texture = texture
-#         self.add_child(self.sprite)
-#
-#         self.collider_rect = Rect2(0, 0, texture.width, texture.height)
-#
-#     def _physics_process(self, delta: float) -> None:
-#         super()._physics_process(delta)
-#         self.position += self.direction * Vector2(
-#             self.speed * delta, self.speed * delta
-#         )
-#         enemies_colliders = Collision.get_collided_nodes_by_tag(
-#             node=self, tag=Enemy.TAG
-#         )
-#         if enemies_colliders and not self.has_collided:
-#             self.has_collided = True
-#             first_enemy = enemies_colliders[0].get_parent()
-#             first_enemy.take_damage(attack=self)
 
 
 class BombExplosion(Attack):
@@ -157,6 +127,7 @@ class BombExplosion(Attack):
                 room_manager.current_room.data.down_door_status = (
                     DoorState.CRACKED_OPEN_WALL
                 )
+            room_manager.refresh_current_room_wall_colliders()
 
         if self.life_timer.tick(delta):
             Camera2D.set_offset(offset=Vector2.ZERO())

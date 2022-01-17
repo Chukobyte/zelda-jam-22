@@ -22,7 +22,9 @@ class Main(Node2D):
         RoomBuilder.create_wall_colliders(node=self)
         RoomBuilder.create_doors(node=self)
         RoomBuilder.create_rooms(node=self)
-        RoomManager().refresh_current_doors_status()
+        room_manager = RoomManager()
+        room_manager.refresh_current_doors_status()
+        room_manager.refresh_current_room_wall_colliders()
 
         textbox_manager = TextboxManager()
         textbox_manager.register_textbox(textbox=self.get_node(name="EventTextbox"))
