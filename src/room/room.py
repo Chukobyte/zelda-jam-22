@@ -1,8 +1,20 @@
-from seika.math import Vector2
+from seika.math import Vector2, Rect2
 from seika.node import CollisionShape2D
 
 from src.project_properties import ProjectProperties
 from src.room.room_model import RoomData, RoomModel
+
+
+class WallColliderCollisionRect:
+    LEFT_UP_UP = Rect2(64, 0, 124, 32)
+    LEFT_UP_LEFT = Rect2(0, 0, 64, 100)
+    LEFT_DOWN_LEFT = Rect2(0, 124, 64, 100)
+    LEFT_DOWN_DOWN = Rect2(64, 192, 124, 32)
+
+    RIGHT_UP_UP = Rect2(212, 0, 128, 32)
+    RIGHT_UP_RIGHT = Rect2(340, 0, 64, 100)
+    RIGHT_DOWN_RIGHT = Rect2(340, 124, 64, 100)
+    RIGHT_DOWN_DOWN = Rect2(212, 192, 128, 32)
 
 
 class WallColliders:
@@ -39,6 +51,17 @@ class WallColliders:
     def update_wall_positions(self, position: Vector2) -> None:
         for wall_collider in self.walls:
             wall_collider.position = position
+
+    def set_default_collision_rect(self) -> None:
+        self.left_up_up.collider_rect = WallColliderCollisionRect.LEFT_UP_UP
+        self.left_up_left.collider_rect = WallColliderCollisionRect.LEFT_UP_LEFT
+        self.left_down_left.collider_rect = WallColliderCollisionRect.LEFT_DOWN_LEFT
+        self.left_down_down.collider_rect = WallColliderCollisionRect.LEFT_DOWN_DOWN
+
+        self.right_up_up.collider_rect = WallColliderCollisionRect.RIGHT_UP_UP
+        self.right_up_right.collider_rect = WallColliderCollisionRect.RIGHT_UP_RIGHT
+        self.right_down_right.collider_rect = WallColliderCollisionRect.RIGHT_DOWN_RIGHT
+        self.right_down_down.collider_rect = WallColliderCollisionRect.RIGHT_DOWN_DOWN
 
 
 class Room:
