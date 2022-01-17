@@ -22,7 +22,7 @@ class RoomBuilder:
             right_down_down=CollisionShape2D.new(),
         )
 
-        wall_colliders.set_default_collision_rect()
+        wall_colliders.set_default_collision_rects()
 
         for wall_collider in wall_colliders.walls:
             wall_collider.tags = Room.SOLID_TAG

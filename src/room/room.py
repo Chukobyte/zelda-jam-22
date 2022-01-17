@@ -2,6 +2,7 @@ from seika.math import Vector2, Rect2
 from seika.node import CollisionShape2D
 
 from src.project_properties import ProjectProperties
+from src.room.door import DoorState
 from src.room.room_model import RoomData, RoomModel
 
 
@@ -52,7 +53,7 @@ class WallColliders:
         for wall_collider in self.walls:
             wall_collider.position = position
 
-    def set_default_collision_rect(self) -> None:
+    def set_default_collision_rects(self) -> None:
         self.left_up_up.collider_rect = WallColliderCollisionRect.LEFT_UP_UP
         self.left_up_left.collider_rect = WallColliderCollisionRect.LEFT_UP_LEFT
         self.left_down_left.collider_rect = WallColliderCollisionRect.LEFT_DOWN_LEFT
@@ -62,6 +63,33 @@ class WallColliders:
         self.right_up_right.collider_rect = WallColliderCollisionRect.RIGHT_UP_RIGHT
         self.right_down_right.collider_rect = WallColliderCollisionRect.RIGHT_DOWN_RIGHT
         self.right_down_down.collider_rect = WallColliderCollisionRect.RIGHT_DOWN_DOWN
+
+    def update_collision_rects_near_door(self, data: RoomData) -> None:
+        solid_door_statuses = [
+            DoorState.SOLID_WALL,
+            DoorState.BREAKABLE_WALL,
+            DoorState.CLOSED,
+        ]
+        left_up_up_rect = WallColliderCollisionRect.LEFT_UP_UP
+
+        if data.up_door_status in solid_door_statuses:
+            left_up_up_rect += Rect2(0.0, 0.0, 32.0, 0.0)
+        self.left_up_up.collider_rect = left_up_up_rect
+
+        left_up_left_rect = WallColliderCollisionRect.LEFT_UP_LEFT
+        if data.left_door_status in solid_door_statuses:
+            left_up_left_rect += Rect2(0.0, 0.0, 0.0, 32.0)
+        self.left_up_left.collider_rect = left_up_left_rect
+
+        left_down_down_rect = WallColliderCollisionRect.LEFT_DOWN_DOWN
+        if data.down_door_status in solid_door_statuses:
+            left_down_down_rect += Rect2(0.0, 0.0, 32.0, 0.0)
+        self.left_down_down.collider_rect = left_down_down_rect
+
+        right_up_right_rect = WallColliderCollisionRect.RIGHT_UP_RIGHT
+        if data.right_door_status in solid_door_statuses:
+            right_up_right_rect += Rect2(0.0, 0.0, 0.0, 32.0)
+        self.right_up_right.collider_rect = right_up_right_rect
 
 
 class Room:

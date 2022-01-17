@@ -4,7 +4,7 @@ from seika.assets import Texture
 from seika.audio import Audio
 from seika.camera import Camera2D
 from seika.math import Rect2, Vector2
-from seika.node import Sprite, AnimatedSprite
+from seika.node import AnimatedSprite
 from seika.physics import Collision
 from seika.assets import Animation, AnimationFrame
 
@@ -127,6 +127,7 @@ class BombExplosion(Attack):
                 room_manager.current_room.data.down_door_status = (
                     DoorState.CRACKED_OPEN_WALL
                 )
+            room_manager.refresh_current_room_wall_colliders()
 
         if self.life_timer.tick(delta):
             Camera2D.set_offset(offset=Vector2.ZERO())
