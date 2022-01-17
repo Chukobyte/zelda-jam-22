@@ -1,12 +1,14 @@
 import random
 
 from seika.assets import Texture, AnimationFrame, Animation
+from seika.camera import Camera2D
 from seika.math import Rect2, Vector2
 from seika.utils import SimpleTimer
 
 from src.attack.enemy_attack import CultistAttack
 from src.enemy.enemy import Enemy
 from src.game_context import PlayState, GameContext
+from src.math.ease import Easer, Ease
 from src.task.task import Task, co_wait_until_seconds, co_return, co_suspend
 from src.world import World
 
@@ -53,6 +55,11 @@ class Cultist(Enemy):
 
         return animations
 
+    def _get_random_valid_room_position(self) -> Vector2:
+        # Using camera position for room bounds, use room manager's current room pos if camera pos is no longer valid
+        camera_pos = Camera2D.get_viewport_position()
+        return camera_pos + Vector2(random.randint(100, 320), random.randint(70, 150))
+
     @Task.task_func()
     def shoot_shot(self):
         world = World()
@@ -62,6 +69,22 @@ class Cultist(Enemy):
         while True:
             has_attacked = False
             yield from co_wait_until_seconds(wait_time=random.uniform(2.0, 4.0))
+            # Randomly move 33.3% of the time, can move into a separate task later
+            if random.randint(0, 2) == 0:
+                teleport_duration = 0.5
+                new_position = self._get_random_valid_room_position()
+                teleport_easer = Easer(
+                    from_pos=self.position,
+                    to_pos=new_position,
+                    duration=teleport_duration,
+                    func=Ease.Cubic.ease_in_vec2,
+                )
+                teleport_timer = SimpleTimer(
+                    wait_time=teleport_duration, start_on_init=True
+                )
+                while not teleport_timer.tick(delta=world.cached_delta):
+                    self.position = teleport_easer.ease(delta=world.cached_delta)
+                    yield co_suspend()
             self.loops = False
             self.play(animation_name="attack_down")
             attack = CultistAttack.new()
