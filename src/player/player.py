@@ -1,8 +1,7 @@
 import random
-from typing import Tuple, Optional
 
 from seika.assets import Texture
-from seika.audio import Audio, AudioStream
+from seika.audio import Audio
 from seika.camera import Camera2D
 from seika.color import Color
 from seika.node import AnimatedSprite, Sprite
@@ -16,7 +15,6 @@ from src.attack.attack import Attack
 from src.event.event_textbox import TextboxManager
 from src.game_context import GameContext, PlayState, GameState, DialogueEvent
 from src.math.ease import Ease, Easer
-from src.room.door import DoorState
 from src.world import World
 from src.room.room_manager import RoomManager
 from src.player.player_stats import PlayerStats
@@ -56,7 +54,6 @@ class Player(AnimatedSprite):
         idle_state = State(name="idle", state_func=self.idle)
         move_state = State(name="move", state_func=self.move)
         wave_attack_state = State(name="wave_attack", state_func=self.wave_attack)
-        # bolt_attack_state = State(name="bolt_attack", state_func=self.bolt_attack)
         bomb_attack_state = State(name="bomb_attack", state_func=self.bomb_attack)
         transitioning_to_room_state = State(
             name="transitioning_to_room", state_func=self.transitioning_to_room
@@ -67,7 +64,6 @@ class Player(AnimatedSprite):
         self.task_fsm.add_state(state=idle_state, set_current=True)
         self.task_fsm.add_state(state=move_state)
         self.task_fsm.add_state(state=wave_attack_state)
-        # self.task_fsm.add_state(state=bolt_attack_state)
         self.task_fsm.add_state(state=bomb_attack_state)
         self.task_fsm.add_state(state=transitioning_to_room_state)
         self.task_fsm.add_state(state=dialogue_state)
@@ -100,12 +96,6 @@ class Player(AnimatedSprite):
                 action_name="attack"
             ),
         )
-        # idle_bolt_attack_exit = StateExitLink(
-        #     state_to_transition=bolt_attack_state,
-        #     transition_predicate=lambda: Input.is_action_just_pressed(
-        #         action_name="bolt_attack"
-        #     ),
-        # )
         idle_bomb_attack_exit = StateExitLink(
             state_to_transition=bomb_attack_state,
             transition_predicate=lambda: Input.is_action_just_pressed(
@@ -116,9 +106,6 @@ class Player(AnimatedSprite):
         )
         self.task_fsm.add_state_exit_link(idle_state, state_exit_link=idle_move_exit)
         self.task_fsm.add_state_exit_link(idle_state, state_exit_link=idle_attack_exit)
-        # self.task_fsm.add_state_exit_link(
-        #     idle_state, state_exit_link=idle_bolt_attack_exit
-        # )
         self.task_fsm.add_state_exit_link(
             idle_state, state_exit_link=idle_bomb_attack_exit
         )
@@ -131,12 +118,6 @@ class Player(AnimatedSprite):
                 action_name="attack"
             ),
         )
-        # move_attack_bolt_exit = StateExitLink(
-        #     state_to_transition=bolt_attack_state,
-        #     transition_predicate=lambda: Input.is_action_just_pressed(
-        #         action_name="bolt_attack"
-        #     ),
-        # )
         move_attack_bomb_exit = StateExitLink(
             state_to_transition=bomb_attack_state,
             transition_predicate=lambda: Input.is_action_just_pressed(
@@ -153,9 +134,6 @@ class Player(AnimatedSprite):
         self.task_fsm.add_state_exit_link(
             state=move_state, state_exit_link=move_attack_exit
         )
-        # self.task_fsm.add_state_exit_link(
-        #     state=move_state, state_exit_link=move_attack_bolt_exit
-        # )
         self.task_fsm.add_state_exit_link(
             state=move_state, state_exit_link=move_attack_bomb_exit
         )
@@ -171,9 +149,6 @@ class Player(AnimatedSprite):
         self.task_fsm.add_state_finished_link(
             state=wave_attack_state, state_to_transition=idle_state
         )
-        # self.task_fsm.add_state_finished_link(
-        #     state=bolt_attack_state, state_to_transition=idle_state
-        # )
         self.task_fsm.add_state_finished_link(
             state=bomb_attack_state, state_to_transition=idle_state
         )
@@ -262,12 +237,6 @@ class Player(AnimatedSprite):
         is_move_pressed = False
         elapsed_time = 0.0
         while True:
-            # Temp event toggle
-            # if Input.is_action_just_pressed(action_name="credits"):
-            #     if GameContext.get_play_state() == PlayState.MAIN:
-            #         GameContext.set_play_state(PlayState.EVENT)
-            #         TextboxManager().hide_textbox()
-
             delta = world.cached_delta
             elapsed_time += delta
             new_velocity = None
@@ -480,18 +449,6 @@ class Player(AnimatedSprite):
 
         self.set_stat_ui_visibility(visible=True)
         yield co_return()
-
-    # @Task.task_func()
-    # def bolt_attack(self):
-    #     Audio.play_sound(sound_id="assets/audio/sfx/bolt.wav")
-    #     player_attack = BoltAttack.new()
-    #     player_attack.direction = self.direction
-    #     self._setup_attack(attack=player_attack, adjust_orientation=True)
-    #
-    #     yield from co_wait_until_seconds(wait_time=0.25)
-    #
-    #     self.set_stat_ui_visibility(visible=True)
-    #     yield co_return()
 
     @Task.task_func()
     def bomb_attack(self):
