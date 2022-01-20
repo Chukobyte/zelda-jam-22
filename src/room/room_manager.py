@@ -9,7 +9,7 @@ from src.enemy.enemy_spawner import EnemySpawner
 from src.game_context import PlayState, GameContext
 from src.item.rainbow_orb import RainbowOrb
 from src.item.tricolora import Tricolora
-from src.npc.npc import BombNPC
+from src.npc.npc import GainBombNPC, GainWaveNPC, GainShieldNPC
 from src.room.room import Room
 from src.room.door import Door, DoorState
 from src.project_properties import ProjectProperties
@@ -164,6 +164,15 @@ class RoomManager:
                     )
             self._close_current_room_doors()
         elif (
+            self.current_room.data.room_type == RoomType.GAIN_ATTACK
+            and not self.current_room.data.is_cleared
+        ):
+            gain_wave_npc = GainWaveNPC.new()
+            gain_wave_npc.position = self.get_world_position(
+                grid_position=self.current_room.position
+            ) + Vector2(160, 60)
+            main_node.add_child(gain_wave_npc)
+        elif (
             self.current_room.data.room_type == RoomType.GAIN_BOMB
             and not self.current_room.data.is_cleared
         ):
@@ -173,11 +182,20 @@ class RoomManager:
             ) + Vector2(200, 60)
             main_node.add_child(rainbow_orb)
 
-            bomb_npc = BombNPC.new()
+            bomb_npc = GainBombNPC.new()
             bomb_npc.position = rainbow_orb.position + Vector2(-40, 0)
             main_node.add_child(bomb_npc)
 
             self._close_current_room_doors()
+        elif (
+            self.current_room.data.room_type == RoomType.GAIN_SHIELD
+            and not self.current_room.data.is_cleared
+        ):
+            gain_shield_npc = GainShieldNPC.new()
+            gain_shield_npc.position = self.get_world_position(
+                grid_position=self.current_room.position
+            ) + Vector2(160, 60)
+            main_node.add_child(gain_shield_npc)
         elif (
             self.current_room.data.room_type == RoomType.END
             and not self.current_room.data.is_cleared

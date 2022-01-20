@@ -46,7 +46,9 @@ class Player(AnimatedSprite):
         self.collider.tags = [Player.TAG]
         self.last_collided_door = None
         self.on_damage_cool_down = False
+        self.wave_unlocked = False
         self.bomb_unlocked = False
+        self.shield_unlocked = False
         self.bomb_cooldown_timer = SimpleTimer(wait_time=3.5, start_on_init=True)
 
     def _configure_fsm(self) -> None:
@@ -94,7 +96,8 @@ class Player(AnimatedSprite):
             state_to_transition=wave_attack_state,
             transition_predicate=lambda: Input.is_action_just_pressed(
                 action_name="attack"
-            ),
+            )
+            and self.wave_unlocked,
         )
         idle_bomb_attack_exit = StateExitLink(
             state_to_transition=bomb_attack_state,
@@ -116,7 +119,8 @@ class Player(AnimatedSprite):
             state_to_transition=wave_attack_state,
             transition_predicate=lambda: Input.is_action_just_pressed(
                 action_name="attack"
-            ),
+            )
+            and self.wave_unlocked,
         )
         move_attack_bomb_exit = StateExitLink(
             state_to_transition=bomb_attack_state,
@@ -540,8 +544,16 @@ class Player(AnimatedSprite):
                 Audio.play_sound(sound_id="assets/audio/sfx/select.wav")
                 if GameContext.get_dialogue_event() == DialogueEvent.INIT:
                     Audio.play_music(music_id="assets/audio/music/no_color_theme.wav")
+                elif GameContext.get_dialogue_event() == DialogueEvent.GAIN_WAVE:
+                    Audio.play_music(music_id="assets/audio/music/no_color_theme.wav")
+                    self.wave_unlocked = True
+                    RoomManager().set_current_room_to_cleared()
                 elif GameContext.get_dialogue_event() == DialogueEvent.GAIN_BOMB:
-                    pass
+                    Audio.play_music(music_id="assets/audio/music/no_color_theme.wav")
+                elif GameContext.get_dialogue_event() == DialogueEvent.GAIN_SHIELD:
+                    Audio.play_music(music_id="assets/audio/music/no_color_theme.wav")
+                    self.shield_unlocked = True
+                    RoomManager().set_current_room_to_cleared()
                 break
             yield co_suspend()
         self.set_stat_ui_visibility(visible=True)
