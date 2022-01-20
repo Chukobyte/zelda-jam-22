@@ -545,13 +545,13 @@ class Player(AnimatedSprite):
                 if GameContext.get_dialogue_event() == DialogueEvent.INIT:
                     Audio.play_music(music_id="assets/audio/music/no_color_theme.wav")
                 elif GameContext.get_dialogue_event() == DialogueEvent.GAIN_WAVE:
-                    Audio.play_music(music_id="assets/audio/music/no_color_theme.wav")
+                    Audio.play_sound(sound_id="assets/audio/sfx/select.wav")
                     self.wave_unlocked = True
                     RoomManager().set_current_room_to_cleared()
                 elif GameContext.get_dialogue_event() == DialogueEvent.GAIN_BOMB:
-                    Audio.play_music(music_id="assets/audio/music/no_color_theme.wav")
+                    Audio.play_sound(sound_id="assets/audio/sfx/select.wav")
                 elif GameContext.get_dialogue_event() == DialogueEvent.GAIN_SHIELD:
-                    Audio.play_music(music_id="assets/audio/music/no_color_theme.wav")
+                    Audio.play_sound(sound_id="assets/audio/sfx/select.wav")
                     self.shield_unlocked = True
                     RoomManager().set_current_room_to_cleared()
                 break
