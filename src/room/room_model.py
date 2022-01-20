@@ -6,16 +6,21 @@ from src.room.door import DoorState
 class RoomType:
     NONE = -1
     INTRO = 0
-    COMBAT = 1
-    EMPTY = 2
-    GAIN_BOMB = 3
-    BOSS = 4
-    END = 5
+    GAIN_ATTACK = 1
+    COMBAT = 2
+    GAIN_SHIELD = 3
+    EMPTY = 4
+    GAIN_BOMB = 5
+    BOSS = 98
+    END = 99
 
     TYPE_TO_STRING = {
         NONE: "None",
         INTRO: "Intro",
+        GAIN_ATTACK: "GainAttack",
         COMBAT: "Combat",
+        GAIN_SHIELD: "GainShield",
+        EMPTY: "Empty",
         GAIN_BOMB: "GainBomb",
         BOSS: "Boss",
         END: "End",
