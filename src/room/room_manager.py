@@ -9,7 +9,7 @@ from src.enemy.enemy_spawner import EnemySpawner
 from src.game_context import PlayState, GameContext
 from src.item.rainbow_orb import RainbowOrb
 from src.item.tricolora import Tricolora
-from src.npc.bomb_npc import BombNPC
+from src.npc.npc import BombNPC
 from src.room.room import Room
 from src.room.door import Door, DoorState
 from src.project_properties import ProjectProperties
