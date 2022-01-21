@@ -179,30 +179,36 @@ class Player(AnimatedSprite):
         self.tasks.run_tasks()
         self.bomb_cooldown_timer.tick(delta=delta)
 
+    def _refresh_ui_hp(self) -> None:
+        if self.stats.hp >= 6:
+            self.player_ui_sprite.play("full")
+        elif self.stats.hp == 5:
+            self.player_ui_sprite.play("five_hearts")
+        elif self.stats.hp == 4:
+            self.player_ui_sprite.play("four_hearts")
+        elif self.stats.hp == 3:
+            self.player_ui_sprite.play("three_hearts")
+        elif self.stats.hp == 2:
+            self.player_ui_sprite.play("two_hearts")
+        elif self.stats.hp == 1:
+            self.player_ui_sprite.play("one_heart")
+        else:
+            self.player_ui_sprite.play("empty")
+
     def take_damage(self, attack=None) -> None:
         if not self.on_damage_cool_down:
             attack_damage = 1
             if attack:
                 attack_damage = attack.damage
             self.stats.hp -= attack_damage
+            self._refresh_ui_hp()
             if self.stats.hp <= 0:
-                self.player_ui_sprite.play("empty")
                 RoomManager().clean_up()
                 GameContext.set_game_state(GameState.END_SCREEN)
                 SceneTree.change_scene(scene_path="scenes/end_screen.sscn")
                 # TODO: Do more stuff...
             else:
                 Audio.play_sound(sound_id="assets/audio/sfx/player_hurt.wav")
-                if self.stats.hp == 5:
-                    self.player_ui_sprite.play("five_hearts")
-                elif self.stats.hp == 4:
-                    self.player_ui_sprite.play("four_hearts")
-                elif self.stats.hp == 3:
-                    self.player_ui_sprite.play("three_hearts")
-                elif self.stats.hp == 2:
-                    self.player_ui_sprite.play("two_hearts")
-                elif self.stats.hp == 1:
-                    self.player_ui_sprite.play("one_heart")
                 self.on_damage_cool_down = True
                 self.tasks.add_task(
                     task=Task(name="damaged", func=self.damaged_from_attack)
@@ -350,6 +356,9 @@ class Player(AnimatedSprite):
         tricolora = Collision.get_collided_nodes_by_tag(
             node=self.collider, tag="tricolora", offset=vel
         )
+        health_container = Collision.get_collided_nodes_by_tag(
+            node=self.collider, tag="health", offset=vel
+        )
         room_manager = RoomManager()
         # Collision checks
         if collided_walls:
@@ -380,6 +389,9 @@ class Player(AnimatedSprite):
             GameContext().has_won = True
             tricolora[0].queue_deletion()
             return True
+        elif health_container and self.stats.hp < self.stats.base_hp:
+            self.stats.hp += 1
+            health_container[0].queue_deletion()
         return False
 
     def _setup_attack(self, attack: Attack, adjust_orientation: bool) -> None:
