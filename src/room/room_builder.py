@@ -143,13 +143,14 @@ class RoomBuilder:
             # TODO: Sprite needs to be assigned before door created for now, clean up
             sprite = Sprite.new()
             door.sprite = sprite
-            # sprite.texture = door_data[5]
             door.set_state(door_data[3])
             door.add_child(child_node=sprite)
 
         room_manager = RoomManager()
         room_manager.room_doors = current_doors
         room_manager.transition_doors = transition_doors
+        room_manager.room_background = node.get_node(name="DungeonBG")
+        room_manager.transition_room_background = node.get_node(name="DungeonBG2")
 
     @staticmethod
     def create_rooms(node: Node) -> None:
@@ -162,12 +163,6 @@ class RoomBuilder:
             room = Room(position=pos)
             room.set_room_data(room_data)
             room_manager.add_room(room)
-            # Sprite
-            room_bg_sprite = Sprite.new()
-            room_bg_sprite.z_index = -1
-            room_bg_sprite.texture = room_bg_texture
-            room_bg_sprite.position = room_manager.get_world_position(pos)
-            node.add_child(child_node=room_bg_sprite)
             # Set Initial room to 0,0
             if pos == Vector2.ZERO():
                 room_manager.current_room = room

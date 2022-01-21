@@ -27,6 +27,8 @@ class RoomManager:
             cls.wall_colliders = None
             cls.room_doors = None
             cls.transition_doors = None
+            cls.room_background = None
+            cls.transition_room_background = None
             cls.horizontal_door_overhead_texture = Texture.get(
                 file_path="assets/images/dungeon/horizontal_door_overhead.png"
             )
@@ -73,6 +75,11 @@ class RoomManager:
         self.current_room.position = new_room_position
         new_world_position = self.get_world_position(new_room_position)
         self.transition_doors.move(new_world_position)
+        # Swap room backgrounds and set position
+        new_transition_room_background = self.transition_room_background
+        self.transition_room_background = self.room_background
+        self.room_background = new_transition_room_background
+        self.room_background.position = new_world_position
         # Swap doors
         new_transition_doors = self.transition_doors
         self.transition_doors = self.room_doors
