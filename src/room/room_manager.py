@@ -9,7 +9,7 @@ from src.enemy.enemy_spawner import EnemySpawner
 from src.game_context import PlayState, GameContext
 from src.item.rainbow_orb import RainbowOrb
 from src.item.tricolora import Tricolora
-from src.npc.bomb_npc import BombNPC
+from src.npc.npc import GainBombNPC, GainWaveNPC, GainShieldNPC
 from src.room.room import Room
 from src.room.door import Door, DoorState
 from src.project_properties import ProjectProperties
@@ -27,6 +27,8 @@ class RoomManager:
             cls.wall_colliders = None
             cls.room_doors = None
             cls.transition_doors = None
+            cls.room_background = None
+            cls.transition_room_background = None
             cls.horizontal_door_overhead_texture = Texture.get(
                 file_path="assets/images/dungeon/horizontal_door_overhead.png"
             )
@@ -73,6 +75,11 @@ class RoomManager:
         self.current_room.position = new_room_position
         new_world_position = self.get_world_position(new_room_position)
         self.transition_doors.move(new_world_position)
+        # Swap room backgrounds and set position
+        new_transition_room_background = self.transition_room_background
+        self.transition_room_background = self.room_background
+        self.room_background = new_transition_room_background
+        self.room_background.position = new_world_position
         # Swap doors
         new_transition_doors = self.transition_doors
         self.transition_doors = self.room_doors
@@ -164,6 +171,15 @@ class RoomManager:
                     )
             self._close_current_room_doors()
         elif (
+            self.current_room.data.room_type == RoomType.GAIN_ATTACK
+            and not self.current_room.data.is_cleared
+        ):
+            gain_wave_npc = GainWaveNPC.new()
+            gain_wave_npc.position = self.get_world_position(
+                grid_position=self.current_room.position
+            ) + Vector2(160, 60)
+            main_node.add_child(gain_wave_npc)
+        elif (
             self.current_room.data.room_type == RoomType.GAIN_BOMB
             and not self.current_room.data.is_cleared
         ):
@@ -173,11 +189,20 @@ class RoomManager:
             ) + Vector2(200, 60)
             main_node.add_child(rainbow_orb)
 
-            bomb_npc = BombNPC.new()
+            bomb_npc = GainBombNPC.new()
             bomb_npc.position = rainbow_orb.position + Vector2(-40, 0)
             main_node.add_child(bomb_npc)
 
             self._close_current_room_doors()
+        elif (
+            self.current_room.data.room_type == RoomType.GAIN_SHIELD
+            and not self.current_room.data.is_cleared
+        ):
+            gain_shield_npc = GainShieldNPC.new()
+            gain_shield_npc.position = self.get_world_position(
+                grid_position=self.current_room.position
+            ) + Vector2(160, 60)
+            main_node.add_child(gain_shield_npc)
         elif (
             self.current_room.data.room_type == RoomType.END
             and not self.current_room.data.is_cleared

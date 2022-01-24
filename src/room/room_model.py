@@ -6,16 +6,21 @@ from src.room.door import DoorState
 class RoomType:
     NONE = -1
     INTRO = 0
-    COMBAT = 1
-    EMPTY = 2
-    GAIN_BOMB = 3
-    BOSS = 4
-    END = 5
+    GAIN_ATTACK = 1
+    COMBAT = 2
+    GAIN_SHIELD = 3
+    EMPTY = 4
+    GAIN_BOMB = 5
+    BOSS = 98
+    END = 99
 
     TYPE_TO_STRING = {
         NONE: "None",
         INTRO: "Intro",
+        GAIN_ATTACK: "GainAttack",
         COMBAT: "Combat",
+        GAIN_SHIELD: "GainShield",
+        EMPTY: "Empty",
         GAIN_BOMB: "GainBomb",
         BOSS: "Boss",
         END: "End",
@@ -62,18 +67,35 @@ class RoomData:
 
 
 class RoomModel:
+    # Start from the bottom and moves right to level
     INITIAL_DATA = {
-        # MIDDLE
         Vector2.ZERO(): RoomData(
             left_door_status=DoorState.SOLID_WALL,
-            right_door_status=DoorState.SOLID_WALL,
-            up_door_status=DoorState.OPEN,
+            right_door_status=DoorState.OPEN,
+            up_door_status=DoorState.SOLID_WALL,
             down_door_status=DoorState.SOLID_WALL,
             room_type=RoomType.INTRO,
             area_type=AreaType.RED,
         ),
-        Vector2.UP(): RoomData(
+        Vector2(1.0, 0.0): RoomData(
             left_door_status=DoorState.OPEN,
+            right_door_status=DoorState.OPEN,
+            up_door_status=DoorState.OPEN,
+            down_door_status=DoorState.SOLID_WALL,
+            room_type=RoomType.GAIN_ATTACK,
+            area_type=AreaType.RED,
+        ),
+        Vector2(2.0, 0.0): RoomData(
+            left_door_status=DoorState.OPEN,
+            right_door_status=DoorState.SOLID_WALL,
+            up_door_status=DoorState.SOLID_WALL,
+            down_door_status=DoorState.SOLID_WALL,
+            room_type=RoomType.COMBAT,
+            area_type=AreaType.RED,
+            enemies=2,
+        ),
+        Vector2(1.0, -1.0): RoomData(
+            left_door_status=DoorState.SOLID_WALL,
             right_door_status=DoorState.SOLID_WALL,
             up_door_status=DoorState.OPEN,
             down_door_status=DoorState.OPEN,
@@ -82,16 +104,6 @@ class RoomModel:
             enemies=2,
         ),
         Vector2(0.0, -2.0): RoomData(
-            left_door_status=DoorState.OPEN,
-            right_door_status=DoorState.OPEN,
-            up_door_status=DoorState.SOLID_WALL,
-            down_door_status=DoorState.OPEN,
-            room_type=RoomType.COMBAT,
-            area_type=AreaType.RED,
-            enemies=2,
-        ),
-        # LEFT
-        Vector2(-1.0, -1.0): RoomData(
             left_door_status=DoorState.SOLID_WALL,
             right_door_status=DoorState.OPEN,
             up_door_status=DoorState.OPEN,
@@ -100,47 +112,10 @@ class RoomModel:
             area_type=AreaType.RED,
             enemies=2,
         ),
-        Vector2(-1.0, -2.0): RoomData(
-            left_door_status=DoorState.SOLID_WALL,
-            right_door_status=DoorState.OPEN,
-            up_door_status=DoorState.OPEN,
-            down_door_status=DoorState.OPEN,
-            room_type=RoomType.COMBAT,
-            area_type=AreaType.RED,
-            enemies=3,
-        ),
-        Vector2(-1.0, -3.0): RoomData(
-            left_door_status=DoorState.OPEN,
-            right_door_status=DoorState.SOLID_WALL,
-            up_door_status=DoorState.SOLID_WALL,
-            down_door_status=DoorState.OPEN,
-            room_type=RoomType.COMBAT,
-            area_type=AreaType.RED,
-            enemies=2,
-        ),
-        Vector2(-2.0, -3.0): RoomData(
-            left_door_status=DoorState.SOLID_WALL,
-            right_door_status=DoorState.OPEN,
-            up_door_status=DoorState.SOLID_WALL,
-            down_door_status=DoorState.SOLID_WALL,
-            room_type=RoomType.GAIN_BOMB,
-            area_type=AreaType.RED,
-            enemies=3,
-        ),
-        # RIGHT
         Vector2(1.0, -2.0): RoomData(
             left_door_status=DoorState.OPEN,
             right_door_status=DoorState.OPEN,
             up_door_status=DoorState.OPEN,
-            down_door_status=DoorState.SOLID_WALL,
-            room_type=RoomType.COMBAT,
-            area_type=AreaType.RED,
-            enemies=3,
-        ),
-        Vector2(1.0, -3.0): RoomData(
-            left_door_status=DoorState.SOLID_WALL,
-            right_door_status=DoorState.OPEN,
-            up_door_status=DoorState.SOLID_WALL,
             down_door_status=DoorState.OPEN,
             room_type=RoomType.COMBAT,
             area_type=AreaType.RED,
@@ -153,18 +128,114 @@ class RoomModel:
             down_door_status=DoorState.SOLID_WALL,
             room_type=RoomType.COMBAT,
             area_type=AreaType.RED,
-            enemies=3,
+            enemies=2,
+        ),
+        Vector2(3.0, -2.0): RoomData(
+            left_door_status=DoorState.OPEN,
+            right_door_status=DoorState.SOLID_WALL,
+            up_door_status=DoorState.OPEN,
+            down_door_status=DoorState.SOLID_WALL,
+            room_type=RoomType.COMBAT,
+            area_type=AreaType.RED,
+            enemies=2,
+        ),
+        Vector2(-1.0, -3.0): RoomData(
+            left_door_status=DoorState.SOLID_WALL,
+            right_door_status=DoorState.OPEN,
+            up_door_status=DoorState.OPEN,
+            down_door_status=DoorState.SOLID_WALL,
+            room_type=RoomType.COMBAT,
+            area_type=AreaType.RED,
+            enemies=2,
+        ),
+        Vector2(0.0, -3.0): RoomData(
+            left_door_status=DoorState.OPEN,
+            right_door_status=DoorState.OPEN,
+            up_door_status=DoorState.OPEN,
+            down_door_status=DoorState.OPEN,
+            room_type=RoomType.COMBAT,
+            area_type=AreaType.RED,
+            enemies=2,
+        ),
+        Vector2(1.0, -3.0): RoomData(
+            left_door_status=DoorState.OPEN,
+            right_door_status=DoorState.OPEN,
+            up_door_status=DoorState.SOLID_WALL,
+            down_door_status=DoorState.OPEN,
+            room_type=RoomType.COMBAT,
+            area_type=AreaType.RED,
+            enemies=2,
         ),
         Vector2(2.0, -3.0): RoomData(
+            left_door_status=DoorState.OPEN,
+            right_door_status=DoorState.OPEN,
+            up_door_status=DoorState.OPEN,
+            down_door_status=DoorState.OPEN,
+            room_type=RoomType.COMBAT,
+            area_type=AreaType.RED,
+            enemies=2,
+        ),
+        Vector2(3.0, -3.0): RoomData(
+            left_door_status=DoorState.OPEN,
+            right_door_status=DoorState.SOLID_WALL,
+            up_door_status=DoorState.OPEN,
+            down_door_status=DoorState.OPEN,
+            room_type=RoomType.COMBAT,
+            area_type=AreaType.RED,
+            enemies=2,
+        ),
+        # Vector2(4.0, -3.0): RoomData(
+        #     left_door_status=DoorState.OPEN,
+        #     right_door_status=DoorState.SOLID_WALL,
+        #     up_door_status=DoorState.SOLID_WALL,
+        #     down_door_status=DoorState.SOLID_WALL,
+        #     room_type=RoomType.GAIN_SHIELD,
+        #     area_type=AreaType.RED,
+        # ),
+        Vector2(-2.0, -4.0): RoomData(
+            left_door_status=DoorState.SOLID_WALL,
+            right_door_status=DoorState.OPEN,
+            up_door_status=DoorState.SOLID_WALL,
+            down_door_status=DoorState.SOLID_WALL,
+            room_type=RoomType.GAIN_BOMB,
+            area_type=AreaType.RED,
+        ),
+        Vector2(-1.0, -4.0): RoomData(
+            left_door_status=DoorState.OPEN,
+            right_door_status=DoorState.OPEN,
+            up_door_status=DoorState.SOLID_WALL,
+            down_door_status=DoorState.OPEN,
+            room_type=RoomType.COMBAT,
+            area_type=AreaType.RED,
+            enemies=2,
+        ),
+        Vector2(0.0, -4.0): RoomData(
+            left_door_status=DoorState.OPEN,
+            right_door_status=DoorState.SOLID_WALL,
+            up_door_status=DoorState.SOLID_WALL,
+            down_door_status=DoorState.OPEN,
+            room_type=RoomType.COMBAT,
+            area_type=AreaType.RED,
+            enemies=2,
+        ),
+        Vector2(2.0, -4.0): RoomData(
+            left_door_status=DoorState.SOLID_WALL,
+            right_door_status=DoorState.OPEN,
+            up_door_status=DoorState.SOLID_WALL,
+            down_door_status=DoorState.OPEN,
+            room_type=RoomType.COMBAT,
+            area_type=AreaType.RED,
+            enemies=2,
+        ),
+        Vector2(3.0, -4.0): RoomData(
             left_door_status=DoorState.OPEN,
             right_door_status=DoorState.SOLID_WALL,
             up_door_status=DoorState.BREAKABLE_WALL,
             down_door_status=DoorState.OPEN,
             room_type=RoomType.EMPTY,
             area_type=AreaType.RED,
-            enemies=3,
         ),
-        Vector2(2.0, -4.0): RoomData(
+        Vector2(3.0, -5.0): RoomData(
             left_door_status=DoorState.SOLID_WALL,
             right_door_status=DoorState.SOLID_WALL,
             up_door_status=DoorState.OPEN,
@@ -172,16 +243,16 @@ class RoomModel:
             room_type=RoomType.EMPTY,
             area_type=AreaType.RED,
         ),
-        Vector2(2.0, -5.0): RoomData(
+        Vector2(3.0, -6.0): RoomData(
             left_door_status=DoorState.SOLID_WALL,
             right_door_status=DoorState.SOLID_WALL,
             up_door_status=DoorState.OPEN,
             down_door_status=DoorState.OPEN,
             room_type=RoomType.COMBAT,
             area_type=AreaType.RED,
-            enemies=3,
+            enemies=2,
         ),
-        Vector2(2.0, -6.0): RoomData(
+        Vector2(3.0, -7.0): RoomData(
             left_door_status=DoorState.SOLID_WALL,
             right_door_status=DoorState.SOLID_WALL,
             up_door_status=DoorState.SOLID_WALL,

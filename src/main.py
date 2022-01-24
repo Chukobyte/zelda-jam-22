@@ -1,23 +1,22 @@
+import random
+
+from seika.math import Vector2
 from seika.node import Node2D
-from seika.input import Input
-from seika.engine import Engine
-from seika.audio import AudioStream, Audio
 
 from src.event.event_textbox import TextboxManager
+from src.item.health_container import HealthContainer
 from src.room.room_manager import RoomManager
 from src.world import World
 from src.game_context import GameContext, PlayState, DialogueEvent
 from src.room.room_builder import RoomBuilder
-from src.task.task import Task, TaskManager, co_return, co_wait_until_seconds
+from src.player.player_stats import PlayerStats
 
 
 class Main(Node2D):
     def _start(self) -> None:
         self.world = World()
         self.game_context = GameContext()
-        # self.task_manager = TaskManager(
-        #     initial_tasks=[Task(name="start_music", func=self.start_music)]
-        # )
+        self.spawnable_hearts = 3
         # Setup Initial Room
         RoomBuilder.create_wall_colliders(node=self)
         RoomBuilder.create_doors(node=self)
@@ -36,19 +35,21 @@ class Main(Node2D):
     def _physics_process(self, delta: float) -> None:
         self.world.cached_delta = delta
         self.game_context.play_time_counter.update(delta=delta)
-        # if Input.is_action_just_pressed(action_name="debug_quit"):
-        #     Engine.exit()
-        # self.task_manager.run_tasks()
-
-    # @Task.task_func()
-    # def start_music(self):
-    #     yield from co_wait_until_seconds(wait_time=0.25)
-    #
-    #     Audio.play_music(music_id="assets/audio/music/no_color_theme.wav")
-    #     yield co_return()
 
     def _on_room_cleared(self, args: list) -> None:
         room_manager = RoomManager()
         room_manager.current_room.data.enemies -= 1
         if room_manager.current_room.data.enemies <= 0:
             RoomManager().set_current_room_to_cleared()
+            player_stats = PlayerStats()
+            if self.spawnable_hearts > 0:
+                if player_stats.hp <= 2 or (
+                    player_stats.hp == 3 and random.randint(0, 1) == 0
+                ):
+                    self.spawnable_hearts -= 1
+                    world_pos = room_manager.get_world_position(
+                        grid_position=room_manager.current_room.position
+                    )
+                    h_container = HealthContainer.new()
+                    h_container.position = world_pos + Vector2(200.0, 110.0)
+                    self.add_child(h_container)

@@ -73,6 +73,50 @@
             "children": []
         },
         {
+            "name": "DungeonBG2",
+            "type": "Sprite",
+            "tags": [],
+            "external_scene_source": "",
+            "components": [
+                {
+                    "transform2D": {
+                        "position": {
+                            "x": -1000.0,
+                            "y": 1000.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "rotation": 0.0,
+                        "z_index": 0,
+                        "z_index_relative_to_parent": true,
+                        "ignore_camera": false
+                    }
+                },
+                {
+                    "sprite": {
+                        "texture_path": "assets/images/dungeon/dungeon_level.png",
+                        "draw_source": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "width": 400.0,
+                            "height": 225.0
+                        },
+                        "flip_x": false,
+                        "flip_y": false,
+                        "modulate": {
+                            "red": 1.0,
+                            "green": 1.0,
+                            "blue": 1.0,
+                            "alpha": 1.0
+                        }
+                    }
+                }
+            ],
+            "children": []
+        },
+        {
             "name": "Player",
             "type": "AnimatedSprite",
             "tags": [],
@@ -612,7 +656,7 @@
                         {
                             "transform2D": {
                                 "position": {
-                                    "x": -10.0,
+                                    "x": -8.0,
                                     "y": -14.0
                                 },
                                 "scale": {
@@ -648,7 +692,7 @@
                                                 "draw_source": {
                                                     "x": 0.0,
                                                     "y": 36.0,
-                                                    "width": 36.0,
+                                                    "width": 31.0,
                                                     "height": 6.0
                                                 }
                                             }
@@ -664,7 +708,7 @@
                                                 "draw_source": {
                                                     "x": 0.0,
                                                     "y": 6.0,
-                                                    "width": 36.0,
+                                                    "width": 31.0,
                                                     "height": 6.0
                                                 }
                                             }
@@ -680,7 +724,7 @@
                                                 "draw_source": {
                                                     "x": 0.0,
                                                     "y": 12.0,
-                                                    "width": 36.0,
+                                                    "width": 31.0,
                                                     "height": 6.0
                                                 }
                                             }
@@ -696,7 +740,7 @@
                                                 "draw_source": {
                                                     "x": 0.0,
                                                     "y": 0.0,
-                                                    "width": 36.0,
+                                                    "width": 31.0,
                                                     "height": 6.0
                                                 }
                                             }
@@ -712,7 +756,7 @@
                                                 "draw_source": {
                                                     "x": 0.0,
                                                     "y": 30.0,
-                                                    "width": 36.0,
+                                                    "width": 31.0,
                                                     "height": 6.0
                                                 }
                                             }
@@ -728,7 +772,7 @@
                                                 "draw_source": {
                                                     "x": 0.0,
                                                     "y": 18.0,
-                                                    "width": 36.0,
+                                                    "width": 31.0,
                                                     "height": 6.0
                                                 }
                                             }
@@ -744,7 +788,7 @@
                                                 "draw_source": {
                                                     "x": 0.0,
                                                     "y": 24.0,
-                                                    "width": 36.0,
+                                                    "width": 31.0,
                                                     "height": 6.0
                                                 }
                                             }

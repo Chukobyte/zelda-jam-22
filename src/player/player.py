@@ -46,7 +46,9 @@ class Player(AnimatedSprite):
         self.collider.tags = [Player.TAG]
         self.last_collided_door = None
         self.on_damage_cool_down = False
+        self.wave_unlocked = False
         self.bomb_unlocked = False
+        self.shield_unlocked = False
         self.bomb_cooldown_timer = SimpleTimer(wait_time=3.5, start_on_init=True)
 
     def _configure_fsm(self) -> None:
@@ -94,7 +96,8 @@ class Player(AnimatedSprite):
             state_to_transition=wave_attack_state,
             transition_predicate=lambda: Input.is_action_just_pressed(
                 action_name="attack"
-            ),
+            )
+            and self.wave_unlocked,
         )
         idle_bomb_attack_exit = StateExitLink(
             state_to_transition=bomb_attack_state,
@@ -116,7 +119,8 @@ class Player(AnimatedSprite):
             state_to_transition=wave_attack_state,
             transition_predicate=lambda: Input.is_action_just_pressed(
                 action_name="attack"
-            ),
+            )
+            and self.wave_unlocked,
         )
         move_attack_bomb_exit = StateExitLink(
             state_to_transition=bomb_attack_state,
@@ -175,30 +179,36 @@ class Player(AnimatedSprite):
         self.tasks.run_tasks()
         self.bomb_cooldown_timer.tick(delta=delta)
 
+    def _refresh_ui_hp(self) -> None:
+        if self.stats.hp >= 6:
+            self.player_ui_sprite.play("full")
+        elif self.stats.hp == 5:
+            self.player_ui_sprite.play("five_hearts")
+        elif self.stats.hp == 4:
+            self.player_ui_sprite.play("four_hearts")
+        elif self.stats.hp == 3:
+            self.player_ui_sprite.play("three_hearts")
+        elif self.stats.hp == 2:
+            self.player_ui_sprite.play("two_hearts")
+        elif self.stats.hp == 1:
+            self.player_ui_sprite.play("one_heart")
+        else:
+            self.player_ui_sprite.play("empty")
+
     def take_damage(self, attack=None) -> None:
         if not self.on_damage_cool_down:
             attack_damage = 1
             if attack:
                 attack_damage = attack.damage
             self.stats.hp -= attack_damage
+            self._refresh_ui_hp()
             if self.stats.hp <= 0:
-                self.player_ui_sprite.play("empty")
                 RoomManager().clean_up()
                 GameContext.set_game_state(GameState.END_SCREEN)
                 SceneTree.change_scene(scene_path="scenes/end_screen.sscn")
                 # TODO: Do more stuff...
             else:
                 Audio.play_sound(sound_id="assets/audio/sfx/player_hurt.wav")
-                if self.stats.hp == 5:
-                    self.player_ui_sprite.play("five_hearts")
-                elif self.stats.hp == 4:
-                    self.player_ui_sprite.play("four_hearts")
-                elif self.stats.hp == 3:
-                    self.player_ui_sprite.play("three_hearts")
-                elif self.stats.hp == 2:
-                    self.player_ui_sprite.play("two_hearts")
-                elif self.stats.hp == 1:
-                    self.player_ui_sprite.play("one_heart")
                 self.on_damage_cool_down = True
                 self.tasks.add_task(
                     task=Task(name="damaged", func=self.damaged_from_attack)
@@ -320,61 +330,8 @@ class Player(AnimatedSprite):
             else:
                 for vel in [new_velocity, non_facing_velocity]:
                     if vel:
-                        collided_walls = Collision.get_collided_nodes_by_tag(
-                            node=self.collider, tag="solid", offset=vel
-                        )
-                        open_doors = Collision.get_collided_nodes_by_tag(
-                            node=self.collider, tag="open-door", offset=vel
-                        )
-                        rainbow_orbs = Collision.get_collided_nodes_by_tag(
-                            node=self.collider, tag="rainbow_orb", offset=vel
-                        )
-                        tricolora = Collision.get_collided_nodes_by_tag(
-                            node=self.collider, tag="tricolora", offset=vel
-                        )
-                        # Collision checks
-                        if collided_walls:
-                            pass
-                        elif open_doors:
-                            # TODO: temp win state
-                            if GameContext().has_won:
-                                room_manager.clean_up()
-                                GameContext.set_game_state(GameState.END_SCREEN)
-                                SceneTree.change_scene(
-                                    scene_path="scenes/end_screen.sscn"
-                                )
-                                yield co_return()
-                            else:
-                                collided_door = open_doors[0]
-                                self.last_collided_door = collided_door
-                                room_manager.start_room_transition(collided_door)
-                            break
-                        elif rainbow_orbs:
-                            rainbow_orbs[0].queue_deletion()
-                            self.bomb_unlocked = True
-                            room_manager.set_current_room_to_cleared()
-                            break
-                        elif tricolora:
-                            Audio.stop_music()
-                            Audio.play_sound(
-                                sound_id="assets/audio/sfx/rainbow_orb.wav"
-                            )
-                            victory_pose_sprite = Sprite.new()
-                            victory_pose_sprite.texture = Texture.get(
-                                file_path="assets/images/player/player_victory_pose.png"
-                            )
-                            victory_pose_sprite.position = self.position + Vector2(
-                                0, -12
-                            )
-                            self.get_parent().add_child(victory_pose_sprite)
-                            self.modulate = Color(1.0, 1.0, 1.0, 0.0)
-                            self.set_stat_ui_visibility(visible=False)
-                            # Transition to end game state
-                            GameContext.set_play_state(PlayState.EVENT)
-                            GameContext().has_won = True
-                            tricolora[0].queue_deletion()
-                            break
-                        else:
+                        has_collided = self._process_collisions(vel=vel)
+                        if not has_collided:
                             current_pos = self.position
                             # TODO: Figure out if a different easing function is needed
                             self.position = Ease.Cubic.ease_out_vec2(
@@ -383,9 +340,62 @@ class Player(AnimatedSprite):
                                 to_pos=current_pos + vel,
                                 duration=elapsed_time + 0.1,
                             )
-                            # self.position += vel
 
             yield co_suspend()
+
+    def _process_collisions(self, vel: Vector2) -> bool:
+        collided_walls = Collision.get_collided_nodes_by_tag(
+            node=self.collider, tag="solid", offset=vel
+        )
+        open_doors = Collision.get_collided_nodes_by_tag(
+            node=self.collider, tag="open-door", offset=vel
+        )
+        rainbow_orbs = Collision.get_collided_nodes_by_tag(
+            node=self.collider, tag="rainbow_orb", offset=vel
+        )
+        tricolora = Collision.get_collided_nodes_by_tag(
+            node=self.collider, tag="tricolora", offset=vel
+        )
+        health_container = Collision.get_collided_nodes_by_tag(
+            node=self.collider, tag="health", offset=vel
+        )
+        room_manager = RoomManager()
+        # Collision checks
+        if collided_walls:
+            return True
+        elif open_doors:
+            collided_door = open_doors[0]
+            self.last_collided_door = collided_door
+            room_manager.start_room_transition(collided_door)
+            return True
+        elif rainbow_orbs:
+            rainbow_orbs[0].queue_deletion()
+            self.bomb_unlocked = True
+            room_manager.set_current_room_to_cleared()
+            Audio.play_sound(sound_id="assets/audio/sfx/item_pickup.wav")
+            return True
+        elif tricolora:
+            Audio.stop_music()
+            Audio.play_sound(sound_id="assets/audio/sfx/rainbow_orb.wav")
+            victory_pose_sprite = Sprite.new()
+            victory_pose_sprite.texture = Texture.get(
+                file_path="assets/images/player/player_victory_pose.png"
+            )
+            victory_pose_sprite.position = self.position + Vector2(0, -12)
+            self.get_parent().add_child(victory_pose_sprite)
+            self.modulate = Color(1.0, 1.0, 1.0, 0.0)
+            self.set_stat_ui_visibility(visible=False)
+            # Transition to end game state
+            GameContext.set_play_state(PlayState.EVENT)
+            GameContext().has_won = True
+            tricolora[0].queue_deletion()
+            return True
+        elif health_container and self.stats.hp < self.stats.base_hp:
+            self.stats.hp += 1
+            health_container[0].queue_deletion()
+            self._refresh_ui_hp()
+            Audio.play_sound(sound_id="assets/audio/sfx/item_pickup.wav")
+        return False
 
     def _setup_attack(self, attack: Attack, adjust_orientation: bool) -> None:
         self.set_stat_ui_visibility(visible=False)
@@ -549,8 +559,16 @@ class Player(AnimatedSprite):
                 Audio.play_sound(sound_id="assets/audio/sfx/select.wav")
                 if GameContext.get_dialogue_event() == DialogueEvent.INIT:
                     Audio.play_music(music_id="assets/audio/music/no_color_theme.wav")
+                elif GameContext.get_dialogue_event() == DialogueEvent.GAIN_WAVE:
+                    Audio.play_sound(sound_id="assets/audio/sfx/select.wav")
+                    self.wave_unlocked = True
+                    RoomManager().set_current_room_to_cleared()
                 elif GameContext.get_dialogue_event() == DialogueEvent.GAIN_BOMB:
-                    pass
+                    Audio.play_sound(sound_id="assets/audio/sfx/select.wav")
+                elif GameContext.get_dialogue_event() == DialogueEvent.GAIN_SHIELD:
+                    Audio.play_sound(sound_id="assets/audio/sfx/select.wav")
+                    self.shield_unlocked = True
+                    RoomManager().set_current_room_to_cleared()
                 break
             yield co_suspend()
         self.set_stat_ui_visibility(visible=True)

@@ -17,7 +17,9 @@ class PlayState:
 class DialogueEvent:
     NONE = "none"
     INIT = "init"
+    GAIN_WAVE = "gain_wave"
     GAIN_BOMB = "gain_bomb"
+    GAIN_SHIELD = "gain_shield"
 
 
 class PlayTimerCounter:
