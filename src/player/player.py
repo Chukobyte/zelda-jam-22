@@ -14,7 +14,6 @@ from seika.utils import SimpleTimer
 from src.attack.attack import Attack
 from src.event.event_textbox import TextboxManager
 from src.game_context import GameContext, PlayState, GameState, DialogueEvent
-from src.item.health_container import HealthContainer
 from src.math.ease import Ease, Easer
 from src.world import World
 from src.room.room_manager import RoomManager
@@ -51,10 +50,6 @@ class Player(AnimatedSprite):
         self.bomb_unlocked = False
         self.shield_unlocked = False
         self.bomb_cooldown_timer = SimpleTimer(wait_time=3.5, start_on_init=True)
-
-        h_container = HealthContainer.new()
-        h_container.position = self.position + Vector2(50.0, 0.0)
-        self.get_parent().add_child(h_container)
 
     def _configure_fsm(self) -> None:
         # State Management
@@ -377,6 +372,7 @@ class Player(AnimatedSprite):
             rainbow_orbs[0].queue_deletion()
             self.bomb_unlocked = True
             room_manager.set_current_room_to_cleared()
+            Audio.play_sound(sound_id="assets/audio/sfx/item_pickup.wav")
             return True
         elif tricolora:
             Audio.stop_music()
@@ -398,6 +394,7 @@ class Player(AnimatedSprite):
             self.stats.hp += 1
             health_container[0].queue_deletion()
             self._refresh_ui_hp()
+            Audio.play_sound(sound_id="assets/audio/sfx/item_pickup.wav")
         return False
 
     def _setup_attack(self, attack: Attack, adjust_orientation: bool) -> None:

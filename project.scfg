@@ -327,6 +327,10 @@
             "file_path": "assets/audio/sfx/player_hurt.wav"
         },
         {
+            "type": "sound",
+            "file_path": "assets/audio/sfx/item_pickup.wav"
+        },
+        {
             "type": "music",
             "file_path": "assets/audio/music/no_color_theme.wav"
         }
